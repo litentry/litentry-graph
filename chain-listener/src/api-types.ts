@@ -1,0 +1,38 @@
+import { RegistryTypes } from '@polkadot/types/types';
+
+// TODO pull in from lib once created
+const types: RegistryTypes = {
+  Address: 'MultiAddress',
+  LookupSource: 'MultiAddress',
+  Properties: {
+    _enum: ['Transferable', 'Burnable'],
+  },
+  CID: 'Vec<u8>',
+  ClassId: 'u32',
+  ClassIdOf: 'ClassId',
+  TokenId: 'u64',
+  TokenIdOf: 'TokenId',
+  HashByte32: '[u8; 32]',
+  BN: 'BlockNumber',
+  ClassType: {
+    _enum: {
+      Simple: 'u32',
+      Claim: 'HashByte32',
+      Merge: '(CID, CID, bool)',
+    },
+  },
+  ClassInfoOf: {
+    metadata: 'CID',
+    totalIssuance: 'TokenId',
+    owner: 'AccountId',
+    data: 'ClassData',
+  },
+  ClassData: {
+    properties: 'Properties',
+    start_block: 'Option<BN>',
+    end_block: 'Option<BN>',
+    class_type: 'ClassType<ID>',
+  },
+};
+
+export default types;
