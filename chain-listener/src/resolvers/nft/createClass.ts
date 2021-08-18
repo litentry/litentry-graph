@@ -21,14 +21,14 @@ async function handler(
     };
   };
 
-  let metadata;
+  let metadataHydrated;
   try {
     const { data } = await axios.get(
       `https://ipfs.fleek.co/ipfs/${classData.metadata
         .toString()
         .replace('ipfs://', '')}`
     );
-    metadata = data;
+    metadataHydrated = data;
   } catch (e) {
     // console.log(e);
   }
@@ -41,8 +41,7 @@ async function handler(
   const classDataRecord = {
     id: classId,
     ...classData,
-    metadata: metadata,
-    metadataIPFS: classData.metadata,
+    metadataHydrated,
   };
 
   console.log('userClassesRecord', userClassesRecord);
