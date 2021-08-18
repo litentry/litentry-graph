@@ -25,10 +25,8 @@ const parseEvents =
           )
           // test the events against the specific types we are looking for
           .forEach(({ event }) => {
-            // TODO figure out how to handle this condition
-            if (api.events.nft.CreatedClass.is(event)) {
-              console.log(JSON.stringify(event, null, 2));
-              resolver(api, event.data.toJSON());
+            if (api.events.nft[resolver.eventName]?.is(event)) {
+              resolver.handler(api, event.data.toJSON());
             }
           });
       }

@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
 
-export default async function createClass(
+async function handler(
   api: ApiPromise,
   [address, classId]: [string, number]
 ): Promise<void> {
@@ -48,3 +48,8 @@ export default async function createClass(
   console.log('userClassesRecord', userClassesRecord);
   console.log('classDataRecord', classDataRecord);
 }
+
+export default {
+  handler,
+  eventName: 'CreatedClass',
+};
