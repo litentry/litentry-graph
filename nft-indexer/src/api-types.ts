@@ -1,4 +1,4 @@
-import { RegistryTypes } from '@polkadot/types/types';
+import type { RegistryTypes } from '@polkadot/types/types';
 
 // TODO pull in from lib once created
 const types: RegistryTypes = {

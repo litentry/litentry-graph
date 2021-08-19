@@ -1,7 +1,7 @@
-import { ApiPromise } from '@polkadot/api';
-import { VoidFn } from '@polkadot/api/types';
-import { Vec } from '@polkadot/types';
-import { EventRecord } from '@polkadot/types/interfaces';
+import type { ApiPromise } from '@polkadot/api';
+import type { VoidFn } from '@polkadot/api/types';
+import type { Vec } from '@polkadot/types';
+import type { EventRecord } from '@polkadot/types/interfaces';
 
 /**
  * Listens for new heads on the chain,
