@@ -6,7 +6,11 @@ The database layer is using `mongodb` and `mongoose` (for conveience with schema
 
 ## Getting Started
 
-Create `nft-indexer/.env` and replace the example values with real ones.
+Add environment variables (replace example values with real ones):
+
+```sh
+cp nft-indexer/.env.example nft-indexer/.env
+```
 
 Install dependencies:
 
