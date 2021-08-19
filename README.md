@@ -4,6 +4,30 @@ This repository is a collection of applications to demonstrate how we see the mi
 
 The database layer is using `mongodb` and `mongoose` (for conveience with schemas & connections). It can be hosted anywhere, but [MongoDB's Atlas](https://www.mongodb.com/cloud/atlas) is recommended. It has a free tier to get up and running, and saves the hassle of managing the database.
 
+## Getting Started
+
+Create `nft-indexer/.env` and replace the example values with real ones.
+
+Install dependencies:
+
+```sh
+yarn
+```
+
+Build the Chain Listener package:
+
+```sh
+cd chain-listener && yarn build && cd ../
+```
+
+Run the NFT indexer:
+
+```sh
+cd nft-indexer && yarn start
+```
+
+TODO: add API startup commands
+
 ## Contents
 
 ### `chain-listener`
