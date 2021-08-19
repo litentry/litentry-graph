@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "workspaces": [
+    "chain-listener",
+    "nft-indexer"
+  ]
+}

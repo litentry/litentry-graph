@@ -1,4 +1,4 @@
-import { Resolvers } from '../types';
+import { Resolvers } from '../../../chain-listener/src/types';
 import nft from './nft';
 
 const resolvers: Resolvers = {

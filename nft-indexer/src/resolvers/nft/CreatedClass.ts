@@ -1,11 +1,19 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
 
-async function handler(
+export default async function handler(
   api: ApiPromise,
-  [address, classId]: [string, number]
+  // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.CreatedClass
+  [address, class_id]: [string, number]
 ): Promise<void> {
-  const result = await api.query.ormlNft.classes(classId);
+  console.log('EVENT:CreatedClass', {
+    address,
+    class_id,
+  });
+
+  // Below is just a bit of an example of how we'd get more data to make what we save useful.
+
+  const result = await api.query.ormlNft.classes(class_id);
   const classData = result.toHuman() as {
     metadata: string;
     totalIssuance: number;
@@ -30,16 +38,16 @@ async function handler(
     );
     metadataHydrated = data;
   } catch (e) {
-    // console.log(e);
+    console.log(e);
   }
 
   const userClassesRecord = {
     address, // index on this
-    classIds: [classId], // if existing record append to array
+    class_ids: [class_id], // if existing record append to array
   };
 
   const classDataRecord = {
-    id: classId,
+    id: class_id,
     ...classData,
     metadataHydrated,
   };
@@ -47,8 +55,3 @@ async function handler(
   console.log('userClassesRecord', userClassesRecord);
   console.log('classDataRecord', classDataRecord);
 }
-
-export default {
-  handler,
-  eventName: 'CreatedClass',
-};
