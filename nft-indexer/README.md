@@ -31,7 +31,7 @@ Creates the connection with the `mongodb` database.
 
 If you want to do something with the data of an event add a file here. The casing is important, the section name and event name are used to find the event in the chain data.
 
-The default export must be a handler function that takes `ApiPromise` from `@polkadot/api` and the event data (the type is specific to the event).
+The default export must be a handler function that takes the event data (the type is specific to the event) and `ApiPromise` from `@polkadot/api`.
 
 _We're not using `ApiRx` for this as the resolvers are designed to be fired once per event. `RxJS` just adds complexity with no benefit here._
 

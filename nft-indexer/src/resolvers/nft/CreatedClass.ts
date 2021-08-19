@@ -3,9 +3,9 @@ import axios from 'axios';
 import { saveEvent } from '../../repositories/events';
 
 export default async function handler(
-  api: ApiPromise,
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.CreatedClass
-  [address, class_id]: [string, number]
+  [address, class_id]: [string, number],
+  api: ApiPromise
 ): Promise<void> {
   await saveEvent({ name: 'CreatedClass', data: [address, class_id] });
 

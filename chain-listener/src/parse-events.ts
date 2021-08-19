@@ -10,7 +10,7 @@ const parseEvents =
       const resolver = resolvers[event.section]?.[event.method];
 
       if (resolver) {
-        resolver(api, event.data.toJSON());
+        resolver(event.data.toJSON(), api);
       }
     });
   };
