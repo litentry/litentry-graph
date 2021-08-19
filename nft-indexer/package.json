@@ -1,19 +1,25 @@
 {
-  "name": "chain-listener",
+  "name": "nft-indexer",
   "version": "0.0.1",
   "description": "A Node JS application to extract event data from the block chain.",
   "main": "dist/index.js",
-  "types": "dist/types/index.d.ts",
   "repository": "git@github.com:litentry/chain-listener.git",
   "author": "Ben Mason <ben@wattmason.co.uk>",
   "scripts": {
+    "start": "nodemon src/index.ts",
     "build": "rm -rf ./dist && tsc"
   },
   "dependencies": {
+    "chain-listener": "0.0.1",
     "@polkadot/api": "^5.5.1",
-    "@polkadot/types": "^5.5.1"
+    "@polkadot/types": "^5.5.1",
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "mongodb": "^4.1.0",
+    "typescript-json-schema": "^0.50.1"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@typescript-eslint/eslint-plugin": "4.22.1",
     "@typescript-eslint/parser": "4.22.1",
     "eslint": "7.26.0",
