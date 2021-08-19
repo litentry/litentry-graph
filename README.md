@@ -2,6 +2,8 @@
 
 This repository is a collection of applications to demonstrate how we see the middle layer between the chain and the webapp working.
 
+The database layer is using `mongodb` and `mongoose` (for conveience with schemas & connections). It can be hosted anywhere, but [MongoDB's Atlas](https://www.mongodb.com/cloud/atlas) is recommended. It has a free tier to get up and running, and saves the hassle of managing the database.
+
 ## Contents
 
 ### `chain-listener`
