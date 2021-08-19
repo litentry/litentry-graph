@@ -1,15 +1,13 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
+import { saveEvent } from '../../repositories/events';
 
 export default async function handler(
   api: ApiPromise,
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.CreatedClass
   [address, class_id]: [string, number]
 ): Promise<void> {
-  console.log('EVENT:CreatedClass', {
-    address,
-    class_id,
-  });
+  await saveEvent({ name: 'CreatedClass', data: [address, class_id] });
 
   // Below is just a bit of an example of how we'd get more data to make what we save useful.
 

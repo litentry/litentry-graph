@@ -10,12 +10,13 @@
     "build": "rm -rf ./dist && tsc"
   },
   "dependencies": {
-    "chain-listener": "0.0.1",
     "@polkadot/api": "^5.5.1",
     "@polkadot/types": "^5.5.1",
     "axios": "^0.21.1",
+    "chain-listener": "0.0.1",
     "dotenv": "^10.0.0",
     "mongodb": "^4.1.0",
+    "mongoose": "^5.13.7",
     "typescript-json-schema": "^0.50.1"
   },
   "devDependencies": {
