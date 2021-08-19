@@ -29,7 +29,11 @@ _The nft-indexer application is currently using it - and specifies it as a depen
 
 `src/index.ts`
 
-Runs the application.
+Exports the package.
+
+`src/chain-listener.ts`
+
+Creates the API and runs the block-listener.
 
 `src/block-listener.ts`
 
