@@ -1,5 +1,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
+import { SimpleClass, ClassType } from 'nft-models';
 import { saveEvent } from '../../repositories/events';
 
 export default async function handler(
@@ -8,8 +9,6 @@ export default async function handler(
   api: ApiPromise
 ): Promise<void> {
   await saveEvent({ name: 'CreatedClass', data: [address, class_id] });
-
-  // Below is just a bit of an example of how we'd get more data to make what we save useful.
 
   const result = await api.query.ormlNft.classes(class_id);
   const classData = result.toHuman() as {
@@ -22,11 +21,35 @@ export default async function handler(
       end_block: null | number;
       class_type: {
         Claim?: string;
-        Simple?: string;
+        Simple?: number;
+        Merge?: string; // todo
       };
     };
   };
 
+  const shared = {
+    _id: class_id,
+    owner: address,
+    totalIssuance: classData.totalIssuance,
+    startBlock: classData.data.start_block || undefined,
+    endBlock: classData.data.end_block || undefined,
+    properties: classData.data.properties,
+  };
+
+  if (classData.data.class_type.Simple) {
+    const doc = new SimpleClass({
+      ...shared,
+      type: ClassType.Simple,
+      quantity: classData.data.class_type.Simple,
+    });
+
+    await doc.save();
+
+    console.log(doc);
+    return;
+  }
+
+  // the below is for reference only when I finish this
   let metadataHydrated;
   try {
     const { data } = await axios.get(

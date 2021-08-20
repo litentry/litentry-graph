@@ -1,8 +1,14 @@
 import { Schema, model } from 'mongoose';
 
+export enum ClassType {
+  Claim = 'Claim',
+  Simple = 'Simple',
+  Merge = 'Merge',
+}
+
 export interface IClass {
   _id: number;
-  type: 'Claim' | 'Simple' | 'Merge';
+  type: ClassType;
   owner: string;
   totalIssuance: number;
   startBlock?: number;
@@ -19,6 +25,7 @@ export interface IClaimClass extends IClass {
     name: string;
     description: string;
     image: string;
+    merkleTreeCID: string;
   };
   metadataCID: string;
   merkleProof: string;
@@ -56,7 +63,15 @@ const simpleClassSchema = new Schema<ISimpleClass>(
 
 const claimClassSchema = new Schema<IClaimClass>(
   {
-    metadata: { type: Object, required: true },
+    metadata: {
+      type: {
+        name: { type: String, required: true },
+        description: { type: String, required: true },
+        image: { type: String, required: true },
+        merkleTreeCID: { type: String, required: true },
+      },
+      required: true,
+    },
     metadataCID: { type: String, required: true },
     merkleProof: { type: String, required: true },
   },
