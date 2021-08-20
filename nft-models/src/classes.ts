@@ -25,7 +25,7 @@ export interface IClaimClass extends IClass {
     name: string;
     description: string;
     image: string;
-    merkleTreeCID: string;
+    merkleTree: string;
   };
   metadataCID: string;
   merkleProof: string;
@@ -65,10 +65,10 @@ const claimClassSchema = new Schema<IClaimClass>(
   {
     metadata: {
       type: {
-        name: { type: String, required: true },
-        description: { type: String, required: true },
-        image: { type: String, required: true },
-        merkleTreeCID: { type: String, required: true },
+        name: String,
+        description: String,
+        image: String,
+        merkleTree: { type: String, required: true },
       },
       required: true,
     },

@@ -1,6 +1,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
-import { SimpleClass, ClassType } from 'nft-models';
+import { SimpleClass, ClassType, ClaimClass } from 'nft-models';
 import { saveEvent } from '../../repositories/events';
 
 export default async function handler(
@@ -47,32 +47,32 @@ export default async function handler(
 
     console.log(doc);
     return;
+  } else if (classData.data.class_type.Claim) {
+    let metadata;
+
+    try {
+      const { data } = await axios.get(
+        `https://ipfs.fleek.co/ipfs/${classData.metadata
+          .toString()
+          .replace('ipfs://', '')}`
+      );
+      metadata = data;
+    } catch (e) {
+      console.log(e);
+    }
+
+    const doc = new ClaimClass({
+      ...shared,
+      type: ClassType.Claim,
+      metadataCID: classData.metadata,
+      metadata: metadata,
+      merkleProof: classData.data.class_type.Claim,
+    });
+
+    await doc.save();
+
+    console.log(doc);
+  } else if (classData.data.class_type.Merge) {
+    // todo
   }
-
-  // the below is for reference only when I finish this
-  let metadataHydrated;
-  try {
-    const { data } = await axios.get(
-      `https://ipfs.fleek.co/ipfs/${classData.metadata
-        .toString()
-        .replace('ipfs://', '')}`
-    );
-    metadataHydrated = data;
-  } catch (e) {
-    console.log(e);
-  }
-
-  const userClassesRecord = {
-    address, // index on this
-    class_ids: [class_id], // if existing record append to array
-  };
-
-  const classDataRecord = {
-    id: class_id,
-    ...classData,
-    metadataHydrated,
-  };
-
-  console.log('userClassesRecord', userClassesRecord);
-  console.log('classDataRecord', classDataRecord);
 }
