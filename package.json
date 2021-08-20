@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "chain-listener",
-    "nft-indexer"
+    "nft-indexer",
+    "api"
   ]
 }

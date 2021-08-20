@@ -18,11 +18,7 @@ Install dependencies:
 yarn
 ```
 
-Build the Chain Listener package:
-
-```sh
-cd chain-listener && yarn build && cd ../
-```
+_There is a `postinstall` script in the chain listener that transpiles the typescript to JS so we can import the lib in the NFT indexer_
 
 Run the NFT indexer:
 

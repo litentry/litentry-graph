@@ -7,7 +7,8 @@
   "repository": "git@github.com:litentry/chain-listener.git",
   "author": "Ben Mason <ben@wattmason.co.uk>",
   "scripts": {
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf ./dist && tsc",
+    "postinstall": "yarn build"
   },
   "dependencies": {
     "@polkadot/api": "^5.5.1",
