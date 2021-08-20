@@ -1,5 +1,3 @@
-// import database service
-
 export const getNFTClasses = (
   address?: string,
   query?: string,
@@ -7,9 +5,9 @@ export const getNFTClasses = (
   limit?: number,
   sort?: string
 ) => {
-  console.log(`CALL DATABASE AND GET NFT CLASSES`);
+  console.log(`Call NFT Class MongoDB Model`);
 };
 
 export const getNFTClass = (classId: number) => {
-  console.log(`CALL DATABASE AND GET NFT CLASS`);
+  console.log(`Call NFT Class MongoDB Model`);
 };

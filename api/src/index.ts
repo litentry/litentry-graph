@@ -1,70 +1,40 @@
-import dotenv from 'dotenv';
+import config from './config';
+import { connect } from 'mongoose';
 import express from 'express';
 import cors from 'cors';
-// import {
-//   getNFTClass,
-//   getNFTClasses,
-//   getNFTInstance,
-//   getNFTInstances,
-// } from './Controllers';
+import {
+  getNFTEvents,
+  getNFTClass,
+  getNFTClasses,
+  getNFTInstance,
+  getNFTInstances,
+} from './handlers';
 
-dotenv.config({ debug: true });
-
-if (!process.env.PORT) {
-  console.error('process.env.PORT not set');
-  process.exit(1);
-}
-
-const port = process.env.PORT;
-
-const app = express();
-app.use(cors({ origin: '*' }));
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/api/nft/class', async (req, res) => {
+const run = async () => {
   try {
-    console.log('Get NFT Classes');
-    console.log(req);
-    res.sendStatus(200);
+    // Try to connect to MongoDB
+    const uri = `mongodb+srv://${config.username}:${config.password}@${config.clusterUrl}/${config.databaseName}?retryWrites=true&w=majority`;
+    await connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   } catch (e) {
     console.log(e);
-    res.sendStatus(500);
+    process.exit(1);
   }
-});
 
-app.get('/api/nft/class/:id', async (req, res) => {
-  try {
-    console.log('Get single NFT Class');
-    console.log(req);
-    res.sendStatus(200);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
+  // Start Express
+  const app = express();
+  app.use(cors({ origin: '*' }));
+  app.use(express.urlencoded({ extended: true }));
 
-app.get('/api/nft/instances', async (req, res) => {
-  try {
-    console.log('Get NFT Classes');
-    console.log(req);
-    res.sendStatus(200);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
+  // Routes
+  app.get('/api/nft/events', getNFTEvents);
+  app.get('/api/nft/classes', getNFTClasses);
+  app.get('/api/nft/classes/:id', getNFTClass);
+  app.get('/api/nft/instances', getNFTInstances);
+  app.get('/api/nft/instances/:id', getNFTInstance);
 
-app.get('/api/nft/instance/:id', async (req, res) => {
-  try {
-    console.log('Get single NFT Class');
-    console.log(req);
-    res.sendStatus(200);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
+  app.listen(config.apiPort, () => {
+    console.log(`Example api listening at http://localhost:${config.apiPort}`);
+  });
+};
 
-app.listen(port, () => {
-  console.log(`Example api listening at http://localhost:${port}`);
-});
+run();
