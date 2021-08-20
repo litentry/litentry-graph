@@ -22,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "4.22.1",
     "@typescript-eslint/parser": "4.22.1",
     "eslint": "7.26.0",
+    "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0",
     "tslint": "^6.1.3",
