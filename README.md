@@ -18,7 +18,7 @@ Install dependencies:
 yarn
 ```
 
-_There is a `postinstall` script in the chain listener that transpiles the typescript to JS so we can import the lib in the NFT indexer_
+_There is a `postinstall` script in the chain listener and the nft-models that transpiles the typescript to JS so we can import the libs_
 
 Run the NFT indexer:
 
@@ -50,10 +50,14 @@ import chainListener from "@litenry/chain-listener";
 
 A Node JS application that runs the chain listener and listens to events from the NFT pallet. The resolvers parse (and sometimes expand on) the data from the event and saves it to `mongodb`.
 
+### `nft-models`
+
+A collection of `mongoose` models shared by the `nft-indexer` and the `api`
+
 ### `api`
 
 An `express` application to allow the webapp to retrieve data from `mongodb`.
 
 ## TODO
 
-Add a script to fire it all up.
+Add a workflow script to fire it all up in production.
