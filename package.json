@@ -3,6 +3,7 @@
   "workspaces": [
     "chain-listener",
     "nft-indexer",
+    "nft-models",
     "api"
   ]
 }
