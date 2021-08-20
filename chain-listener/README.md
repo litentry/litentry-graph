@@ -25,6 +25,8 @@ import chainListener from 'chain-listener';
 
 _The nft-indexer application is currently using it - and specifies it as a dependency in the package.json file._
 
+If you want to make changes to this package whilst running it in the `nft-indexer` run `yarn watch` to automatically build the JS when you make those changes.
+
 ## Overview
 
 `src/index.ts`

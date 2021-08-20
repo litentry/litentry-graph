@@ -8,6 +8,7 @@
   "author": "Ben Mason <ben@wattmason.co.uk>",
   "scripts": {
     "build": "rm -rf ./dist && tsc",
+    "watch": "tsc --watch",
     "postinstall": "yarn build"
   },
   "dependencies": {
