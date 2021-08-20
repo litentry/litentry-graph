@@ -1,5 +1,3 @@
-// import database service
-
 export const getNFTInstances = (
   address?: string,
   classId?: number,
@@ -8,9 +6,9 @@ export const getNFTInstances = (
   limit?: number,
   sort?: string
 ) => {
-  console.log(`Call database and get NFT Instances`);
+  console.log(`Call NFT Instance MongoDB Model`);
 };
 
 export const getNFTInstance = (id: number) => {
-  console.log(`Call db and get NFT Instance`);
+  console.log(`Call NFT Instance MongoDB Model`);
 };
