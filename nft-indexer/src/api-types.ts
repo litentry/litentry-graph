@@ -12,6 +12,12 @@ const types: RegistryTypes = {
   ClassIdOf: 'ClassId',
   TokenId: 'u64',
   TokenIdOf: 'TokenId',
+  TokenInfoOf: {
+    metadata: 'CID',
+    owner: 'AccountId',
+    data: 'TokenData',
+  },
+  TokenData: { used: 'bool', rarity: 'u8' },
   HashByte32: '[u8; 32]',
   BN: 'BlockNumber',
   ClassType: {
