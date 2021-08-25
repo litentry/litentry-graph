@@ -5,7 +5,7 @@ const types: RegistryTypes = {
   Address: 'MultiAddress',
   LookupSource: 'MultiAddress',
   Properties: {
-    _enum: ['Transferable', 'Burnable'],
+    _enum: ['None', 'Transferable', 'Burnable', 'Both'],
   },
   CID: 'Vec<u8>',
   ClassId: 'u32',
@@ -39,6 +39,9 @@ const types: RegistryTypes = {
     end_block: 'Option<BN>',
     class_type: 'ClassType<ID>',
   },
+  DataSource: 'u64',
+  EthAddress: '[u8; 20]',
+  QueryKey: 'u64',
 };
 
 export default types;
