@@ -6,6 +6,13 @@ export enum ClassType {
   Merge = 'Merge',
 }
 
+export enum ClassProperties {
+  None = 'None',
+  Transferable = 'Transferable',
+  Burnable = 'Burnable',
+  Both = 'Both',
+}
+
 export interface IClass {
   _id: number;
   type: ClassType;
@@ -13,7 +20,7 @@ export interface IClass {
   totalIssuance: number;
   startBlock?: number;
   endBlock?: number;
-  properties: string; // TODO once bug is fixed
+  properties: ClassProperties;
 }
 
 export interface ISimpleClass extends IClass {
@@ -43,7 +50,11 @@ const classSchema = new Schema<IClass>(
     totalIssuance: { type: Number, required: true },
     startBlock: Number,
     endBlock: Number,
-    properties: String, // TODO update once bug is fixed
+    properties: {
+      type: String,
+      required: true,
+      enum: ['None', 'Transferable', 'Burnable', 'Both'],
+    },
   },
   {
     timestamps: true,

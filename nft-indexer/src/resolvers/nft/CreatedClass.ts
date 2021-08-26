@@ -1,6 +1,11 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
-import { SimpleClass, ClassType, ClaimClass } from 'nft-models';
+import {
+  SimpleClass,
+  ClassType,
+  ClaimClass,
+  ClassProperties,
+} from 'nft-models';
 import { saveEvent } from '../../repositories/events';
 
 export default async function handler(
@@ -16,7 +21,7 @@ export default async function handler(
     totalIssuance: number;
     owner: string;
     data: {
-      properties: string;
+      properties: ClassProperties;
       start_block: null | number;
       end_block: null | number;
       class_type: {
