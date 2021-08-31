@@ -61,6 +61,7 @@ const classSchema = new Schema<IClass>(
   }
 );
 
+// all the things we MIGHT want to index on
 classSchema.index({ owner: 1 });
 classSchema.index({ properties: 1 });
 classSchema.index({ type: 1 });
