@@ -71,7 +71,7 @@ export default async function handler(
       type: ClassType.Claim,
       metadataCID: classData.metadata,
       metadata: metadata,
-      merkleProof: classData.data.class_type.Claim,
+      merkleRoot: classData.data.class_type.Claim,
     });
 
     await doc.save();

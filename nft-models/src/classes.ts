@@ -35,7 +35,7 @@ export interface IClaimClass extends IClass {
     merkleTree: string;
   };
   metadataCID: string;
-  merkleProof: string;
+  merkleRoot: string;
 }
 
 export interface IMergeClass extends IClass {
@@ -84,7 +84,7 @@ const claimClassSchema = new Schema<IClaimClass>(
       required: true,
     },
     metadataCID: { type: String, required: true },
-    merkleProof: { type: String, required: true },
+    merkleRoot: { type: String, required: true },
   },
   options
 );
