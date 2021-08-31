@@ -96,7 +96,16 @@ const mergeClassSchema = new Schema<IMergeClass>(
   options
 );
 
-export const Class = model<IClass>('Class', classSchema);
-export const SimpleClass = Class.discriminator('Simple', simpleClassSchema);
-export const ClaimClass = Class.discriminator('Claim', claimClassSchema);
-export const MergeClass = Class.discriminator('Merge', mergeClassSchema);
+export const ClassModel = model<IClass>('Class', classSchema);
+export const SimpleClassModel = ClassModel.discriminator(
+  'Simple',
+  simpleClassSchema
+);
+export const ClaimClassModel = ClassModel.discriminator(
+  'Claim',
+  claimClassSchema
+);
+export const MergeClassModel = ClassModel.discriminator(
+  'Merge',
+  mergeClassSchema
+);

@@ -1,9 +1,9 @@
 import type { ApiPromise } from '@polkadot/api';
 import axios from 'axios';
 import {
-  SimpleClass,
+  SimpleClassModel,
   ClassType,
-  ClaimClass,
+  ClaimClassModel,
   ClassProperties,
 } from 'nft-models';
 import { saveEvent } from '../../repositories/events';
@@ -42,7 +42,7 @@ export default async function handler(
   };
 
   if (classData.data.class_type.Simple) {
-    const doc = new SimpleClass({
+    const doc = new SimpleClassModel({
       ...shared,
       type: ClassType.Simple,
       quantity: classData.data.class_type.Simple,
@@ -66,7 +66,7 @@ export default async function handler(
       console.log(e);
     }
 
-    const doc = new ClaimClass({
+    const doc = new ClaimClassModel({
       ...shared,
       type: ClassType.Claim,
       metadataCID: classData.metadata,
