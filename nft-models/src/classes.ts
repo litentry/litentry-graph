@@ -61,6 +61,10 @@ const classSchema = new Schema<IClass>(
   }
 );
 
+classSchema.index({ owner: 1 });
+classSchema.index({ properties: 1 });
+classSchema.index({ type: 1 });
+
 const options = {
   discriminatorKey: 'type',
 };
