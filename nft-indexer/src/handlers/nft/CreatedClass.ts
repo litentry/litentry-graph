@@ -33,7 +33,7 @@ export default async function handler(
 
     await doc.save();
 
-    console.log('SimpleClassModel', doc);
+    console.log('\nSimpleClassModel:', doc);
   } else if (classData.data.class_type.Claim) {
     const metadata = (await getMetadata(
       classData.metadata
@@ -51,7 +51,7 @@ export default async function handler(
 
     await doc.save();
 
-    console.log('ClaimClassModel', doc);
+    console.log('\nClaimClassModel:', doc);
   } else if (classData.data.class_type.Merge) {
     // todo
   }

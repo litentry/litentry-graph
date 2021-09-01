@@ -2,7 +2,12 @@ import type { ApiPromise } from '@polkadot/api';
 import type { Token } from 'nft-models';
 import { ClassType, TokenModel } from 'nft-models';
 import { saveEvent } from '../../services';
-import { getMetadata, queryClass, queryToken } from '../../services';
+import {
+  getMetadata,
+  queryClass,
+  queryToken,
+  updateClassIssuance,
+} from '../../services';
 
 export default async function handler(
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.ClaimedToken
@@ -37,5 +42,7 @@ export default async function handler(
 
   await doc.save();
 
-  console.log('TokenModel', doc);
+  console.log('\nTokenModel:', doc);
+
+  await updateClassIssuance(api, classId);
 }

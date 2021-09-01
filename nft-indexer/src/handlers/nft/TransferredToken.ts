@@ -8,4 +8,6 @@ export default async function handler(
     name: 'TransferredToken',
     data: [from, to, classId, tokenId],
   });
+
+  // todo: check issuance is uneffected
 }
