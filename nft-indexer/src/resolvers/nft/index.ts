@@ -1,9 +1,9 @@
-import BurnedToken from './BurnedToken';
+import BurnedToken from './BurnedToken'; // todo
 import ClaimedToken from './ClaimedToken';
 import CreatedClass from './CreatedClass';
-import MergedToken from './MergedToken';
+import MergedToken from './MergedToken'; // todo
 import MintedToken from './MintedToken';
-import TransferredToken from './TransferredToken';
+import TransferredToken from './TransferredToken'; // todo
 
 export default {
   BurnedToken,

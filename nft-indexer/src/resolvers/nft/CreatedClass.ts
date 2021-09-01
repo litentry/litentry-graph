@@ -1,39 +1,20 @@
 import type { ApiPromise } from '@polkadot/api';
-import axios from 'axios';
-import {
-  SimpleClassModel,
-  ClassType,
-  ClaimClassModel,
-  ClassProperties,
-} from 'nft-models';
+import type { SimpleClass, ClaimClass } from 'nft-models';
+import { SimpleClassModel, ClassType, ClaimClassModel } from 'nft-models';
 import { saveEvent } from '../../repositories/events';
+import { getMetadata, queryClass } from '../../services';
 
 export default async function handler(
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.CreatedClass
-  [address, class_id]: [string, number],
+  [address, classId]: [string, number],
   api: ApiPromise
 ): Promise<void> {
-  await saveEvent({ name: 'CreatedClass', data: [address, class_id] });
+  await saveEvent({ name: 'CreatedClass', data: [address, classId] });
 
-  const result = await api.query.ormlNft.classes(class_id);
-  const classData = result.toHuman() as {
-    metadata: string;
-    totalIssuance: number;
-    owner: string;
-    data: {
-      properties: ClassProperties;
-      start_block: null | number;
-      end_block: null | number;
-      class_type: {
-        Claim?: string;
-        Simple?: number;
-        Merge?: string; // todo
-      };
-    };
-  };
+  const classData = await queryClass(api, classId);
 
   const shared = {
-    _id: class_id,
+    _id: classId,
     owner: address,
     totalIssuance: classData.totalIssuance,
     startBlock: classData.data.start_block || undefined,
@@ -42,41 +23,35 @@ export default async function handler(
   };
 
   if (classData.data.class_type.Simple) {
-    const doc = new SimpleClassModel({
+    const model: SimpleClass = {
       ...shared,
       type: ClassType.Simple,
       quantity: classData.data.class_type.Simple,
-    });
+    };
+
+    const doc = new SimpleClassModel(model);
 
     await doc.save();
 
-    console.log(doc);
-    return;
+    console.log('SimpleClassModel', doc);
   } else if (classData.data.class_type.Claim) {
-    let metadata;
+    const metadata = (await getMetadata(
+      classData.metadata
+    )) as ClaimClass['metadata'];
 
-    try {
-      const { data } = await axios.get(
-        `https://ipfs.fleek.co/ipfs/${classData.metadata
-          .toString()
-          .replace('ipfs://', '')}`
-      );
-      metadata = data;
-    } catch (e) {
-      console.log(e);
-    }
-
-    const doc = new ClaimClassModel({
+    const model: ClaimClass = {
       ...shared,
       type: ClassType.Claim,
       metadataCID: classData.metadata,
       metadata: metadata,
       merkleRoot: classData.data.class_type.Claim,
-    });
+    };
+
+    const doc = new ClaimClassModel(model);
 
     await doc.save();
 
-    console.log(doc);
+    console.log('ClaimClassModel', doc);
   } else if (classData.data.class_type.Merge) {
     // todo
   }
