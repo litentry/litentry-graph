@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SimpleClass, ClaimClass } from 'nft-models';
 import { SimpleClassModel, ClassType, ClaimClassModel } from 'nft-models';
-import { saveEvent } from '../../repositories/events';
+import { saveEvent } from '../../services';
 import { getMetadata, queryClass } from '../../services';
 
 export default async function handler(

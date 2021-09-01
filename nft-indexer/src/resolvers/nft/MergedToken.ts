@@ -1,4 +1,4 @@
-import { saveEvent } from '../../repositories/events';
+import { saveEvent } from '../../services';
 
 export default async function handler(
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.MergedToken

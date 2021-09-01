@@ -1,13 +1,14 @@
-import { EventModel, IEvent } from 'nft-models';
+import type { Event } from 'nft-models';
+import { EventModel } from 'nft-models';
 
 export async function saveEvent(event: {
   name: string;
   data: unknown[];
-}): Promise<IEvent> {
+}): Promise<Event> {
   const doc = new EventModel(event);
 
   await doc.save();
 
-  console.log(doc);
+  console.log(`Event:${event.name}`, doc);
   return doc;
 }
