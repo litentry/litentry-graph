@@ -1,23 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { ClassType, ClassProperties } from './classes';
+import type { Token } from './@types';
 
-export interface IToken {
-  tokenId: number; // index
-  classId: number; // index - should be ObjectId
-  type: ClassType; // index
-  owner: string; // index
-  properties: ClassProperties;
-  used?: boolean;
-  rarity?: number;
-  metadata: {
-    name: string;
-    description: string;
-    image: string;
-  };
-  metadataCID: string;
-}
-
-const tokenSchema = new Schema<IToken>(
+const tokenSchema = new Schema<Token>(
   {
     tokenId: { type: Number, required: true },
     classId: { type: Number, required: true },
@@ -52,4 +36,4 @@ tokenSchema.index({ properties: 1 });
 tokenSchema.index({ tokenId: 1 });
 tokenSchema.index({ type: 1 });
 
-export const TokenModel = model<IToken>('Token', tokenSchema);
+export const TokenModel = model<Token>('Token', tokenSchema);

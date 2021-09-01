@@ -1,3 +1,3 @@
-export * from './classes';
-export * from './events';
-export * from './tokens';
+export * from './ClassModel';
+export * from './EventModel';
+export * from './TokenModel';

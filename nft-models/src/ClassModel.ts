@@ -1,48 +1,7 @@
 import { Schema, model } from 'mongoose';
+import type { Class, ClaimClass, SimpleClass, MergeClass } from './@types';
 
-export enum ClassType {
-  Claim = 'Claim',
-  Simple = 'Simple',
-  Merge = 'Merge',
-}
-
-export enum ClassProperties {
-  None = 'None',
-  Transferable = 'Transferable',
-  Burnable = 'Burnable',
-  Both = 'Both',
-}
-
-export interface IClass {
-  _id: number;
-  type: ClassType;
-  owner: string;
-  totalIssuance: number;
-  startBlock?: number;
-  endBlock?: number;
-  properties: ClassProperties;
-}
-
-export interface ISimpleClass extends IClass {
-  quantity: number;
-}
-
-export interface IClaimClass extends IClass {
-  metadata: {
-    name: string;
-    description: string;
-    image: string;
-    merkleTree: string;
-  };
-  metadataCID: string;
-  merkleRoot: string;
-}
-
-export interface IMergeClass extends IClass {
-  todo: string;
-}
-
-const classSchema = new Schema<IClass>(
+const classSchema = new Schema<Class>(
   {
     _id: Number,
     type: { type: String, required: true, enum: ['Claim', 'Simple', 'Merge'] },
@@ -70,14 +29,14 @@ const options = {
   discriminatorKey: 'type',
 };
 
-const simpleClassSchema = new Schema<ISimpleClass>(
+const simpleClassSchema = new Schema<SimpleClass>(
   {
     quantity: { type: Number, required: true },
   },
   options
 );
 
-const claimClassSchema = new Schema<IClaimClass>(
+const claimClassSchema = new Schema<ClaimClass>(
   {
     metadata: {
       type: {
@@ -94,14 +53,14 @@ const claimClassSchema = new Schema<IClaimClass>(
   options
 );
 
-const mergeClassSchema = new Schema<IMergeClass>(
+const mergeClassSchema = new Schema<MergeClass>(
   {
     todo: String,
   },
   options
 );
 
-export const ClassModel = model<IClass>('Class', classSchema);
+export const ClassModel = model<Class>('Class', classSchema);
 export const SimpleClassModel = ClassModel.discriminator(
   'Simple',
   simpleClassSchema
