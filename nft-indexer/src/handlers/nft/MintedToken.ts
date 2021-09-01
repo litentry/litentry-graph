@@ -48,7 +48,7 @@ async function saveMintedToken(
     queryClass(api, classId),
   ]);
 
-  const metadata = (await getMetadata(tokenData.metadata)) as Token['metadata'];
+  const metadata = await getMetadata<Token['metadata']>(tokenData.metadata);
 
   // TODO investigate, do we care about the minter here? Is the minter just the class creator?
   // If not, it must be the transaction initiator, but if that's the case why not have this on claim too?

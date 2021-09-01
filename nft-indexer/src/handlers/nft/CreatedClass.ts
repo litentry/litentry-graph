@@ -35,9 +35,9 @@ export default async function handler(
 
     console.log('\nSimpleClassModel:', doc);
   } else if (classData.data.class_type.Claim) {
-    const metadata = (await getMetadata(
+    const metadata = await getMetadata<ClaimClass['metadata']>(
       classData.metadata
-    )) as ClaimClass['metadata'];
+    );
 
     const model: ClaimClass = {
       ...shared,

@@ -24,7 +24,7 @@ export default async function handler(
     queryClass(api, classId),
   ]);
 
-  const metadata = (await getMetadata(tokenData.metadata)) as Token['metadata'];
+  const metadata = await getMetadata<Token['metadata']>(tokenData.metadata);
 
   const model: Token = {
     tokenId,
