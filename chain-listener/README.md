@@ -13,7 +13,7 @@ yarn build
 import chainListener from '@litenry/chain-listener';
 
 (async () => {
-  await chainListener(provider, types, resolvers);
+  await chainListener(provider, types, handlers);
 })();
 ```
 
@@ -47,7 +47,7 @@ Creates the API.
 
 `src/parse-events.ts`
 
-Loops the events, if a resolver is found it runs it. See [Polkadot JS docs](https://polkadot.js.org/docs/api/cookbook/blocks).
+Loops the events, if a handler is found it runs it. See [Polkadot JS docs](https://polkadot.js.org/docs/api/cookbook/blocks).
 
 `src/types.ts`
 

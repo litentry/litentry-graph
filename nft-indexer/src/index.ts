@@ -1,7 +1,7 @@
 import { connect } from 'mongoose';
 import { chainListener } from 'chain-listener';
 import types from './api-types';
-import resolvers from './resolvers';
+import handlers from './handlers';
 import config from './config';
 
 async function run() {
@@ -10,7 +10,7 @@ async function run() {
 
     await connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    await chainListener(config.provider, types, resolvers);
+    await chainListener(config.provider, types, handlers);
   } catch (e) {
     console.log(e);
     process.exit(1);

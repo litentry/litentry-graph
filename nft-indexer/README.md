@@ -27,14 +27,14 @@ Veriifies and loads env into a config object.
 
 Creates the connection with the `mongodb` database.
 
-`src/resolvers/{section}/{eventName}.ts`
+`src/handlers/{section}/{eventName}.ts`
 
 If you want to do something with the data of an event add a file here. The casing is important, the section name and event name are used to find the event in the chain data.
 
 The default export must be a handler function that takes the event data (the type is specific to the event) and `ApiPromise` from `@polkadot/api`.
 
-_We're not using `ApiRx` for this as the resolvers are designed to be fired once per event. `RxJS` just adds complexity with no benefit here._
+_We're not using `ApiRx` for this as the handlers are designed to be fired once per event. `RxJS` just adds complexity with no benefit here._
 
-The example resolver at `src/nft/CreatedClass.ts` hydrates the class data by querying the chain, then fetches the metadata from IPFS and console logs the output.
+The example handler at `src/nft/CreatedClass.ts` hydrates the class data by querying the chain, then fetches the metadata from IPFS and console logs the output.
 
-_A real world resolver would store this in a database._
+_A real world handler would store this in a database._
