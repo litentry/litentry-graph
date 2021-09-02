@@ -10,6 +10,7 @@
     "build": "rm -rf ./dist && tsc"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.10",
     "@polkadot/api": "^5.5.1",
     "@polkadot/types": "^5.5.1",
     "axios": "^0.21.1",
