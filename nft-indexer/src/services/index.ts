@@ -1,3 +1,4 @@
+export * from './burnToken';
 export * from './getMetadata';
 export * from './queryClass';
 export * from './queryToken';

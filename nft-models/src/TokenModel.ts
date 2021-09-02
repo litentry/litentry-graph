@@ -21,6 +21,7 @@ const tokenSchema = new Schema<Token>(
       required: true,
     },
     metadataCID: { type: String, required: true },
+    burned: Boolean,
     used: Boolean,
     rarity: Number,
   },

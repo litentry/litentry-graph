@@ -6,6 +6,7 @@ export interface Token {
   type: ClassType; // index
   owner: string; // index
   properties: ClassProperties;
+  burned?: boolean;
   used?: boolean;
   rarity?: number;
   metadata: {
