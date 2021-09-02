@@ -8,6 +8,7 @@ export async function getMetadata<T>(cid: string): Promise<T> {
 
     return data;
   } catch (e) {
-    return {};
+    console.error('\nsgetMetadata:error:', e);
+    return {} as T;
   }
 }
