@@ -9,7 +9,7 @@ export default async function handler(
     data: [from, to, classId, tokenId],
   });
 
-  await updateTokenOwnership(tokenId, to);
+  await updateTokenOwnership(classId, tokenId, to);
 
   // todo: check issuance is uneffected
 }

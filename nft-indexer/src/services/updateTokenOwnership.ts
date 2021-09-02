@@ -1,9 +1,10 @@
 import { TokenModel } from 'nft-models';
 
 export async function updateTokenOwnership(
+  classId: number,
   tokenId: number,
   owner: string
 ): Promise<void> {
-  await TokenModel.updateOne({ tokenId }, { owner });
-  console.log('\nupdateTokenOwnership:', tokenId, owner);
+  await TokenModel.updateOne({ classId, tokenId }, { owner });
+  console.log('\nupdateTokenOwnership:', classId, tokenId, owner);
 }
