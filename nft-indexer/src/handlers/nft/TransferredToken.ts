@@ -1,4 +1,4 @@
-import { saveEvent } from '../../services';
+import { saveEvent, updateTokenOwnership } from '../../services';
 
 export default async function handler(
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.TransferredToken
@@ -8,6 +8,8 @@ export default async function handler(
     name: 'TransferredToken',
     data: [from, to, classId, tokenId],
   });
+
+  await updateTokenOwnership(tokenId, to);
 
   // todo: check issuance is uneffected
 }
