@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { saveEvent, updateClassIssuance } from '../../services';
+import { saveEvent, updateClassIssuance, saveToken } from '../../services';
 
 export default async function handler(
   // https://litentry.github.io/litentry-pallets/pallet_nft/pallet/enum.Event.html#variant.MergedToken
@@ -11,6 +11,9 @@ export default async function handler(
     data: [owner, classId, tokenId],
   });
 
-  // todo - check relevance
+  // #335 todo mark used token
+
+  await saveToken(api, classId, tokenId);
+
   await updateClassIssuance(api, classId);
 }
