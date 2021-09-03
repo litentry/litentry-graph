@@ -1,10 +1,15 @@
 import { Schema, model } from 'mongoose';
+import { ClassType, ClassProperties } from './@types';
 import type { Class, ClaimClass, SimpleClass, MergeClass } from './@types';
 
 const classSchema = new Schema<Class>(
   {
     _id: Number,
-    type: { type: String, required: true, enum: ['Claim', 'Simple', 'Merge'] },
+    type: {
+      type: String,
+      required: true,
+      enum: [ClassType.Claim, ClassType.Simple, ClassType.Merge],
+    },
     owner: { type: String, required: true },
     totalIssuance: { type: Number, required: true },
     startBlock: Number,
@@ -12,7 +17,12 @@ const classSchema = new Schema<Class>(
     properties: {
       type: String,
       required: true,
-      enum: ['None', 'Transferable', 'Burnable', 'Both'],
+      enum: [
+        ClassProperties.None,
+        ClassProperties.Transferable,
+        ClassProperties.Burnable,
+        ClassProperties.Both,
+      ],
     },
   },
   {
@@ -55,21 +65,35 @@ const claimClassSchema = new Schema<ClaimClass>(
 
 const mergeClassSchema = new Schema<MergeClass>(
   {
-    todo: String,
+    metadata: {
+      type: {
+        name: String,
+        description: String,
+        image: String,
+        merkleTree: { type: String, required: true },
+      },
+      required: true,
+    },
+    burnOnMerge: { type: Boolean, required: true },
+    mergableClassIds: {
+      type: [Number], // todo make ObjectId?
+      required: true,
+      validate: (v: number[]) => v.length === 2,
+    },
   },
   options
 );
 
 export const ClassModel = model<Class>('Class', classSchema);
 export const SimpleClassModel = ClassModel.discriminator(
-  'Simple',
+  ClassType.Simple,
   simpleClassSchema
 );
 export const ClaimClassModel = ClassModel.discriminator(
-  'Claim',
+  ClassType.Claim,
   claimClassSchema
 );
 export const MergeClassModel = ClassModel.discriminator(
-  'Merge',
+  ClassType.Merge,
   mergeClassSchema
 );
