@@ -41,8 +41,8 @@ export interface MergeClass extends Class {
     name: string;
     description: string;
     image: string;
-    merkleTree: string;
   };
+  metadataCID: string;
   burnOnMerge: boolean;
   mergableClassIds: [number, number];
 }
