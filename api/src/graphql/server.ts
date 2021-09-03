@@ -41,8 +41,7 @@ export const startApolloServer = async (
     context: async () => {
       try {
         // Try to connect to MongoDB
-        await connect(uri);
-        //, { useNewUrlParser: true, useUnifiedTopology: true }
+        await connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
       } catch (e) {
         console.log(e);
         process.exit(1);

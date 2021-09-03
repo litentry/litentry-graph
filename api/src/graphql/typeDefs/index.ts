@@ -5,6 +5,7 @@ const typeDefs = gql`
   scalar Date
 
   type Event {
+    _id: String!
     name: String!
     data: EventData
     createdAt: Date!
@@ -20,7 +21,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    newEvent(): Event
+    eventCreated: Event
   }
 `;
 

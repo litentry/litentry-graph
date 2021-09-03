@@ -59,6 +59,7 @@ const resolvers = {
   Mutation: {
     addEvent: async (_: any, args: AddEventArgs) => {
       const event = await createEvent(args.name);
+      console.log(`Event created`);
       pubsub.publish('EVENT_CREATED', { eventCreated: event });
     },
   },
