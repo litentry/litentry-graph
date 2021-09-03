@@ -24,7 +24,7 @@ const types: RegistryTypes = {
     _enum: {
       Simple: 'u32',
       Claim: 'HashByte32',
-      Merge: '(CID, CID, bool)',
+      Merge: '(ClassIdOf, ClassIdOf, bool)',
     },
   },
   ClassInfoOf: {

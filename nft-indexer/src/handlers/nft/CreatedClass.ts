@@ -1,6 +1,11 @@
 import type { ApiPromise } from '@polkadot/api';
-import type { SimpleClass, ClaimClass } from 'nft-models';
-import { SimpleClassModel, ClassType, ClaimClassModel } from 'nft-models';
+import type { SimpleClass, ClaimClass, MergeClass } from 'nft-models';
+import {
+  SimpleClassModel,
+  ClassType,
+  ClaimClassModel,
+  MergeClassModel,
+} from 'nft-models';
 import { saveEvent } from '../../services';
 import { getMetadata, queryClass } from '../../services';
 
@@ -53,6 +58,26 @@ export default async function handler(
 
     console.log('\nClaimClassModel:', doc);
   } else if (classData.data.class_type.Merge) {
-    // todo
+    const metadata = await getMetadata<MergeClass['metadata']>(
+      classData.metadata
+    );
+
+    const model: MergeClass = {
+      ...shared,
+      type: ClassType.Merge,
+      metadataCID: classData.metadata,
+      metadata: metadata,
+      burnOnMerge: classData.data.class_type.Merge[2],
+      mergableClassIds: [
+        classData.data.class_type.Merge[0],
+        classData.data.class_type.Merge[1],
+      ],
+    };
+
+    const doc = new MergeClassModel(model);
+
+    await doc.save();
+
+    console.log('\nMergeClassModel:', doc);
   }
 }

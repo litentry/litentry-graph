@@ -37,5 +37,12 @@ export interface ClaimClass extends Class {
 }
 
 export interface MergeClass extends Class {
-  todo: string;
+  metadata: {
+    name: string;
+    description: string;
+    image: string;
+  };
+  metadataCID: string;
+  burnOnMerge: boolean;
+  mergableClassIds: [number, number];
 }
