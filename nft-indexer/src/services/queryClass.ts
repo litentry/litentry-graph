@@ -12,7 +12,7 @@ type ClassData = {
     class_type: {
       Claim?: string;
       Simple?: number;
-      Merge?: string; // todo
+      Merge?: [number, number, boolean];
     };
   };
 };
