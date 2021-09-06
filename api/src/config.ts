@@ -33,9 +33,6 @@ if (!databaseName) {
 }
 
 export default {
+  mongoUri: `mongodb+srv://${username}:${password}@${clusterUrl}/${databaseName}?retryWrites=true&w=majority`,
   apiPort,
-  username,
-  password,
-  clusterUrl,
-  databaseName,
 };

@@ -1,9 +1,6 @@
 import { gql } from 'apollo-server-core';
 
-const typeDefs = gql`
-  scalar EventData
-  scalar Date
-
+export default gql`
   type Event {
     _id: String!
     name: String!
@@ -12,17 +9,15 @@ const typeDefs = gql`
     updatedAt: Date!
   }
 
-  type Query {
+  extend type Query {
     events: [Event]
   }
 
-  type Mutation {
+  extend type Mutation {
     addEvent(name: String!): Event
   }
 
-  type Subscription {
+  extend type Subscription {
     eventCreated: Event
   }
 `;
-
-export default typeDefs;
