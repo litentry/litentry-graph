@@ -9,12 +9,20 @@ export default gql`
     updatedAt: Date!
   }
 
+  input EventInput {
+    _id: String!
+    name: String!
+    data: EventData
+    createdAt: String!
+    updatedAt: String!
+  }
+
   extend type Query {
     events: [Event]
   }
 
   extend type Mutation {
-    addEvent(name: String!): Event
+    addEvent(doc: EventInput!): Event
   }
 
   extend type Subscription {
