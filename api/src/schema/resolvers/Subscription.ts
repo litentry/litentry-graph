@@ -7,6 +7,9 @@ export default {
   classCreated: {
     subscribe: (): Sub => pubsub.asyncIterator(['CLASS_CREATED']),
   },
+  tokenChanged: {
+    subscribe: (): Sub => pubsub.asyncIterator(['TOKEN_CHANGED']),
+  },
   // classesOfType: {
   //   subscribe: (): Sub => pubsub.asyncIterator(['CLASS_CREATED']),
   // },
