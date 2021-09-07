@@ -8,7 +8,8 @@ import { queryToken } from './queryToken';
 export async function saveToken(
   api: ApiPromise,
   classId: number,
-  tokenId: number
+  tokenId: number,
+  type: ClassType
 ): Promise<void> {
   const [tokenData, classData] = await Promise.all([
     queryToken(api, classId, tokenId),
@@ -17,12 +18,10 @@ export async function saveToken(
 
   const metadata = await getMetadata<Token['metadata']>(tokenData.metadata);
 
-  // TODO investigate, do we care about the minter here? Is the minter just the class creator?
-  // If not, it must be the transaction initiator, but if that's the case why not have this on claim too?
   const model: Token = {
     tokenId,
     classId,
-    type: ClassType.Simple,
+    type,
     owner: tokenData.owner,
     properties: classData.data.properties,
     used: tokenData.data.used,

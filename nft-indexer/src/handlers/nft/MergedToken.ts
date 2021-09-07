@@ -1,4 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
+import { ClassType } from '../../../../nft-models/dist/types';
 import { saveEvent, updateClassIssuance, saveToken } from '../../services';
 
 export default async function handler(
@@ -13,7 +14,7 @@ export default async function handler(
 
   // #335 todo mark used token
 
-  await saveToken(api, classId, tokenId);
+  await saveToken(api, classId, tokenId, ClassType.Merge);
 
   await updateClassIssuance(api, classId);
 }
