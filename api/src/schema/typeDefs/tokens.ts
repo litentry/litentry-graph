@@ -21,8 +21,8 @@ export default gql`
 
   type Token {
     _id: String!
-    tokenId: String!
-    classId: String!
+    tokenId: Int!
+    classId: Int!
     type: String!
     owner: String!
     properties: String!
@@ -35,26 +35,21 @@ export default gql`
 
   type NewToken {
     _id: String!
-    tokenId: String!
-    classId: String!
+    tokenId: Int!
+    classId: Int!
     type: String!
     owner: String!
   }
 
   extend type Query {
-    tokens(
-      tokenId: String
-      classId: String
-      type: String
-      owner: String
-    ): [Token]
+    tokens(tokenId: Int, classId: Int, type: String, owner: String): [Token]
   }
 
   extend type Mutation {
     tokenChanged(
       _id: String!
-      tokenId: String!
-      classId: String!
+      tokenId: Int!
+      classId: Int!
       type: String!
       owner: String!
     ): Token

@@ -4,8 +4,8 @@ export default async function tokenChanged(
   _: unknown,
   args: {
     _id: string;
-    tokenId: string;
-    classId: string;
+    tokenId: number;
+    classId: number;
     type: string;
     owner: string;
   }
