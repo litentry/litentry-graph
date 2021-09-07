@@ -46,3 +46,5 @@ export interface MergeClass extends Class {
   burnOnMerge: boolean;
   mergableClassIds: [number, number];
 }
+
+export type UnknownClass = SimpleClass | ClaimClass | MergeClass;

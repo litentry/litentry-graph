@@ -1,14 +1,53 @@
-import { startApolloServer } from './graphql/server';
+import express from 'express';
+import { createServer } from 'http';
+import { ApolloServer } from 'apollo-server-express';
+import { connect } from 'mongoose';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import config from './config';
-import typeDefs from './graphql/typeDefs';
-import resolvers from './graphql/resolvers';
+import schema from './schema';
 
-startApolloServer(
-  typeDefs,
-  resolvers,
-  parseInt(config.apiPort),
-  config.password,
-  config.username,
-  config.clusterUrl,
-  config.databaseName
+const app = express();
+const httpServer = createServer(app);
+
+const server = new ApolloServer({
+  schema,
+  plugins: [
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            subscriptionServer.close();
+          },
+        };
+      },
+    },
+  ],
+  context: async () => {
+    try {
+      // Try to connect to MongoDB
+      await connect(config.mongoUri);
+    } catch (e) {
+      console.log(e);
+      process.exit(1);
+    }
+  },
+});
+
+const subscriptionServer = SubscriptionServer.create(
+  { schema, execute, subscribe },
+  { server: httpServer, path: server.graphqlPath }
 );
+
+async function run() {
+  await server.start();
+  server.applyMiddleware({ app });
+
+  httpServer.listen(config.apiPort, () =>
+    console.log(
+      `Server is now running on http://localhost:${config.apiPort}/graphql`
+    )
+  );
+}
+
+run();

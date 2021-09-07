@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "graphql": "^15.5.2",
     "graphql-subscriptions": "^1.2.1",
-    "mongoose": "^5.13.7",
+    "mongoose": "^6.0.5",
     "nft-models": "0.0.1",
     "subscriptions-transport-ws": "^0.9.19"
   },
