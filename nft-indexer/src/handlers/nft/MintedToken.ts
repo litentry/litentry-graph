@@ -1,5 +1,5 @@
 import type { ApiPromise } from '@polkadot/api';
-import { ClassType } from '../../../../nft-models/dist/types';
+import { ClassType } from 'nft-models';
 import { saveEvent, saveToken, updateClassIssuance } from '../../services';
 
 export default async function handler(
