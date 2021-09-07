@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-core';
 import classes from './classes';
 import events from './events';
+import tokens from './tokens';
 
 const base = gql`
   scalar EventData
@@ -19,4 +20,4 @@ const base = gql`
   }
 `;
 
-export default [base, classes, events];
+export default [base, classes, events, tokens];

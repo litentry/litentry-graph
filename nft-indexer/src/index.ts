@@ -8,7 +8,7 @@ async function run() {
   try {
     const uri = `mongodb+srv://${config.username}:${config.password}@${config.clusterUrl}/${config.databaseName}?retryWrites=true&w=majority`;
 
-    await connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await connect(uri);
 
     await chainListener(config.provider, types, handlers);
   } catch (e) {

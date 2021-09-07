@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-core';
 
 export default gql`
-  type Metadata {
+  type ClassMetadata {
     name: String
     description: String
     image: String
@@ -23,7 +23,7 @@ export default gql`
     burnOnMerge: Boolean # merge
     mergableClassIds: [Int] # merge
     metadataCID: String # claim & merge
-    metadata: Metadata # claim & merge
+    metadata: ClassMetadata # claim & merge
   }
 
   type NewClass {
@@ -33,7 +33,7 @@ export default gql`
   }
 
   extend type Query {
-    classes: [Class]
+    classes(type: String): [Class]
   }
 
   extend type Mutation {

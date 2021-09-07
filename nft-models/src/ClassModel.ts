@@ -70,7 +70,6 @@ const mergeClassSchema = new Schema<MergeClass>(
         name: String,
         description: String,
         image: String,
-        merkleTree: { type: String, required: true },
       },
       required: true,
     },

@@ -26,10 +26,7 @@ const server = new ApolloServer({
   context: async () => {
     try {
       // Try to connect to MongoDB
-      await connect(config.mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await connect(config.mongoUri);
     } catch (e) {
       console.log(e);
       process.exit(1);
