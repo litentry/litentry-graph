@@ -44,9 +44,7 @@ async function run() {
   server.applyMiddleware({ app });
 
   httpServer.listen(config.apiPort, () =>
-    console.log(
-      `Server is now running on http://localhost:${config.apiPort}/graphql`
-    )
+    console.log(`Server is now running on ${config.graphqlUri}`)
   );
 }
 

@@ -26,7 +26,7 @@ export default gql`
     metadata: ClassMetadata # claim & merge
   }
 
-  type NewClass {
+  type UpdatedClass {
     _id: String!
     type: String!
     owner: String!
@@ -37,10 +37,10 @@ export default gql`
   }
 
   extend type Mutation {
-    classCreated(_id: String!, type: String!, owner: String!): Class
+    classUpdated(_id: String!, type: String!, owner: String!): Class
   }
 
   extend type Subscription {
-    classCreated: NewClass
+    classes: UpdatedClass
   }
 `;

@@ -33,7 +33,7 @@ export default gql`
     rarity: Int
   }
 
-  type NewToken {
+  type UpdatedToken {
     _id: String!
     tokenId: Int!
     classId: Int!
@@ -46,7 +46,7 @@ export default gql`
   }
 
   extend type Mutation {
-    tokenChanged(
+    tokenUpdated(
       _id: String!
       tokenId: Int!
       classId: Int!
@@ -56,6 +56,6 @@ export default gql`
   }
 
   extend type Subscription {
-    tokenChanged: NewToken
+    tokens: UpdatedToken
   }
 `;

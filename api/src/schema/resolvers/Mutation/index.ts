@@ -1,9 +1,9 @@
-import classCreated from './classCreated';
+import classUpdated from './classUpdated';
 import addEvent from './addEvent';
-import tokenChanged from './tokenChanged';
+import tokenUpdated from './tokenUpdated';
 
 export default {
-  classCreated,
+  classUpdated,
   addEvent,
-  tokenChanged,
+  tokenUpdated,
 };

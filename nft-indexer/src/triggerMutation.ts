@@ -4,10 +4,10 @@ import fetch from 'cross-fetch';
 const link = createHttpLink({ uri: 'http://localhost:1234/graphql', fetch });
 
 type Mutations = {
-  CLASS_CREATED: DocumentNode;
+  CLASS_UPDATED: DocumentNode;
 };
 const MUTATIONS: Mutations = {
-  CLASS_CREATED: gql`
+  CLASS_UPDATED: gql`
   mutation classCreated(_id: String, type: String, owner: String) {
     addEvent(_id, type, owner) {
       _id,

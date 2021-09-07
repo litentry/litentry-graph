@@ -4,13 +4,10 @@ export default {
   eventCreated: {
     subscribe: (): Sub => pubsub.asyncIterator(['EVENT_CREATED']),
   },
-  classCreated: {
-    subscribe: (): Sub => pubsub.asyncIterator(['CLASS_CREATED']),
+  classes: {
+    subscribe: (): Sub => pubsub.asyncIterator(['CLASS_UPDATED']),
   },
-  tokenChanged: {
-    subscribe: (): Sub => pubsub.asyncIterator(['TOKEN_CHANGED']),
+  tokens: {
+    subscribe: (): Sub => pubsub.asyncIterator(['TOKEN_UPDATED']),
   },
-  // classesOfType: {
-  //   subscribe: (): Sub => pubsub.asyncIterator(['CLASS_CREATED']),
-  // },
 };

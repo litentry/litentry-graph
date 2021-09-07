@@ -1,6 +1,6 @@
 import pubsub from '../pubsub';
 
-export default async function tokenChanged(
+export default async function tokenUpdated(
   _: unknown,
   args: {
     _id: string;
@@ -10,7 +10,7 @@ export default async function tokenChanged(
     owner: string;
   }
 ): Promise<void> {
-  pubsub.publish('TOKEN_CHANGED', {
-    tokenChanged: args,
+  pubsub.publish('TOKEN_UPDATED', {
+    tokenUpdated: args,
   });
 }

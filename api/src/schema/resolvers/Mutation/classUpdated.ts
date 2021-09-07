@@ -1,6 +1,6 @@
 import pubsub from '../pubsub';
 
-export default async function classCreated(
+export default async function classUpdated(
   _: unknown,
   args: {
     _id: string;
@@ -8,7 +8,7 @@ export default async function classCreated(
     owner: string;
   }
 ): Promise<void> {
-  pubsub.publish('CLASS_CREATED', {
-    classCreated: args,
+  pubsub.publish('CLASS_UPDATED', {
+    classUpdated: args,
   });
 }
