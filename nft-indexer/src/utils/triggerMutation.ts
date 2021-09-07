@@ -12,19 +12,32 @@ const ADD_EVENT = gql`
   }
 `;
 
-export async function saveEvent(event: {
-  name: string;
-  data: unknown[];
-}): Promise<void> {
+export async function triggerMutation<T>(name: string, doc: T): Promise<void> {
+  let query = null;
+  switch (name) {
+    case 'ADD_EVENT':
+      query = ADD_EVENT;
+      break;
+    default:
+      break;
+  }
+
+  if (!query) {
+    throw Error('Mutation Failed: Unknown name.');
+  }
+
+  console.log(`DOC OBJECT`);
+  console.log(doc);
+
   const operation = {
-    query: ADD_EVENT,
-    variables: { name: event.name },
+    query,
+    variables: { doc },
   };
-  console.log(`Attempting to save event to database`);
+
   execute(link, operation).subscribe({
     error: (error) => {
       console.log(`Error`);
-      console.log(error);
+      console.log(error.result);
     },
     complete: () => console.log(`Save complete`),
   });

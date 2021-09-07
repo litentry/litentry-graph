@@ -1,4 +1,5 @@
 import { EventModel } from 'nft-models';
+import { triggerMutation } from '../utils/triggerMutation';
 
 export async function saveEvent(event: {
   name: string;
@@ -7,6 +8,8 @@ export async function saveEvent(event: {
   const doc = new EventModel(event);
 
   await doc.save();
+
+  triggerMutation('ADD_EVENT', doc);
 
   console.log(`\nEvent:`, doc);
 }
