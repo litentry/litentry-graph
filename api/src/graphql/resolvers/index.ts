@@ -8,21 +8,33 @@ const getEvents = async () => {
   return await EventModel.find({});
 };
 
-const createEvent = async (name: string) => {
-  return await EventModel.create({ name });
+// type AddEventArgs = {
+//   name: string;
+// };
+
+type EventDoc = {
+  _id: string;
+  name: string;
+  data: [];
+  createdAt: string;
+  updatedAt: string;
 };
 
 type AddEventArgs = {
-  name: string;
+  doc: EventDoc; // instead of unknown
 };
 
 const eventScalar = new GraphQLScalarType({
   name: 'EventData',
   description: 'Event Data',
   serialize(value) {
+    console.log(`SERIALIZE`);
+    console.log(value);
     return value;
   },
   parseValue(value) {
+    console.log(`parseValue`);
+    console.log(value);
     return value;
   },
   parseLiteral(ast) {
@@ -58,9 +70,10 @@ const resolvers = {
   },
   Mutation: {
     addEvent: async (_: any, args: AddEventArgs) => {
-      const event = await createEvent(args.name);
-      console.log(`Event created`);
-      pubsub.publish('EVENT_CREATED', { eventCreated: event });
+      //const event = await createEvent(args.name);
+      console.log(`Event created 2.0`);
+      console.log(args);
+      pubsub.publish('EVENT_CREATED', { eventCreated: args });
     },
   },
   Subscription: {

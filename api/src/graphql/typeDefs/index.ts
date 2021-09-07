@@ -12,12 +12,20 @@ const typeDefs = gql`
     updatedAt: Date!
   }
 
+  input EventInput {
+    _id: String!
+    name: String!
+    data: EventData
+    createdAt: String!
+    updatedAt: String!
+  }
+
   type Query {
     events: [Event]
   }
 
   type Mutation {
-    addEvent(name: String!): Event
+    addEvent(event: EventInput!): Event
   }
 
   type Subscription {
