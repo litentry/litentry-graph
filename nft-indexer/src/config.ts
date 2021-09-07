@@ -28,7 +28,13 @@ if (!clusterUrl) {
 
 const databaseName = process.env.MONGO_DATABASE_NAME;
 if (!databaseName) {
-  console.error('process.env.MONGO_CLUSTER_URL not set');
+  console.error('process.env.MONGO_DATABASE_NAME not set');
+  process.exit(1);
+}
+
+const graphqlEndpoint = process.env.GRAPHQL_ENDPOINT;
+if (!graphqlEndpoint) {
+  console.error('process.env.GRAPHQL_ENDPOINT not set');
   process.exit(1);
 }
 
@@ -38,4 +44,5 @@ export default {
   password,
   clusterUrl,
   databaseName,
+  graphqlEndpoint,
 };

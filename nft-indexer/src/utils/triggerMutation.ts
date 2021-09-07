@@ -1,44 +1,50 @@
-import { createHttpLink, gql, execute } from '@apollo/client';
+import { createHttpLink, gql, execute, DocumentNode } from '@apollo/client';
 import fetch from 'cross-fetch';
+import config from '../config';
 
-const uri = 'http://localhost:8080/graphql';
-const link = createHttpLink({ uri, fetch });
+const link = createHttpLink({ uri: config.graphqlEndpoint, fetch });
 
-const ADD_EVENT = gql`
-  mutation addEvent($name: String!) {
-    addEvent(name: $name) {
-      _id
+type Mutations = {
+  CLASS_UPDATED: DocumentNode;
+  TOKEN_UPDATED: DocumentNode;
+};
+
+const MUTATIONS: Mutations = {
+  TOKEN_UPDATED: gql`
+    mutation TokenUpdated($input: TokenInput!) {
+      tokenUpdated(token: $input) {
+        _id
+      }
     }
-  }
-`;
+  `,
+  CLASS_UPDATED: gql`
+    mutation ClassUpdated($input: ClassInput!) {
+      classUpdated(class: $input) {
+        _id
+      }
+    }
+  `,
+};
 
-export async function triggerMutation<T>(name: string, doc: T): Promise<void> {
-  let query = null;
-  switch (name) {
-    case 'ADD_EVENT':
-      query = ADD_EVENT;
-      break;
-    default:
-      break;
-  }
+export async function triggerMutation(
+  name: keyof Mutations,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+  input: any
+): Promise<void> {
+  // when a mutation trigger is preceeded by a mongoose fetch we want to discard these
+  delete input.__v;
+  delete input.__t;
 
-  if (!query) {
-    throw Error('Mutation Failed: Unknown name.');
-  }
-
-  console.log(`DOC OBJECT`);
-  console.log(doc);
-
-  const operation = {
-    query,
-    variables: { doc },
-  };
-
-  execute(link, operation).subscribe({
-    error: (error) => {
-      console.log(`Error`);
-      console.log(error.result);
+  execute(link, {
+    query: MUTATIONS[name],
+    variables: {
+      input,
     },
-    complete: () => console.log(`Save complete`),
+  }).subscribe({
+    error: (error) => {
+      console.log('Error:', error);
+      console.log(error?.result?.errors);
+    },
+    complete: () => console.log(`Mutation triggered: ${name}`),
   });
 }

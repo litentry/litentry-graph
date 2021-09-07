@@ -1,14 +1,12 @@
+import type { UnknownClass } from 'nft-models';
 import pubsub from '../pubsub';
 
 export default async function classUpdated(
   _: unknown,
-  args: {
-    _id: string;
-    type: string;
-    owner: string;
-  }
-): Promise<void> {
+  data: { class: UnknownClass }
+): Promise<UnknownClass> {
   pubsub.publish('CLASS_UPDATED', {
-    classUpdated: args,
+    class: data.class,
   });
+  return data.class;
 }

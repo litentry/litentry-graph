@@ -1,16 +1,12 @@
+import { Token } from 'nft-models';
 import pubsub from '../pubsub';
 
 export default async function tokenUpdated(
   _: unknown,
-  args: {
-    _id: string;
-    tokenId: number;
-    classId: number;
-    type: string;
-    owner: string;
-  }
-): Promise<void> {
+  { token }: { token: Token }
+): Promise<Token> {
   pubsub.publish('TOKEN_UPDATED', {
-    tokenUpdated: args,
+    token,
   });
+  return token;
 }

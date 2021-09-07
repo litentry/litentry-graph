@@ -1,15 +1,3 @@
-export interface Token {
-  burned?: boolean;
-  used?: boolean;
-  rarity?: number;
-  metadata: {
-    name: string;
-    description: string;
-    image: string;
-  };
-  metadataCID: string;
-}
-
 import { gql } from 'apollo-server-core';
 
 export default gql`
@@ -31,14 +19,30 @@ export default gql`
     burned: Boolean
     used: Boolean
     rarity: Int
+    createdAt: Date!
+    updatedAt: Date!
   }
 
-  type UpdatedToken {
+  input TokenMetadataInput {
+    name: String
+    description: String
+    image: String
+  }
+
+  input TokenInput {
     _id: String!
     tokenId: Int!
     classId: Int!
     type: String!
     owner: String!
+    properties: String!
+    metadata: TokenMetadataInput!
+    metadataCID: String!
+    burned: Boolean
+    used: Boolean
+    rarity: Int
+    createdAt: String
+    updatedAt: String
   }
 
   extend type Query {
@@ -46,16 +50,10 @@ export default gql`
   }
 
   extend type Mutation {
-    tokenUpdated(
-      _id: String!
-      tokenId: Int!
-      classId: Int!
-      type: String!
-      owner: String!
-    ): Token
+    tokenUpdated(token: TokenInput!): Token
   }
 
   extend type Subscription {
-    tokens: UpdatedToken
+    token: Token
   }
 `;
