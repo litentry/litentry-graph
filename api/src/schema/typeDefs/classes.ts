@@ -10,12 +10,12 @@ export default gql`
 
   type Class {
     _id: String!
-    type: String!
+    type: ClassType!
     owner: String!
     totalIssuance: Int!
     startBlock: Int
     endBlock: Int
-    properties: String!
+    properties: ClassProperties!
     createdAt: Date!
     updatedAt: Date!
     quantity: Int # simple
@@ -27,7 +27,12 @@ export default gql`
   }
 
   extend type Query {
-    classes(type: String): [Class]
+    classes(
+      _id: String
+      owner: String
+      type: ClassType
+      properties: ClassProperties
+    ): [Class]
   }
 
   extend type Subscription {

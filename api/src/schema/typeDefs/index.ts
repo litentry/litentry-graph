@@ -7,6 +7,19 @@ const base = gql`
   scalar EventData
   scalar Date
 
+  enum ClassType {
+    Simple
+    Merge
+    Claim
+  }
+
+  enum ClassProperties {
+    None
+    Transferable
+    Burnable
+    Both
+  }
+
   type Query {
     _empty: String
   }

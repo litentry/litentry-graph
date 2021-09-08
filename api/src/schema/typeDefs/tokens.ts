@@ -11,9 +11,9 @@ export default gql`
     _id: String!
     tokenId: Int!
     classId: Int!
-    type: String!
+    type: ClassType!
     owner: String!
-    properties: String!
+    properties: ClassProperties!
     metadata: TokenMetadata!
     metadataCID: String!
     burned: Boolean
@@ -24,7 +24,14 @@ export default gql`
   }
 
   extend type Query {
-    tokens(tokenId: Int, classId: Int, type: String, owner: String): [Token]
+    tokens(
+      _id: String
+      tokenId: Int
+      classId: Int
+      owner: String
+      type: ClassType
+      properties: ClassProperties
+    ): [Token]
   }
 
   extend type Subscription {
