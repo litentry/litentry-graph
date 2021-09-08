@@ -41,5 +41,5 @@ if (!databaseName) {
 export default {
   mongoUri: `mongodb+srv://${username}:${password}@${clusterUrl}/${databaseName}?retryWrites=true&w=majority`,
   apiPort,
-  graphqlUri: `${apiHost}:${apiPort}/graphqls`,
+  graphqlUri: `${apiHost}:${apiPort}/graphql`,
 };
