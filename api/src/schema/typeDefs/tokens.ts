@@ -32,6 +32,8 @@ export default gql`
       type: ClassType
       properties: ClassProperties
     ): [Token]
+    burnableTokens(owner: String): [Token]
+    transferableTokens(owner: String): [Token]
   }
 
   extend type Subscription {
