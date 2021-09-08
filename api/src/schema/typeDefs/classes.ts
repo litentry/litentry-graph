@@ -33,6 +33,7 @@ export default gql`
       type: ClassType
       properties: ClassProperties
     ): [Class]
+    mintableClasses: [Class]
   }
 
   extend type Subscription {

@@ -1,4 +1,4 @@
-import { ClassModel, UnknownClass, Class } from 'nft-models';
+import { ClassModel, UnknownClass, Class, ClassType } from 'nft-models';
 
 /*
 this is the problem with discriminator models...
@@ -10,5 +10,13 @@ export default async function classes(
   filter: Partial<UnknownClass>
 ): Promise<Class[]> {
   const classes = await ClassModel.find(filter);
+  return classes;
+}
+
+export async function mintableClasses(): Promise<Class[]> {
+  const classes = await ClassModel.find({
+    type: ClassType.Simple,
+    $expr: { $lt: ['$quantity', '$totalIssuance'] },
+  });
   return classes;
 }
