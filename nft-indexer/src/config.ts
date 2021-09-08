@@ -32,17 +32,10 @@ if (!databaseName) {
   process.exit(1);
 }
 
-const graphqlEndpoint = process.env.GRAPHQL_ENDPOINT;
-if (!graphqlEndpoint) {
-  console.error('process.env.GRAPHQL_ENDPOINT not set');
-  process.exit(1);
-}
-
 export default {
   provider,
   username,
   password,
   clusterUrl,
   databaseName,
-  graphqlEndpoint,
 };
