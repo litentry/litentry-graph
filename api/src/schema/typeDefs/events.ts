@@ -9,20 +9,8 @@ export default gql`
     updatedAt: Date!
   }
 
-  input EventInput {
-    _id: String!
-    name: String!
-    data: EventData
-    createdAt: String!
-    updatedAt: String!
-  }
-
   extend type Query {
     events: [Event]
-  }
-
-  extend type Mutation {
-    addEvent(doc: EventInput!): Event
   }
 
   extend type Subscription {

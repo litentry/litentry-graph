@@ -1,4 +1,4 @@
-import pubsub, { Sub } from './pubsub';
+import pubsub, { Sub } from '../../pubsub';
 
 export default {
   eventCreated: {

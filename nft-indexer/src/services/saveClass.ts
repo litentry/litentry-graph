@@ -6,7 +6,6 @@ import {
   ClaimClassModel,
   MergeClassModel,
 } from 'nft-models';
-import { triggerMutation } from '../utils/triggerMutation';
 import { getMetadata } from './getMetadata';
 import { queryClass } from './queryClass';
 
@@ -35,7 +34,6 @@ export async function saveClass(
     const doc = new SimpleClassModel(model);
 
     await doc.save();
-    triggerMutation('CLASS_UPDATED', doc.toObject());
 
     console.log('\nSimpleClassModel:', doc);
   } else if (classData.data.class_type.Claim) {
@@ -54,7 +52,6 @@ export async function saveClass(
     const doc = new ClaimClassModel(model);
 
     await doc.save();
-    triggerMutation('CLASS_UPDATED', doc.toObject());
 
     console.log('\nClaimClassModel:', doc);
   } else if (classData.data.class_type.Merge) {
@@ -77,7 +74,6 @@ export async function saveClass(
     const doc = new MergeClassModel(model);
 
     await doc.save();
-    triggerMutation('CLASS_UPDATED', doc.toObject());
 
     console.log('\nMergeClassModel:', doc);
   }

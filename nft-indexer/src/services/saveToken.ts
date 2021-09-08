@@ -1,7 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import type { Token } from 'nft-models';
 import { ClassType, TokenModel } from 'nft-models';
-import { triggerMutation } from '../utils/triggerMutation';
 import { getMetadata } from './getMetadata';
 import { queryClass } from './queryClass';
 import { queryToken } from './queryToken';
@@ -34,8 +33,6 @@ export async function saveToken(
   const doc = new TokenModel(model);
 
   await doc.save();
-
-  triggerMutation('TOKEN_UPDATED', doc.toObject());
 
   console.log('\nTokenModel:', doc);
 }
