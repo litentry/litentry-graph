@@ -6,6 +6,8 @@ import tokens from './tokens';
 const base = gql`
   scalar EventData
   scalar Date
+  scalar JSON
+  scalar JSONObject
 
   enum ClassType {
     Simple
