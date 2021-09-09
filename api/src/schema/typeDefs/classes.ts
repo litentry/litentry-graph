@@ -24,6 +24,7 @@ export default gql`
     mergableClassIds: [Int] # merge
     metadataCID: String # claim & merge
     metadata: ClassMetadata # claim & merge
+    tokens: [Token]
   }
 
   extend type Query {
@@ -33,6 +34,9 @@ export default gql`
       type: ClassType
       properties: ClassProperties
     ): [Class]
+
+    classById(_id: String): Class
+
     mintableClasses: [Class]
   }
 

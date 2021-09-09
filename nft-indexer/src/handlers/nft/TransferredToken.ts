@@ -10,6 +10,4 @@ export default async function handler(
   });
 
   await updateTokenOwnership(classId, tokenId, to);
-
-  // todo: check issuance is uneffected
 }

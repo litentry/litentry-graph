@@ -13,6 +13,11 @@ export default async function classes(
   return classes;
 }
 
+export async function classById(parent: undefined, id: string): Promise<Class> {
+  const classModel = await ClassModel.findById(id);
+  return classModel;
+}
+
 export async function mintableClasses(): Promise<Class[]> {
   const classes = await ClassModel.find({
     type: ClassType.Simple,
