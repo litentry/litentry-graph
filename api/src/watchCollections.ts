@@ -6,7 +6,6 @@ export default async function watchCollections(): Promise<void> {
     fullDocument: 'updateLookup',
   }).on('change', (data) => {
     if (data.operationType === 'insert') {
-      console.log('TOKEN_CREATED', data.fullDocument.tokenId);
       pubsub.publish('TOKEN_CREATED', {
         tokenCreated: data.fullDocument,
       });
