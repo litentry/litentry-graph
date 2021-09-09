@@ -4,7 +4,7 @@ export default gql`
   type Event {
     _id: String!
     name: String!
-    data: EventData
+    data: JSON!
     createdAt: Date!
     updatedAt: Date!
   }
