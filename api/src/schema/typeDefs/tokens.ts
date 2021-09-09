@@ -37,6 +37,7 @@ export default gql`
   }
 
   extend type Subscription {
-    token: Token
+    tokenUpdated: Token
+    tokenCreated(classId: Int): Token
   }
 `;

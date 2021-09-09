@@ -5,24 +5,37 @@ export default async function watchCollections(): Promise<void> {
   TokenModel.watch(undefined, {
     fullDocument: 'updateLookup',
   }).on('change', (data) => {
-    pubsub.publish('TOKEN_UPDATED', {
-      token: data.fullDocument,
-    });
+    if (data.operationType === 'insert') {
+      console.log('TOKEN_CREATED', data.fullDocument.tokenId);
+      pubsub.publish('TOKEN_CREATED', {
+        tokenCreated: data.fullDocument,
+      });
+    } else {
+      pubsub.publish('TOKEN_UPDATED', {
+        tokenUpdated: data.fullDocument,
+      });
+    }
   });
 
   ClassModel.watch(undefined, {
     fullDocument: 'updateLookup',
   }).on('change', (data) => {
-    pubsub.publish('CLASS_UPDATED', {
-      class: data.fullDocument,
-    });
+    if (data.operationType === 'insert') {
+      pubsub.publish('CLASS_CREATED', {
+        classCreated: data.fullDocument,
+      });
+    } else {
+      pubsub.publish('CLASS_UPDATED', {
+        classUpdated: data.fullDocument,
+      });
+    }
   });
 
   EventModel.watch(undefined, {
     fullDocument: 'updateLookup',
   }).on('change', (data) => {
     pubsub.publish('EVENT_CREATED', {
-      class: data.fullDocument,
+      eventCreated: data.fullDocument,
     });
   });
 }

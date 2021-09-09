@@ -41,6 +41,7 @@ export default gql`
   }
 
   extend type Subscription {
-    class: Class
+    classCreated: Class
+    classUpdated: Class
   }
 `;

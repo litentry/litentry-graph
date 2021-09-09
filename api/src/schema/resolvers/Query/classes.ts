@@ -21,7 +21,7 @@ export async function classById(parent: undefined, id: string): Promise<Class> {
 export async function mintableClasses(): Promise<Class[]> {
   const classes = await ClassModel.find({
     type: ClassType.Simple,
-    $expr: { $lt: ['$quantity', '$totalIssuance'] },
+    $expr: { $lt: ['$totalIssuance', '$quantity'] },
   });
   return classes;
 }
