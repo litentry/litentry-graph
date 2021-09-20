@@ -1,7 +1,7 @@
 {
   "name": "indexer-api",
   "version": "0.0.1",
-  "description": "A basic POC api to access data stored by the chain-listener",
+  "description": "A basic POC api to access data stored by the polkadot-chain-listener",
   "main": "index.ts",
   "repository": "git@github.com:litentry/event-data-poc.git",
   "author": "Tim Baker <tim.baker@stamford.digital>",

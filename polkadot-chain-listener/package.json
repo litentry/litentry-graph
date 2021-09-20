@@ -1,5 +1,5 @@
 {
-  "name": "chain-listener",
+  "name": "polkadot-chain-listener",
   "version": "0.0.1",
   "description": "A Node JS application to extract event data from the block chain.",
   "main": "dist/index.js",

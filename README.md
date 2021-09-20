@@ -30,15 +30,15 @@ TODO: add API startup commands
 
 ## Contents
 
-### `chain-listener`
+### `polkadot-chain-listener`
 
 A Node JS application to extract event data from the block chain.
 
 ```js
-import chainListener from "@litenry/chain-listener";
+import polkadotChainListener from "@litenry/polkadot-chain-listener";
 
 (async () => {
-  await chainListener(provider, types, handlers);
+  await polkadotChainListener(provider, types, handlers);
 })();
 ```
 

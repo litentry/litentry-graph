@@ -10,17 +10,17 @@ yarn build
 ```
 
 ```js
-import chainListener from '@litenry/chain-listener';
+import polkadotChainListener from '@litenry/polkadot-chain-listener';
 
 (async () => {
-  await chainListener(provider, types, handlers);
+  await polkadotChainListener(provider, types, handlers);
 })();
 ```
 
 _The package is currently only available in the workspaces in this repository (it's not published), so the import is actually:_
 
 ```js
-import chainListener from 'chain-listener';
+import polkadotChainListener from 'polkadot-chain-listener';
 ```
 
 _The nft-indexer application is currently using it - and specifies it as a dependency in the package.json file._
@@ -33,7 +33,7 @@ If you want to make changes to this package whilst running it in the `nft-indexe
 
 Exports the package.
 
-`src/chain-listener.ts`
+`src/polkadot-chain-listener.ts`
 
 Creates the API and runs the block-listener.
 

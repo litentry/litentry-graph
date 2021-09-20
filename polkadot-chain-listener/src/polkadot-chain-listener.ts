@@ -4,7 +4,7 @@ import createApi from './create-api';
 import blockListener from './block-listener';
 import parseEvents from './parse-events';
 
-export async function chainListener(
+export async function polkadotChainListener(
   provider: string,
   types: RegistryTypes,
   handlers: Handlers

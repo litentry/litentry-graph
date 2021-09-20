@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-import { chainListener } from 'chain-listener';
+import { polkadotChainListener } from 'polkadot-chain-listener';
 import types from './api-types';
 import handlers from './handlers';
 import config from './config';
@@ -10,7 +10,7 @@ async function run() {
 
     await connect(uri);
 
-    await chainListener(config.provider, types, handlers);
+    await polkadotChainListener(config.provider, types, handlers);
   } catch (e) {
     console.log(e);
     process.exit(1);

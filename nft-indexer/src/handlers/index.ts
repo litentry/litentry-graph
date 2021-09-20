@@ -1,4 +1,4 @@
-import { Handlers } from '../../../chain-listener/src/types';
+import { Handlers } from 'polkadot-chain-listener';
 import nft from './nft';
 
 const handlers: Handlers = {
