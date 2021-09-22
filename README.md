@@ -1,4 +1,4 @@
-# Event Data POC
+# web3-indexer
 
 This repository is a collection of applications to demonstrate how we see the middle layer between the chain and the webapp working.
 
