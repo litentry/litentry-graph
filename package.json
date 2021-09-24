@@ -1,12 +1,11 @@
 {
   "private": true,
   "scripts": {
-    "build": "cd nft-models && yarn build && cd ../polkadot-chain-listener && yarn build"
+    "build": "cd packages/nft-models && yarn build && cd ../polkadot-chain-listener && yarn build"
   },
   "workspaces": [
-    "polkadot-chain-listener",
-    "nft-indexer",
-    "nft-models",
-    "api"
+    "packages/*",
+    "api",
+    "nft-indexer"
   ]
 }
