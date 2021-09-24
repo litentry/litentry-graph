@@ -26,11 +26,15 @@ Run the NFT indexer:
 cd nft-indexer && yarn start
 ```
 
-TODO: add API startup commands
+Run the API (in a 2nd terminal)
+
+```sh
+cd api && yarn start
+```
 
 ## Contents
 
-### `polkadot-chain-listener`
+### `packages/polkadot-chain-listener`
 
 A Node JS application to extract event data from the block chain.
 
@@ -50,13 +54,13 @@ import polkadotChainListener from "@litenry/polkadot-chain-listener";
 
 A Node JS application that runs the chain listener and listens to events from the NFT pallet. The handlers parse (and sometimes expand on) the data from the event and saves it to `mongodb`.
 
-### `nft-models`
+### `packages/nft-models`
 
 A collection of `mongoose` models shared by the `nft-indexer` and the `api`
 
 ### `api`
 
-An `express` application to allow the webapp to retrieve data from `mongodb`.
+A `graphql` application to allow the webapp to retrieve data from `mongodb`.
 
 ## TODO
 
