@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { connect } from 'mongoose';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
@@ -23,6 +24,7 @@ const server = new ApolloServer({
         };
       },
     },
+    ApolloServerPluginLandingPageGraphQLPlayground(),
   ],
   context: async () => {
     try {
