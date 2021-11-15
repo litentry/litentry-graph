@@ -13,6 +13,7 @@ const app = express();
 const httpServer = createServer(app);
 
 const server = new ApolloServer({
+  introspection: true,
   schema,
   plugins: [
     {
@@ -26,14 +27,6 @@ const server = new ApolloServer({
     },
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ],
-  context: async () => {
-    try {
-      // Try to connect to MongoDB
-    } catch (e) {
-      console.log(e);
-      process.exit(1);
-    }
-  },
 });
 
 const subscriptionServer = SubscriptionServer.create(
