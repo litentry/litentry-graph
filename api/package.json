@@ -6,7 +6,7 @@
   "repository": "git@github.com:litentry/web3-indexer.git",
   "author": "Tim Baker <tim.baker@stamford.digital>",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --max_old_space_size=2560 src/index.ts",
     "start": "rm -rf ./dist && tsc && node dist/index.js",
     "build": "rm -rf ./dist && tsc"
   },

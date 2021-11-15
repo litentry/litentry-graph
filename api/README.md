@@ -17,6 +17,36 @@ The schema packages are used in 3 places:
 - `./src/schema/typeDefs.ts`
 - `./src/index.ts` (these are the publishers)
 
+## Demo Query
+
+```graphql
+query {
+  balance(address: "13RDY9nrJpyTDBSUdBw12dGwhk19sGwsrVZ2bxkzYHBSagP2") {
+    nonce
+    consumers
+    data {
+      free
+      miscFrozen
+      feeFrozen
+      reserved
+    }
+  }
+  chainInfo {
+    chain
+    nodeName
+    nodeVersion
+  }
+  tips {
+    id
+    who
+    deposit
+    finder
+    reason
+    closes
+  }
+}
+```
+
 ## Architectural Issues
 
 - The way the packaged schemas are applied isn't very flexible. If people want to run our graph with only the packages they want they'd have to fork and edit the code. Even if we don't want to allow for selectiive package loading, it could still be written better by having a single file that loads the packages and extracts the mapping of `Query`, `typeDefs` etc.
