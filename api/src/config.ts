@@ -14,6 +14,12 @@ if (!apiHost) {
   process.exit(1);
 }
 
+const provider = process.env.WS_PROVIDER;
+if (!provider) {
+  console.error('process.env.WS_PROVIDER not set');
+  process.exit(1);
+}
+
 const username = process.env.MONGO_USERNAME;
 if (!username) {
   console.error('process.env.MONGO_USERNAME not set');
@@ -42,4 +48,5 @@ export default {
   mongoUri: `mongodb+srv://${username}:${password}@${clusterUrl}/${databaseName}?retryWrites=true&w=majority`,
   apiPort,
   graphqlUri: `${apiHost}:${apiPort}/graphql`,
+  provider,
 };

@@ -4,11 +4,6 @@ import events from './events';
 import tokens from './tokens';
 
 const base = gql`
-  scalar EventData
-  scalar Date
-  scalar JSON
-  scalar JSONObject
-
   enum ClassType {
     Simple
     Merge
@@ -20,14 +15,6 @@ const base = gql`
     Transferable
     Burnable
     Both
-  }
-
-  type Query {
-    _empty: String
-  }
-
-  type Subscription {
-    _empty: String
   }
 `;
 

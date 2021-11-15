@@ -1,16 +1,16 @@
 import { TokenModel, Token, ClassProperties } from 'nft-models';
 
-export default async function burnableTokens(
+export default async function transferableTokens(
   parent: undefined,
   { owner }: { owner: string }
 ): Promise<Token[]> {
   const tokens = await TokenModel.find({
     owner,
-    burned: null,
+    burned: false,
     used: false,
   })
     .where('properties')
-    .in([ClassProperties.Both, ClassProperties.Burnable]);
+    .in([ClassProperties.Both, ClassProperties.Transferable]);
 
   return tokens;
 }

@@ -1,14 +1,19 @@
 import scalars from './scalars';
-import Class from './Class';
-import Query from './Query';
-import Subscription from './Subscription';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
+import { resolvers as nftResolvers } from 'nft-schema';
+import { resolvers as demoResolvers } from 'demo-schema';
+import pubsub from '../../pubsub';
 
 export default {
-  ...scalars,
-  Query,
-  Class,
-  Subscription,
   JSON: GraphQLJSON,
   JSONObject: GraphQLJSONObject,
+  ...scalars,
+  Query: {
+    ...nftResolvers.Query,
+    ...demoResolvers.Query,
+  },
+  Subscription: {
+    ...nftResolvers.Subscription(pubsub),
+  },
+  ...nftResolvers.other,
 };

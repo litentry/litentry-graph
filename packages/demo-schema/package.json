@@ -1,7 +1,7 @@
 {
-  "name": "nft-models",
+  "name": "demo-schema",
   "version": "0.0.1",
-  "description": "A collection of mongoose models for the NFT data.",
+  "description": "Demo GraphQL schema - please name me.",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "repository": "git@github.com:litentry/web3-indexer.git",
@@ -12,7 +12,7 @@
     "postinstall": "yarn build"
   },
   "dependencies": {
-    "mongoose": "^6.0.5"
+    "apollo-server-core": "^3.5.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "4.22.1",

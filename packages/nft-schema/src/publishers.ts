@@ -1,7 +1,8 @@
+import type { PubSub } from 'graphql-subscriptions';
 import { TokenModel, ClassModel, EventModel } from 'nft-models';
-import pubsub from './pubsub';
 
-export default async function watchCollections(): Promise<void> {
+// TODO maybe rework this... this is not really part of the schema
+export default async function publishers(pubsub: PubSub): Promise<void> {
   TokenModel.watch(undefined, {
     fullDocument: 'updateLookup',
   }).on('change', (data) => {

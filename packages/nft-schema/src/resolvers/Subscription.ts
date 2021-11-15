@@ -1,6 +1,14 @@
-import pubsub, { Sub } from '../../pubsub';
+import type { PubSub } from 'graphql-subscriptions';
 
-export default {
+type Sub = AsyncIterator<unknown, unknown, undefined>;
+
+export default (
+  pubsub: PubSub
+): {
+  [eventName: string]: {
+    subscribe: () => Sub;
+  };
+} => ({
   eventCreated: {
     subscribe: (): Sub => pubsub.asyncIterator(['EVENT_CREATED']),
   },
@@ -16,4 +24,4 @@ export default {
   tokenCreated: {
     subscribe: (): Sub => pubsub.asyncIterator(['TOKEN_CREATED']),
   },
-};
+});

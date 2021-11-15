@@ -15,7 +15,8 @@ export default async function classes(
 
 export async function classById(parent: undefined, id: string): Promise<Class> {
   const classModel = await ClassModel.findById(id);
-  return classModel;
+  // sort out potentially null return type
+  return classModel!;
 }
 
 export async function mintableClasses(): Promise<Class[]> {
