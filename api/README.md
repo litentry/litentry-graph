@@ -19,7 +19,7 @@ The schema packages are used in 3 places:
 
 ## Demo Query
 
-<a href="https://web3-indexer.herokuapp.com/graphql" target="_blank">View Playground</a>
+[View Playground](https://web3-indexer.herokuapp.com/graphql)
 
 ```graphql
 query {
