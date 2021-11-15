@@ -19,6 +19,8 @@ The schema packages are used in 3 places:
 
 ## Demo Query
 
+<a href="https://web3-indexer.herokuapp.com/graphql" target="_blank">View Playground</a>
+
 ```graphql
 query {
   balance(address: "13RDY9nrJpyTDBSUdBw12dGwhk19sGwsrVZ2bxkzYHBSagP2") {
