@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "cd packages/nft-models && yarn build && cd ../polkadot-chain-listener && yarn build"
+    "build": "cd packages/nft-models && yarn build && cd ../polkadot-chain-listener && yarn build",
+    "postinstall": "yarn run build"
   },
   "workspaces": [
     "packages/*",

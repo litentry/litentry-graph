@@ -2,15 +2,15 @@ import dotenv from 'dotenv';
 
 dotenv.config({ debug: true });
 
-const apiPort = process.env.API_PORT;
+const apiPort = process.env.PORT;
 if (!apiPort) {
-  console.error('process.env.API_PORT not set');
+  console.error('process.env.PORT not set');
   process.exit(1);
 }
 
-const apiHost = process.env.API_HOST;
+const apiHost = process.env.HOST;
 if (!apiHost) {
-  console.error('process.env.API_HOST not set');
+  console.error('process.env.HOST not set');
   process.exit(1);
 }
 
