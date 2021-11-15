@@ -4,7 +4,10 @@
   "description": "A basic POC api to access data stored by the polkadot-chain-listener",
   "main": "index.ts",
   "repository": "git@github.com:litentry/web3-indexer.git",
-  "author": "Tim Baker <tim.baker@stamford.digital>",
+  "contributors": [
+    "Ben Mason <ben@wattmason.co.uk>",
+    "Tim Baker <tim.baker@stamford.digital>"
+  ],
   "scripts": {
     "dev": "nodemon --max_old_space_size=2560 src/index.ts",
     "start": "rm -rf ./dist && tsc && node dist/index.js",
@@ -15,8 +18,8 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/ws": "^8.2.0",
-    "apollo-server-core": "^3.3.0",
-    "apollo-server-express": "^3.3.0",
+    "apollo-server-core": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
     "bignumber.js": "^9.0.1",
     "cors": "^2.8.5",
     "demo-schema": "0.0.1",

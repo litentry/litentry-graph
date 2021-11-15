@@ -4,7 +4,9 @@
   "description": "A Node JS application to extract event data from the block chain.",
   "main": "dist/index.js",
   "repository": "git@github.com:litentry/web3-indexer.git",
-  "author": "Ben Mason <ben@wattmason.co.uk>",
+  "contributors": [
+    "Ben Mason <ben@wattmason.co.uk>"
+  ],
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "rm -rf ./dist && tsc && node dist/index.js",

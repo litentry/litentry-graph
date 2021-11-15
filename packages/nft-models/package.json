@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "repository": "git@github.com:litentry/web3-indexer.git",
-  "author": "Ben Mason <ben@wattmason.co.uk>",
+  "contributors": [
+    "Ben Mason <ben@wattmason.co.uk>"
+  ],
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "watch": "tsc --watch",
