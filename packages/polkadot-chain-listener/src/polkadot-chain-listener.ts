@@ -1,15 +1,40 @@
-import type { RegistryTypes } from '@polkadot/types/types';
+import type { ApiPromise } from '@polkadot/api';
 import type { Handlers } from './types';
-import createApi from './create-api';
 import blockListener from './block-listener';
 import parseEvents from './parse-events';
 
+async function hasLatestBlock(
+  api: ApiPromise,
+  getLatestIndexedBlock: () => Promise<number>
+): Promise<boolean> {
+  const latestBlockOnChain = await (
+    await api.derive.chain.bestNumber()
+  ).toNumber();
+  const latestIndexedBlock = await getLatestIndexedBlock();
+
+  return latestBlockOnChain === latestIndexedBlock;
+}
+
 export async function polkadotChainListener(
-  provider: string,
-  types: RegistryTypes,
-  handlers: Handlers
+  api: ApiPromise,
+  handlers: Handlers,
+  getLatestIndexedBlock: () => Promise<number>,
+  saveBlock: (_id: number) => Promise<void>
 ): Promise<void> {
-  const api = await createApi(provider, types);
+  let upToDate = await hasLatestBlock(api, getLatestIndexedBlock);
+
+  while (!upToDate) {
+    const latestIndexedBlock = await getLatestIndexedBlock();
+    const blockNumber = latestIndexedBlock + 1;
+    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
+    // todo replace with non-deprecated method
+    const allRecords = await api.query.system.events.at(blockHash);
+
+    await parseEvents(handlers)(api, allRecords);
+    await saveBlock(blockNumber);
+    console.log('\nIndexed block number:', latestIndexedBlock);
+    upToDate = await hasLatestBlock(api, getLatestIndexedBlock);
+  }
 
   await blockListener(api, parseEvents(handlers));
 }

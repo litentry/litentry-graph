@@ -1,4 +1,6 @@
-# Chain Listener
+# NFT Indexer
+
+**This will no longer work - the chain listener has been updated to allow history rebuilding. See `substrate-indexer` instead. Once the NFT logic has been extracted this will be deleted.**
 
 A Node JS application to run the chain listener and process events from the NFT pallet.
 

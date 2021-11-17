@@ -7,6 +7,8 @@ GraphQL server, initially for Litentry client applications
 - `yarn` (from repo root - it'll build all the packages)
 - `yarn dev` (from this directory)
 
+_If you are working on one of the packages you will need to rebuild the `dist` folder for that package. In another terminal folder `cd` into the package and run `yarn watch` or `yarn build`._
+
 ## Packaging Schemas
 
 Take a look at `packages/demo-schema` and `packages/nft-schema` to see how we can bundle resolvers, typeDefs and publishers (_this is a method to run event listeners for subscriptions - see `nft-models` for an example, maybe rename this_).

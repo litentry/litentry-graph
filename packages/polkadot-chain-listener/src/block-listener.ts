@@ -11,11 +11,13 @@ export default async function blockListener(
   api: ApiPromise,
   callback: (api: ApiPromise, allRecords: Vec<EventRecord>) => void
 ): Promise<VoidFn> {
-  const unsubscribe = await api.rpc.chain.subscribeNewHeads(async (header) => {
-    console.log(`\nChain is at block: #${header.number}`);
-    const allRecords = await api.query.system.events.at(header.hash);
-    callback(api, allRecords);
-  });
+  const unsubscribe = await api.derive.chain.subscribeNewHeads(
+    async (header) => {
+      console.log(`\nChain is at block: #${header.number}`);
+      const allRecords = await api.query.system.events.at(header.hash);
+      callback(api, allRecords);
+    }
+  );
 
   return unsubscribe;
 }
