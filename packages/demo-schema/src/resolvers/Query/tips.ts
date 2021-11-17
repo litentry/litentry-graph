@@ -44,7 +44,7 @@ export async function tips(
         who: openTip[1].who,
         finder: openTip[1].finder,
         reason: await getTipReason(api, openTip[1].reason),
-        // closes: openTip[1].closes,
+        closes: openTip[1].closes.unwrapOr(null),
         deposit: openTip[1].deposit,
       })) || [];
 
