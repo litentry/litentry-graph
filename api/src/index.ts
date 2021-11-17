@@ -6,10 +6,10 @@ import { connect } from 'mongoose';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { publishers as nftPublishers } from 'nft-schema';
+// import { publishers as nftPublishers } from 'nft-schema';
 import config from './config';
 import schema from './schema';
-import pubsub from './pubsub';
+// import pubsub from './pubsub';
 
 async function run() {
   const app = express();
@@ -56,7 +56,7 @@ async function run() {
 
   httpServer.listen(config.apiPort, () => {
     console.log(`Server is now running on ${config.graphqlUri}`);
-    nftPublishers(pubsub);
+    // nftPublishers(pubsub);
   });
 }
 
