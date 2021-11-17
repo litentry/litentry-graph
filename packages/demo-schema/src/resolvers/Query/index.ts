@@ -1,9 +1,10 @@
 import balance from './balance';
 import chainInfo from './chainInfo';
-import tips from './tips';
+import { tips, tip } from './tips';
 
 export default {
   balance,
   chainInfo,
+  tip,
   tips,
 };
