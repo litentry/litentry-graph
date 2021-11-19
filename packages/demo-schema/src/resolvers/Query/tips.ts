@@ -1,10 +1,12 @@
 import type { Option, Bytes } from '@polkadot/types';
+import { BN_ZERO } from '@polkadot/util';
 import type {
   OpenTip,
   Hash,
   AccountId,
   // BlockNumber,
   Balance,
+  OpenTipTo225,
 } from '@polkadot/types/interfaces';
 import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
@@ -12,7 +14,7 @@ import type { ServerContext } from '../../types';
 
 type Tip = [string, OpenTip];
 
-export default async function tips(
+export async function tips(
   _: undefined,
   __: undefined,
   { api }: ServerContext
@@ -42,7 +44,7 @@ export default async function tips(
         who: openTip[1].who,
         finder: openTip[1].finder,
         reason: await getTipReason(api, openTip[1].reason),
-        // closes: openTip[1].closes,
+        closes: openTip[1].closes.unwrapOr(null),
         deposit: openTip[1].deposit,
       })) || [];
 
@@ -50,6 +52,58 @@ export default async function tips(
   }
 
   return [];
+}
+
+export async function tip(
+  _: undefined,
+  { id }: { id: string },
+  { api }: ServerContext
+) {
+  const tipOption = await api.query.tips.tips(id);
+  const tip = tipOption.unwrap();
+  const tipState = await extractTipState(tip);
+
+  return {
+    id,
+    who: tip.who,
+    reason: await getTipReason(api, tip.reason),
+    ...tipState,
+  };
+}
+
+async function extractTipState(tip: OpenTip | OpenTipTo225) {
+  const closes = tip.closes?.unwrapOr(null);
+  let finder: AccountId | null = null;
+  let deposit: Balance | null = null;
+
+  if (isCurrentTip(tip)) {
+    finder = tip.finder;
+    deposit = tip.deposit;
+  } else if (tip.finder.isSome) {
+    const finderInfo = tip.finder.unwrap();
+
+    finder = finderInfo[0];
+    deposit = finderInfo[1];
+  }
+
+  const values = tip.tips.map(([, value]) => value).sort((a, b) => a.cmp(b));
+  const midIndex = Math.floor(values.length / 2);
+  const median = values.length
+    ? values.length % 2
+      ? values[midIndex]
+      : values[midIndex - 1]?.add(values[midIndex] ?? BN_ZERO).divn(2)
+    : BN_ZERO;
+
+  return {
+    closes,
+    deposit,
+    finder,
+    median,
+  };
+}
+
+function isCurrentTip(tip: OpenTip | OpenTipTo225): tip is OpenTip {
+  return !!(tip as OpenTip)?.findersFee;
 }
 
 function extractTips(

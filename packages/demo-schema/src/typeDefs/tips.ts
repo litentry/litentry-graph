@@ -9,8 +9,10 @@ export default gql`
     reason: String!
     deposit: String!
     closes: String
+    median: String
   }
   extend type Query {
     tips: [Tip!]
+    tip(id: String!): Tip
   }
 `;
