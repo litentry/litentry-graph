@@ -15,6 +15,6 @@ export default gql`
     data: BalanceData!
   }
   extend type Query {
-    balance(address: String!): Balance!
+    balance(address: String!, blockNumber: Int): Balance!
   }
 `;

@@ -5,7 +5,7 @@ import type { ServerContext } from '../../types';
 
 export default async function balance(
   _: undefined,
-  { address }: { address: string },
+  { address, blockNumber }: { address: string; blockNumber?: number },
   { api }: ServerContext
 ): Promise<{
   nonce: number;
@@ -19,7 +19,14 @@ export default async function balance(
     feeFrozen: number;
   };
 }> {
-  const raw: AccountInfo = await api.query.system.account(address);
+  let raw: AccountInfo;
+
+  if (blockNumber) {
+    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
+    raw = await (await api.at(blockHash)).query.system.account(address);
+  } else {
+    raw = await api.query.system.account(address);
+  }
 
   return {
     nonce: raw.nonce.toNumber(),
