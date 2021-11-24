@@ -4,6 +4,7 @@ GraphQL server, initially for Litentry client applications
 
 ## Getting Started
 
+- create `.env` from `.env.example`
 - `yarn` (from repo root - it'll build all the packages)
 - `yarn dev` (from this directory)
 
