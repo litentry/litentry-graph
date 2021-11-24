@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "rm -rf ./dist && tsc && node dist/index.js",
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf ./dist && tsc",
+    "delete-range": "nodemon src/utils/deleteBlockRange.ts"
   },
   "dependencies": {
     "@polkadot/api": "^6.6.1",

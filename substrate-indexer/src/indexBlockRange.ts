@@ -8,22 +8,48 @@ export default async function indexBlockRange(
   end: number,
   api: ApiPromise
 ): Promise<void> {
+  console.time('indexBlockRange() duration');
+
   let indexed = 0;
   const totalToIndex = end - start + 1;
 
+  /*
+  This check needs to be executable within the callback else we'll have
+  to await the callback inside parseBlock() which would slow it down. 
+  */
+  const checkIfComplete = () => {
+    indexed++;
+    if (indexed === totalToIndex) {
+      console.log(`Indexed all blocks in range`);
+      console.timeEnd('indexBlockRange() duration');
+      process.exit(0);
+    }
+  };
+
   for (let blockNumber = start; blockNumber <= end; blockNumber++) {
+    const blockExtrinsicsIndexed = !!(await BlockExtrinsicModel.findOne({
+      blockNumber,
+    }));
+    const blockEventsIndexed = !!(await BlockEventModel.findOne({
+      blockNumber,
+    }));
+
+    if (blockExtrinsicsIndexed && blockEventsIndexed) {
+      checkIfComplete();
+      continue;
+    }
+
     await parseBlock(blockNumber, api, async (extrinsics, events) => {
       try {
-        await BlockExtrinsicModel.insertMany(extrinsics);
-        await BlockEventModel.insertMany(events);
-        console.log(`Indexed block ${blockNumber}`);
-
-        // we keep indexed count and exit here so parseBlock doesn't have to await the callback and slow the process down
-        indexed++;
-        if (indexed === totalToIndex) {
-          console.log(`Indexed all blocks in range`);
-          process.exit(0);
+        if (!blockExtrinsicsIndexed) {
+          await BlockExtrinsicModel.insertMany(extrinsics);
         }
+        if (!blockEventsIndexed) {
+          await BlockEventModel.insertMany(events);
+        }
+
+        console.log(`Indexed block ${blockNumber}`);
+        checkIfComplete();
       } catch (e) {
         console.log(e);
         process.exit(1);
