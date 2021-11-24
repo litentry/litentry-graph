@@ -43,12 +43,14 @@ export default async function indexBlockRange(
     await parseBlock(blockNumber, api, async (extrinsics, events) => {
       try {
         if (!blockExtrinsicsIndexed) {
-          console.log(`Skipped extrinsics for block ${blockNumber}`);
           await BlockExtrinsicModel.insertMany(extrinsics);
+        } else {
+          console.log(`Skipped extrinsics for block ${blockNumber}`);
         }
         if (!blockEventsIndexed) {
-          console.log(`Skipped events for block ${blockNumber}`);
           await BlockEventModel.insertMany(events);
+        } else {
+          console.log(`Skipped events for block ${blockNumber}`);
         }
 
         console.log(`Indexed block ${blockNumber}`);
