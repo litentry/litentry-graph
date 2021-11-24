@@ -9,7 +9,7 @@ const blockEventSchema = new Schema<BlockEvent>({
 
   // indexes allow us to get by extrinsic
   phase: { type: String, required: true, index: true },
-  phaseIndex: { type: Number, required: true, index: true },
+  phaseIndex: { type: Number, required: false, index: true },
 
   // indexes allow us to get by pallet event
   section: { type: String, required: true, index: true },

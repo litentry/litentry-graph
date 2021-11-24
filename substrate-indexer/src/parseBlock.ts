@@ -46,7 +46,9 @@ export default async function parseBlock(
   eventModels.push(
     ...allRecords.map((record, index) => {
       const phase = record.phase.type;
-      const phaseIndex = parseInt(record.phase.value.toString());
+      const phaseIndex = record.phase.isNone
+        ? undefined
+        : parseInt(record.phase.value.toString());
       const section = record.event.section.toString();
       const method = record.event.method.toString();
 

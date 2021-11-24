@@ -3,7 +3,7 @@ export type BlockEvent = {
   _id: string;
   blockNumber: number;
   phase: string;
-  phaseIndex: number;
+  phaseIndex?: number;
   section: string;
   method: string;
   data: unknown[];
