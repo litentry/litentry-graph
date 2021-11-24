@@ -27,8 +27,7 @@ export async function polkadotChainListener(
     const latestIndexedBlock = await getLatestIndexedBlock();
     const blockNumber = latestIndexedBlock + 1;
     const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
-    // todo replace with non-deprecated method
-    const allRecords = await api.query.system.events.at(blockHash);
+    const allRecords = await (await api.at(blockHash)).query.system.events();
 
     await parseEvents(handlers)(api, allRecords);
     await saveBlock(blockNumber);

@@ -1,10 +1,13 @@
-# Substarte ~Indexer
+# Substrate Indexer
 
-A Node JS application to run the chain listener and process substrate events.
+A Node JS application to extract event & extrinsic data from substrate chains and save to to mongoDB.
 
 ## Getting Started
 
-```sh
-yarn
-yarn dev
-```
+- To install dependencies run `yarn`
+
+- Run `cp .env.example .env` and update the environment variables
+
+- To run in development mode (and reload on file change): `yarn dev`
+
+- To run in production: `yarn start`

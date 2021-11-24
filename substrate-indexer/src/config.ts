@@ -38,4 +38,9 @@ export default {
   password,
   clusterUrl,
   databaseName,
+  startBlock: parseInt(process.env.START_BLOCK || '0'),
+  endBlock:
+    process.env.END_BLOCK === undefined
+      ? undefined
+      : parseInt(process.env.END_BLOCK),
 };
