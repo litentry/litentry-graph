@@ -8,7 +8,7 @@ export async function council(
 ) {
   const electionsInfo = await api.derive.elections.info();
   const members = electionsInfo.members.map(([accountId, balance]) => ({
-    accountId,
+    address: accountId,
     backing: balance, 
   }));
   

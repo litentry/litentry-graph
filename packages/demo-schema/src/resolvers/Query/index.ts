@@ -1,3 +1,4 @@
+import { account } from './account';
 import balance from './balance';
 import chainInfo from './chainInfo';
 import { council } from './council';
@@ -9,4 +10,5 @@ export default {
   tip,
   tips,
   council,
+  account,
 };

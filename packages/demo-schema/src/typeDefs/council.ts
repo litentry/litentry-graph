@@ -3,7 +3,8 @@ import { gql } from 'apollo-server-core';
 export default gql`
 
   type CouncilMember {
-    accountId: String!
+    address: String!
+    account: Account!
     baking: Int!
   }
 
