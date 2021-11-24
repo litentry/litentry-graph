@@ -1,11 +1,11 @@
 import { gql } from 'apollo-server-core';
 
 export default gql`
-
   type CouncilMember {
     address: String!
     account: Account!
-    backing: String 
+    backing: String
+    voters: [String!]!
   }
 
   type Council {
@@ -16,5 +16,4 @@ export default gql`
   extend type Query {
     council: Council!
   }
-
 `;
