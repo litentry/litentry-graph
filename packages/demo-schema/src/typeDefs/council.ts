@@ -5,15 +5,16 @@ export default gql`
   type CouncilMember {
     address: String!
     account: Account!
-    baking: Int!
+    backing: String 
   }
 
   type Council {
-    members: [CouncilMember]
+    members: [CouncilMember!]!
+    runnersUp: [CouncilMember!]!
   }
 
   extend type Query {
-    council: Council
+    council: Council!
   }
 
 `;

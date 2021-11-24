@@ -11,9 +11,15 @@ export async function council(
     address: accountId,
     backing: balance, 
   }));
+  const runnersUp = electionsInfo.runnersUp.map(([accountId, balance]) => ({
+    accountId,
+    backing: balance,
+  }));
+
   
   return {
     members,
+    runnersUp,
   }
 }
 
