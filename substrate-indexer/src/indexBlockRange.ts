@@ -20,7 +20,7 @@ export default async function indexBlockRange(
   const checkIfComplete = () => {
     indexed++;
     if (indexed === totalToIndex) {
-      console.log(`Indexed all blocks in range`);
+      console.log('Indexed all blocks in range');
       console.timeEnd('indexBlockRange() duration');
       process.exit(0);
     }
@@ -35,6 +35,7 @@ export default async function indexBlockRange(
     }));
 
     if (blockExtrinsicsIndexed && blockEventsIndexed) {
+      console.log(`Skipped block ${blockNumber}`);
       checkIfComplete();
       continue;
     }
@@ -42,9 +43,11 @@ export default async function indexBlockRange(
     await parseBlock(blockNumber, api, async (extrinsics, events) => {
       try {
         if (!blockExtrinsicsIndexed) {
+          console.log(`Skipped extrinsics for block ${blockNumber}`);
           await BlockExtrinsicModel.insertMany(extrinsics);
         }
         if (!blockEventsIndexed) {
+          console.log(`Skipped events for block ${blockNumber}`);
           await BlockEventModel.insertMany(events);
         }
 
