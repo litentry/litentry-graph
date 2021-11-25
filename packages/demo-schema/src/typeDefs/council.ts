@@ -8,9 +8,16 @@ export default gql`
     voters: [String!]!
   }
 
+  type CouncilCandidate {
+    address: String!
+    account: Account!
+  }
+
+
   type Council {
     members: [CouncilMember!]!
     runnersUp: [CouncilMember!]!
+    candidates: [CouncilCandidate!]!
   }
 
   extend type Query {

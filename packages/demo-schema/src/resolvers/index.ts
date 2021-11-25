@@ -5,4 +5,7 @@ export default {
   CouncilMember: {
     account: Query.account,
   },
+  CouncilCandidate: {
+    account: Query.account,
+  }
 };

@@ -39,8 +39,11 @@ export async function council(
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
+  const candidates = electionsInfo.candidates.map((accountId) => ({address: String(accountId)}));
+
   return {
     members,
     runnersUp,
+    candidates,
   };
 }
