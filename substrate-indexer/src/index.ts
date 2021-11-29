@@ -1,21 +1,7 @@
 import { connect } from 'mongoose';
-import { polkadotChainListener } from 'polkadot-chain-listener';
-import { eventHandlers } from 'identity-pallet';
-import BlockModel from './BlockModel';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import config from './config';
-import createApi from './createApi';
-
-const saveBlock = async (_id: number) => {
-  const doc = new BlockModel({
-    _id,
-  });
-  await doc.save();
-};
-
-const getLatestIndexedBlock = async (): Promise<number> => {
-  const block = await BlockModel.findOne({}, {}, { sort: { _id: -1 } });
-  return block ? block._id : -1;
-};
+import indexBlockRange from './indexBlockRange';
 
 async function run() {
   try {
@@ -23,14 +9,15 @@ async function run() {
 
     await connect(uri);
 
-    const api = await createApi(config.provider);
+    const api = await ApiPromise.create({
+      provider: new WsProvider(config.provider),
+    });
 
-    await polkadotChainListener(
-      api,
-      eventHandlers,
-      getLatestIndexedBlock,
-      saveBlock
-    );
+    if (typeof config.endBlock === 'number') {
+      await indexBlockRange(config.startBlock, config.endBlock, api);
+    } else {
+      // TODO index from block and continue indefinitely
+    }
   } catch (e) {
     console.log(e);
     process.exit(1);
