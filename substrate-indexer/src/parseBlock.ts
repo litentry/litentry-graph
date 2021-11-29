@@ -6,7 +6,7 @@ export default async function parseBlock(
   api: ApiPromise,
   callback: (
     extrinsics: BlockExtrinsic[],
-    evennts: BlockEvent[]
+    events: BlockEvent[]
   ) => Promise<void>
 ): Promise<void> {
   const extrinsicModels: BlockExtrinsic[] = [];

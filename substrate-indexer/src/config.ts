@@ -43,4 +43,5 @@ export default {
     process.env.END_BLOCK === undefined
       ? undefined
       : parseInt(process.env.END_BLOCK),
+  totalToValidate: parseInt(process.env.TOTAL_BLOCKS_TO_VALIDATE || '10000'),
 };

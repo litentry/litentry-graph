@@ -9,7 +9,7 @@ async function run() {
 
     await connect(uri);
 
-    const api = await await ApiPromise.create({
+    const api = await ApiPromise.create({
       provider: new WsProvider(config.provider),
     });
 
