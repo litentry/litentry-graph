@@ -43,16 +43,24 @@ export async function council(
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
-  const candidates = electionsInfo.candidates.map((accountId) => ({address: String(accountId)}));
+  const candidates = electionsInfo.candidates.map((accountId) => ({
+    address: String(accountId),
+  }));
 
+  const primeMember = prime
+    ? {
+        address: String(prime),
+        backing: electionsInfo.members.find(([accountId]) =>
+          accountId.eq(prime)
+        )?.[1],
+      }
+    : null;
 
-  const primeMember = prime ? {
-    address: String(prime),
-    backing: electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1],
-  }: null;
-
-  const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
-  const termProgress =  {
+  const { termLeft, percentage } = getTermLeft(
+    bnToBn(electionsInfo.termDuration || 0),
+    bestNumber
+  );
+  const termProgress = {
     termDuration: electionsInfo.termDuration,
     termLeft,
     percentage,
@@ -68,7 +76,6 @@ export async function council(
     termProgress,
   };
 }
-
 
 function getTermLeft(termDuration: BN, bestNumber: BlockNumber) {
   const total = termDuration;

@@ -8,7 +8,7 @@ export async function account(
   const { api } = context;
   const address = parent?.address || args?.address;
 
-  if(!address) {
+  if (!address) {
     throw new Error('address is required');
   }
 

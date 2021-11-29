@@ -7,5 +7,5 @@ export default {
   },
   CouncilCandidate: {
     account: Query.account,
-  }
+  },
 };

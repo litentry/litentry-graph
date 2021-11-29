@@ -4,8 +4,7 @@ import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import { resolvers as demoResolvers } from 'demo-schema';
 // import pubsub from '../../pubsub';
 
-
-const {Query: demoQuery, ...demoRest} = demoResolvers;
+const { Query: demoQuery, ...demoRest } = demoResolvers;
 
 export default {
   JSON: GraphQLJSON,

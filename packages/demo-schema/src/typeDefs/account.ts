@@ -1,8 +1,7 @@
 import { gql } from 'apollo-server-core';
 
 export default gql`
-
-  type IdentityJudgement  {
+  type IdentityJudgement {
     isUnknown: Boolean
     isFeePaid: Boolean
     asFeePaid: Balance
@@ -17,8 +16,7 @@ export default gql`
     index: Int
     judgement: IdentityJudgement
   }
-  
-  
+
   type DeriveAccountRegistration {
     display: String
     displayParent: String
@@ -37,7 +35,7 @@ export default gql`
     display: String!
     registration: DeriveAccountRegistration!
   }
-  
+
   extend type Query {
     account(address: String!): Account
   }
