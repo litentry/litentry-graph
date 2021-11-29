@@ -1,7 +1,7 @@
 {
   "name": "substrate-indexer",
   "version": "0.0.1",
-  "description": "A Node JS application to extract event & extrinsic data from substrate chains and save to to mongoDB.",
+  "description": "A Node JS application to extract event & extrinsic data from substrate chains and save to to MongoDB.",
   "main": "dist/index.js",
   "repository": "git@github.com:litentry/web3-indexer.git",
   "contributors": [
