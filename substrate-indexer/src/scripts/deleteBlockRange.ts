@@ -2,6 +2,7 @@ import { connect } from 'mongoose';
 import config from '../config';
 import BlockEventModel from '../models/BlockEvent';
 import BlockExtrinsicModel from '../models/BlockExtrinsic';
+import mongoUri from '../mongoUri';
 
 async function run() {
   if (!config.endBlock) {
@@ -10,9 +11,7 @@ async function run() {
   }
 
   try {
-    const uri = `mongodb+srv://${config.username}:${config.password}@${config.clusterUrl}/${config.databaseName}?retryWrites=true&w=majority`;
-
-    await connect(uri);
+    await connect(mongoUri);
 
     for (
       let blockNumber = config.startBlock;
@@ -23,14 +22,14 @@ async function run() {
         blockNumber,
       });
       const eventResult = await BlockEventModel.deleteMany({ blockNumber });
-      console.log(
+      console.info(
         `\nBlock ${blockNumber}\nExtrinsics deleted:${extrinsicResult.deletedCount}\nEvents deleted:${eventResult.deletedCount}`
       );
     }
-    console.log('done');
+    console.info('done');
     process.exit(0);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     process.exit(1);
   }
 }
