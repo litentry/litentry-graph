@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-core';
-
-export default gql`
+export default /* GraphQL */ `
   type ChainInfo {
     chain: String!
     nodeName: String!

@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-core';
-
-export default gql`
+export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
