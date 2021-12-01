@@ -3,26 +3,52 @@ import http from 'http';
 import { WebSocketServer } from 'ws';
 import { graphqlHTTP } from 'express-graphql';
 import { useServer } from 'graphql-ws/lib/use/ws';
+import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 import { schema } from './schema';
 
 const PORT = process.env.PORT || 3000;
-const PATH = 'substrate-proxy-api';
+const PATH = 'substrate-api-proxy';
 
-const app = express();
+async function run() {
+  const getSubstrateApi = await initSubstrateApi();
+  const app = express();
 
-app.use(`/${PATH}`, graphqlHTTP({ schema, graphiql: true }));
+  app.use(
+    `/${PATH}`,
+    graphqlHTTP((request) => {
+      const substrateNetwork = request.headers[
+        'substrate-network'
+      ] as SubstrateNetwork;
+      const api = getSubstrateApi(substrateNetwork);
 
-const server = http.createServer(app);
-
-server.listen(PORT, () => {
-  const wsServer = new WebSocketServer({
-    server,
-    path: `/${PATH}`,
-  });
-  useServer({ schema }, wsServer);
-  console.info(
-    `🚀GraphQL-Server is running on http://localhost:${PORT}/${PATH}`
+      return {
+        schema,
+        graphiql: { headerEditorEnabled: true },
+        context: { api },
+      };
+    }),
   );
-});
 
-server.on('error', console.error);
+  const server = http.createServer(app);
+
+  server.listen(PORT, () => {
+    const wsServer = new WebSocketServer({
+      server,
+      path: `/${PATH}`,
+    });
+    useServer(
+      {
+        schema,
+        onError: (ctx, msg, errors) => {
+          console.error('Error', { ctx, msg, errors });
+        },
+      },
+      wsServer,
+    );
+    console.info(
+      `🚀GraphQL-Server is running on http://localhost:${PORT}/${PATH}`,
+    );
+  });
+}
+
+run().catch(console.error);
