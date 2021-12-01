@@ -1,8 +1,11 @@
 import { ServerContext } from '../../types';
 import { getBlockTime } from '../../utils/blockTime';
 import { BN, BN_ONE, formatNumber } from '@polkadot/util';
-import { BlockNumber } from '@polkadot/types/interfaces';
+import { BlockNumber, LeasePeriodOf } from '@polkadot/types/interfaces';
+import { u32 } from '@polkadot/types';
+import type { Option } from '@polkadot/types';
 import { notEmpty } from '../../utils/notEmpty';
+import type { ITuple } from '@polkadot/types/types';
 
 export async function eventsResolver(
   _parent: undefined,
@@ -15,16 +18,23 @@ export async function eventsResolver(
 
   const getterContext = { api, bestNumber, blockTime };
 
-  return [
+  const consts = [
     getCouncilElection(getterContext),
     getDemocracyLaunch(getterContext),
     getParachainLease(getterContext),
     getSocietyChallenge(getterContext),
     getSocietyRotate(getterContext),
     getTreasurySpend(getterContext),
-    ...(await getDemocracyDispatches(getterContext)),
-    ...(await getCouncilMotions(getterContext)),
-  ].filter(notEmpty);
+  ];
+
+  const promises = await Promise.all([
+    getDemocracyDispatches(getterContext),
+    getCouncilMotions(getterContext),
+    getReferendums(getterContext),
+    getAuctionInfo(getterContext),
+  ]);
+
+  return [...consts, ...promises.flat()].filter(notEmpty);
 }
 
 type EVENT = {
@@ -201,6 +211,97 @@ async function getCouncilMotions(context: Context): Promise<EVENT[]> {
       };
     })
     .filter(notEmpty);
+}
+
+async function getReferendums(context: Context): Promise<EVENT[]> {
+  const { api, bestNumber, blockTime } = context;
+  const referendums = await api.derive.democracy?.referendums();
+
+  if (referendums === undefined) {
+    return [];
+  }
+
+  return referendums.flatMap(({ index, status }) => {
+    const enactBlocks = status.end.add(status.delay).isub(bestNumber);
+    const voteBlocks = status.end.sub(bestNumber).isub(BN_ONE);
+
+    const id = index;
+
+    return [
+      {
+        id: `referendumVote_${id}`,
+        blockNumber: bestNumber.add(voteBlocks),
+        date: newDate(voteBlocks, blockTime).toISOString(),
+        title: `Voting ends for referendum ${id}`,
+      },
+      {
+        id: `referendumDispatch_${id}`,
+        blockNumber: bestNumber.add(enactBlocks),
+        date: newDate(enactBlocks, blockTime).toISOString(),
+        title: `Potential dispatch of referendum ${id} (if passed)`,
+      },
+    ];
+  });
+}
+
+function isU32(leasePeriodsPerSlot: unknown): leasePeriodsPerSlot is u32 {
+  return !!leasePeriodsPerSlot;
+}
+
+function getLeaseRanges(api: ServerContext['api']) {
+  if (isU32(api.consts.auctions?.leasePeriodsPerSlot)) {
+    const ranges: [number, number][] = [];
+
+    for (let i = 0; api.consts.auctions.leasePeriodsPerSlot.gtn(i); i++) {
+      for (let j = i; api.consts.auctions.leasePeriodsPerSlot.gtn(j); j++) {
+        ranges.push([i, j]);
+      }
+    }
+
+    return ranges;
+  }
+  const RANGES_DEFAULT: [number, number][] = [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [2, 2],
+    [2, 3],
+    [3, 3],
+  ];
+  return RANGES_DEFAULT;
+}
+
+async function getAuctionInfo(context: Context): Promise<EVENT | undefined> {
+  const { api, bestNumber, blockTime } = context;
+
+  const leaseRanges = getLeaseRanges(api);
+  const rangeMax = new BN(leaseRanges[leaseRanges.length - 1][1]);
+
+  const auctionInfo = (await api.query.auctions.auctionInfo()) as Option<
+    ITuple<[LeasePeriodOf, BlockNumber]>
+  >;
+
+  if (auctionInfo === undefined) {
+    return;
+  }
+
+  const [leasePeriod, endBlock] = auctionInfo.unwrap();
+  const blocks = endBlock.sub(bestNumber);
+
+  const id = `${leasePeriod.toString()} - ${leasePeriod
+    .add(rangeMax)
+    .toString()}`;
+
+  return {
+    id: `parachainAuction_${id}`,
+    blockNumber: endBlock,
+    date: newDate(blocks, blockTime).toISOString(),
+    title: `End of the current parachain auction ${id}`,
+  };
 }
 
 function newDate(blocks: BN, blockTime: number) {
