@@ -32,6 +32,7 @@ export async function eventsResolver(
     getCouncilMotions(getterContext),
     getReferendums(getterContext),
     getAuctionInfo(getterContext),
+    getSchedule(getterContext),
   ]);
 
   return [...consts, ...promises.flat()].filter(notEmpty);
@@ -302,6 +303,47 @@ async function getAuctionInfo(context: Context): Promise<EVENT | undefined> {
     date: newDate(blocks, blockTime).toISOString(),
     title: `End of the current parachain auction ${id}`,
   };
+}
+
+async function getSchedule(context: Context): Promise<EVENT[] | undefined> {
+  const { api, bestNumber, blockTime } = context;
+  const scheduled = await api.query.scheduler?.agenda?.entries();
+
+  if (scheduled === undefined) {
+    return;
+  }
+
+  return scheduled
+    .filter(([, vecSchedOpt]) =>
+      vecSchedOpt.some((schedOpt) => schedOpt.isSome)
+    )
+    .reduce<EVENT[]>((items, [key, vecSchedOpt]) => {
+      const blockNumber = key.args[0];
+
+      return vecSchedOpt
+        .filter((schedOpt) => schedOpt.isSome)
+        .map((schedOpt) => schedOpt.unwrap())
+        .reduce((items, { maybeId }) => {
+          const idOrNull = maybeId.unwrapOr(null);
+          const blocks = blockNumber.sub(bestNumber);
+          const id = idOrNull
+            ? idOrNull.isAscii
+              ? idOrNull.toUtf8()
+              : idOrNull.toHex()
+            : null;
+
+          items.push({
+            id: `scheduler_${id}`,
+            blockNumber,
+            date: newDate(blocks, blockTime).toISOString(),
+            title: id
+              ? `Execute named scheduled task ${id}`
+              : 'Execute anonymous scheduled task',
+          });
+
+          return items;
+        }, items);
+    }, []);
 }
 
 function newDate(blocks: BN, blockTime: number) {
