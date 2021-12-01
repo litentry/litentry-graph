@@ -3,6 +3,7 @@ import balance from './balance';
 import chainInfo from './chainInfo';
 import { council } from './council';
 import { tips, tip } from './tips';
+import { eventsResolver as events } from './events';
 
 export default {
   balance,
@@ -11,4 +12,5 @@ export default {
   tips,
   council,
   account,
+  events,
 };
