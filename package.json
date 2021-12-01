@@ -1,13 +1,23 @@
 {
-  "private": true,
-  "scripts": {
-    "todo-when-nft-indexer-is-removed:build": "yarn workspaces run build",
-    "build": "cd packages/identity-pallet && yarn build && cd ../polkadot-chain-listener && yarn build && yarn build",
-    "postinstall": "yarn run build"
-  },
-  "workspaces": [
-    "packages/*",
-    "api",
-    "substrate-indexer"
-  ]
+    "private": true,
+    "scripts": {
+        "todo-when-nft-indexer-is-removed:build": "yarn workspaces run build",
+        "build": "cd packages/identity-pallet && yarn build && cd ../polkadot-chain-listener && yarn build && yarn build"
+    },
+    "workspaces": [
+        "packages/*",
+        "api",
+        "substrate-indexer"
+    ],
+    "resolutions": {
+        "@polkadot/api": "^6.10.3",
+        "@polkadot/api-contract": "^6.10.3",
+        "@polkadot/rpc-provider": "^6.10.3",
+        "@polkadot/types": "^6.10.3",
+        "@polkadot/types-known": "^6.10.3",
+        "@polkadot/types-support": "^6.10.3",
+        "@polkadot/util": "^8.0.4",
+        "@polkadot/util-crypto": "^8.0.4",
+        "@polkadot/wasm-crypto": "^4.4.1"
+    }
 }
