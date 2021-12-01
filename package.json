@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "todo-when-nft-indexer-is-removed:build": "yarn workspaces run build",
-    "build": "cd packages/identity-pallet && yarn build && cd ../polkadot-chain-listener && yarn build && cd ../demo-schema && yarn build",
+    "build": "cd packages/identity-pallet && yarn build && cd ../polkadot-chain-listener && yarn build && yarn build",
     "postinstall": "yarn run build"
   },
   "workspaces": [
