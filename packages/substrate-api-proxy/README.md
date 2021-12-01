@@ -1,12 +1,8 @@
-# NFT Schemma
-
-Demo GraphQL schema for the initial RN app requirements - needs a name once we know the contents a little better.
+## Substrate API proxy (GraphQL API).
 
 ## Getting Started
 
 ```sh
 yarn
-yarn build
+yarn start:dev
 ```
-
-You can also run `yarn watch` to automatically build the JS when you make changes.
