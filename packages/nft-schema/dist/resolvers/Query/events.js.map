@@ -1,1 +1,0 @@
-{"version":3,"file":"events.js","sourceRoot":"","sources":["../../../src/resolvers/Query/events.ts"],"names":[],"mappings":";;;;;;;;;;;AAAA,2CAA+C;AAE/C,SAA8B,MAAM;;QAClC,MAAM,MAAM,GAAG,MAAM,uBAAU,CAAC,IAAI,EAAE,CAAC,IAAI,CAAC,EAAE,SAAS,EAAE,MAAM,EAAE,CAAC,CAAC;QACnE,OAAO,MAAM,CAAC;IAChB,CAAC;CAAA;AAHD,yBAGC"}
