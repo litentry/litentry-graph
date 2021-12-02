@@ -1,5 +1,4 @@
 import { gql } from 'apollo-server-core';
-// import { typeDefs as nftTypeDefs } from 'nft-schema';
 import { typeDefs as demoTypeDefs } from 'demo-schema';
 
 const base = gql`
@@ -16,4 +15,4 @@ const base = gql`
   }
 `;
 
-export default [base, /* ...nftTypeDefs,*/ ...demoTypeDefs];
+export default [base, ...demoTypeDefs];
