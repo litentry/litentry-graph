@@ -27,7 +27,7 @@ export default /* GraphQL */ `
     termProgress: TermProgress!
   }
 
-  extend type Query {
+  type Query {
     council: Council!
   }
 `;

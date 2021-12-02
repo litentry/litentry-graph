@@ -34,7 +34,7 @@ export default /* GraphQL */ `
     registration: DeriveAccountRegistration!
   }
 
-  extend type Query {
+  type Query {
     account(address: String!): Account
   }
 `;

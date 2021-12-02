@@ -12,7 +12,7 @@ export default /* GraphQL */ `
     sufficients: Int!
     data: BalanceData!
   }
-  extend type Query {
+  type Query {
     balance(address: String!, blockNumber: Int): Balance!
   }
 `;

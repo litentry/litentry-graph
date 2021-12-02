@@ -4,7 +4,7 @@ export default /* GraphQL */ `
     nodeName: String!
     nodeVersion: String!
   }
-  extend type Query {
+  type Query {
     chainInfo: ChainInfo!
   }
 `;

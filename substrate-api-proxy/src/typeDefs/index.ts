@@ -4,10 +4,4 @@ import chainInfo from './chainInfo';
 import council from './council';
 import tips from './tips';
 
-const base = /* GraphQL */ `
-  type Query {
-    _empty: String
-  }
-`;
-
-export default [base, chainInfo, tips, council, account, balance];
+export default [chainInfo, tips, council, account, balance];

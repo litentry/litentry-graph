@@ -9,7 +9,7 @@ export default /* GraphQL */ `
     closes: String
     median: String
   }
-  extend type Query {
+  type Query {
     tips: [Tip!]
     tip(id: String!): Tip
   }
