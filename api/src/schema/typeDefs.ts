@@ -14,4 +14,4 @@ const base = gql`
   }
 `;
 
-export default [base /* ...nftTypeDefs,*/];
+export default [base];
