@@ -6,10 +6,9 @@ import BlockExtrinsicModel from './models/BlockExtrinsic';
 export default async function indexBlockRange(
   start: number,
   end: number,
-  api: ApiPromise
+  api: ApiPromise,
+  exitWhenComplete: boolean
 ): Promise<void> {
-  console.time('indexBlockRange() duration');
-
   let indexed = 0;
   const totalToIndex = end - start + 1;
 
@@ -20,9 +19,11 @@ export default async function indexBlockRange(
   const checkIfComplete = () => {
     indexed++;
     if (indexed === totalToIndex) {
-      console.log('Indexed all blocks in range');
-      console.timeEnd('indexBlockRange() duration');
-      process.exit(0);
+      console.info('Indexed all blocks in range');
+
+      if (exitWhenComplete) {
+        process.exit(0);
+      }
     }
   };
 
@@ -35,7 +36,7 @@ export default async function indexBlockRange(
     }));
 
     if (blockExtrinsicsIndexed && blockEventsIndexed) {
-      console.log(`Skipped block ${blockNumber}`);
+      console.info(`Skipped block ${blockNumber}`);
       checkIfComplete();
       continue;
     }
@@ -45,18 +46,18 @@ export default async function indexBlockRange(
         if (!blockExtrinsicsIndexed) {
           await BlockExtrinsicModel.insertMany(extrinsics);
         } else {
-          console.log(`Skipped extrinsics for block ${blockNumber}`);
+          console.info(`Skipped extrinsics for block ${blockNumber}`);
         }
         if (!blockEventsIndexed) {
           await BlockEventModel.insertMany(events);
         } else {
-          console.log(`Skipped events for block ${blockNumber}`);
+          console.info(`Skipped events for block ${blockNumber}`);
         }
 
-        console.log(`Indexed block ${blockNumber}`);
+        console.info(`Indexed block ${blockNumber}`);
         checkIfComplete();
       } catch (e) {
-        console.log(e);
+        console.error(e);
         process.exit(1);
       }
     });

@@ -28,7 +28,6 @@
     "graphql-subscriptions": "^1.2.1",
     "graphql-type-json": "^0.3.2",
     "mongoose": "^6.0.5",
-    "nft-schema": "0.0.1",
     "subscriptions-transport-ws": "^0.9.19",
     "typescript": "^4.3.5"
   },

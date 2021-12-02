@@ -1,0 +1,1 @@
+{"version":3,"file":"Class.js","sourceRoot":"","sources":["../../src/resolvers/Class.ts"],"names":[],"mappings":";;;;;;;;;;;AAAA,2CAA+C;AAE/C,kBAAe;IACP,MAAM,CAAC,MAAuB;;YAClC,MAAM,MAAM,GAAG,MAAM,uBAAU,CAAC,IAAI,CAAC,EAAE,OAAO,EAAE,QAAQ,CAAC,MAAM,CAAC,GAAG,CAAC,EAAE,CAAC,CAAC;YACxE,OAAO,MAAM,CAAC;QAChB,CAAC;KAAA;CACF,CAAC"}

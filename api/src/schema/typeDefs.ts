@@ -1,5 +1,4 @@
 import { gql } from 'apollo-server-core';
-// import { typeDefs as nftTypeDefs } from 'nft-schema';
 
 const base = gql`
   scalar Date

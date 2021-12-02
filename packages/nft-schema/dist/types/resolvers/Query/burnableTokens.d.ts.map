@@ -1,0 +1,1 @@
+{"version":3,"file":"burnableTokens.d.ts","sourceRoot":"","sources":["../../../../src/resolvers/Query/burnableTokens.ts"],"names":[],"mappings":"AAAA,OAAO,EAAc,KAAK,EAAmB,MAAM,YAAY,CAAC;AAEhE,wBAA8B,cAAc,CAC1C,MAAM,EAAE,SAAS,EACjB,EAAE,KAAK,EAAE,EAAE;IAAE,KAAK,EAAE,MAAM,CAAA;CAAE,GAC3B,OAAO,CAAC,KAAK,EAAE,CAAC,CAUlB"}
