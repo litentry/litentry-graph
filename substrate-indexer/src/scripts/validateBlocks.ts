@@ -6,6 +6,7 @@ import config from '../config';
 import BlockEventModel from '../models/BlockEvent';
 import BlockExtrinsicModel from '../models/BlockExtrinsic';
 import parseBlock from '../parseBlock';
+import mongoUri from '../mongoUri';
 
 const logFile = fs.createWriteStream('./log/validationErrors.log', {
   flags: 'w',
@@ -40,9 +41,7 @@ async function run() {
   }
 
   try {
-    const uri = `mongodb+srv://${config.username}:${config.password}@${config.clusterUrl}/${config.databaseName}?retryWrites=true&w=majority`;
-
-    await connect(uri);
+    await connect(mongoUri);
 
     const api = await ApiPromise.create({
       provider: new WsProvider(config.provider),
@@ -105,17 +104,17 @@ async function run() {
           }
         });
 
-        console.log(`Checked: ${blockNumber}`);
+        console.info(`Checked: ${blockNumber}`);
         checked++;
 
         if (checked === config.totalToValidate) {
-          console.log('Done');
+          console.info('Done');
           process.exit(0);
         }
       });
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     process.exit(1);
   }
 }
