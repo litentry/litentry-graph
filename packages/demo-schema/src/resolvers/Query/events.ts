@@ -18,7 +18,7 @@ export async function eventsResolver(
 
   const getterContext = { api, bestNumber, blockTime };
 
-  const consts = [
+  const constEvents = [
     getCouncilElection(getterContext),
     getDemocracyLaunch(getterContext),
     getParachainLease(getterContext),
@@ -27,21 +27,35 @@ export async function eventsResolver(
     getTreasurySpend(getterContext),
   ];
 
-  const promises = await Promise.all([
-    getDemocracyDispatches(getterContext),
-    getCouncilMotions(getterContext),
-    getReferendums(getterContext),
-    getAuctionInfo(getterContext),
-    getSchedule(getterContext),
-  ]);
+  const promiseEvents = (
+    await Promise.all([
+      getDemocracyDispatches(getterContext),
+      getCouncilMotions(getterContext),
+      getReferendums(getterContext),
+      getAuctionInfo(getterContext),
+      getSchedule(getterContext),
+      getStackingInfo(getterContext),
+    ])
+  ).flat();
 
-  return [...consts, ...promises.flat()].filter(notEmpty);
+  return [...constEvents, ...promiseEvents]
+    .filter(notEmpty)
+    .sort(sortByDate)
+    .map(dateToIsoString);
+}
+
+function dateToIsoString(event: EVENT) {
+  return { ...event, date: event.date.toISOString() };
+}
+
+function sortByDate(a: EVENT, b: EVENT): number {
+  return a.date.getTime() - b.date.getTime();
 }
 
 type EVENT = {
   id: string;
   blockNumber: BN;
-  date: string;
+  date: Date;
   title: string;
 };
 
@@ -68,7 +82,7 @@ function getCouncilElection(context: Context): EVENT | undefined {
   return {
     id: 'councilElection',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: 'Election of new council candidates',
   };
 }
@@ -86,7 +100,7 @@ function getDemocracyLaunch(context: Context): EVENT | undefined {
   return {
     id: 'democracyLaunch',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: 'Start of the next referendum voting period',
   };
 }
@@ -106,7 +120,7 @@ function getParachainLease(context: Context): EVENT | undefined {
   return {
     id: 'parachainLease',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: `Start of the next parachain lease period ${id}`,
   };
 }
@@ -124,7 +138,7 @@ function getSocietyChallenge(context: Context): EVENT | undefined {
   return {
     id: 'societyChallenge',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: 'Start of next membership challenge period',
   };
 }
@@ -142,7 +156,7 @@ function getSocietyRotate(context: Context): EVENT | undefined {
   return {
     id: 'societyRotate',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: 'Acceptance of new members and bids',
   };
 }
@@ -160,7 +174,7 @@ function getTreasurySpend(context: Context): EVENT | undefined {
   return {
     id: 'treasurySpend',
     blockNumber: bestNumber.add(blocks),
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: 'Start of the next treasury spend period',
   };
 }
@@ -179,7 +193,7 @@ async function getDemocracyDispatches(context: Context): Promise<EVENT[]> {
     return {
       id: `democracyDispatch_${index}`,
       blockNumber: at,
-      date: newDate(blocks, blockTime).toISOString(),
+      date: newDate(blocks, blockTime),
       title: `Enactment of the result of referendum ${index}`,
     };
   });
@@ -207,7 +221,7 @@ async function getCouncilMotions(context: Context): Promise<EVENT[]> {
       return {
         id: `councilMotion_${id}`,
         blockNumber: votes.end,
-        date: newDate(blocks, blockTime).toISOString(),
+        date: newDate(blocks, blockTime),
         title: `Voting ends on council motion ${id}`,
       };
     })
@@ -226,19 +240,19 @@ async function getReferendums(context: Context): Promise<EVENT[]> {
     const enactBlocks = status.end.add(status.delay).isub(bestNumber);
     const voteBlocks = status.end.sub(bestNumber).isub(BN_ONE);
 
-    const id = index;
+    const id = formatNumber(index);
 
     return [
       {
         id: `referendumVote_${id}`,
         blockNumber: bestNumber.add(voteBlocks),
-        date: newDate(voteBlocks, blockTime).toISOString(),
+        date: newDate(voteBlocks, blockTime),
         title: `Voting ends for referendum ${id}`,
       },
       {
         id: `referendumDispatch_${id}`,
         blockNumber: bestNumber.add(enactBlocks),
-        date: newDate(enactBlocks, blockTime).toISOString(),
+        date: newDate(enactBlocks, blockTime),
         title: `Potential dispatch of referendum ${id} (if passed)`,
       },
     ];
@@ -300,7 +314,7 @@ async function getAuctionInfo(context: Context): Promise<EVENT | undefined> {
   return {
     id: `parachainAuction_${id}`,
     blockNumber: endBlock,
-    date: newDate(blocks, blockTime).toISOString(),
+    date: newDate(blocks, blockTime),
     title: `End of the current parachain auction ${id}`,
   };
 }
@@ -335,7 +349,7 @@ async function getSchedule(context: Context): Promise<EVENT[] | undefined> {
           items.push({
             id: `scheduler_${id}`,
             blockNumber,
-            date: newDate(blocks, blockTime).toISOString(),
+            date: newDate(blocks, blockTime),
             title: id
               ? `Execute named scheduled task ${id}`
               : 'Execute anonymous scheduled task',
@@ -344,6 +358,59 @@ async function getSchedule(context: Context): Promise<EVENT[] | undefined> {
           return items;
         }, items);
     }, []);
+}
+
+async function getStackingInfo(context: Context): Promise<EVENT[]> {
+  const { api, bestNumber, blockTime } = context;
+  const slashDeferDuration = api.consts.staking?.slashDeferDuration;
+  const [sessionInfo, slashes] = await Promise.all([
+    api.derive.session.progress(),
+    api.query.staking?.unappliedSlashes.entries() ?? Promise.resolve([]),
+  ]);
+  const blocksEra = sessionInfo.eraLength.sub(sessionInfo.eraProgress);
+  const blocksSes = sessionInfo.sessionLength.sub(sessionInfo.sessionProgress);
+  const slashDuration = slashDeferDuration?.mul(sessionInfo.eraLength);
+  const slashEras = slashDuration
+    ? slashes
+        .filter(([, values]) => values.length)
+        .map(([key]) => {
+          const eraIndex = key.args[0];
+          const blockProgress = sessionInfo.activeEra
+            .sub(eraIndex)
+            .isub(BN_ONE)
+            .imul(sessionInfo.eraLength)
+            .iadd(sessionInfo.eraProgress);
+          const blocks = slashDuration.sub(blockProgress);
+          const id = formatNumber(eraIndex);
+
+          return {
+            id: `stakingSlash_${id}`,
+            date: newDate(blocks, blockTime),
+            blockNumber: bestNumber.add(blocks),
+            title: `Application of slashes from era ${id}`,
+          };
+        })
+    : [];
+
+  return [
+    {
+      id: 'stakingEpoch',
+      date: newDate(blocksSes, blockTime),
+      blockNumber: bestNumber.add(blocksSes),
+      title: `Start of a new staking session ${formatNumber(
+        sessionInfo.currentIndex.add(BN_ONE)
+      )}`,
+    },
+    {
+      id: 'stakingEra',
+      blockNumber: bestNumber.add(blocksEra),
+      date: newDate(blocksEra, blockTime),
+      title: `Start of a new staking era ${formatNumber(
+        sessionInfo.activeEra.add(BN_ONE)
+      )}`,
+    },
+    ...slashEras,
+  ];
 }
 
 function newDate(blocks: BN, blockTime: number) {
