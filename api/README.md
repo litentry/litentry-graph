@@ -11,7 +11,7 @@ _If you are working on one of the packages you will need to rebuild the `dist` f
 
 ## Packaging Schemas
 
-Take a look at `packages/demo-schema` and `packages/nft-schema` to see how we can bundle resolvers, typeDefs and publishers (_this is a method to run event listeners for subscriptions - see `nft-models` for an example, maybe rename this_).
+Take a look at `packages/demo-schema` to see how we can bundle modules of GraphQL schemas.
 
 The schema packages are used in 3 places:
 

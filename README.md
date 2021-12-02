@@ -4,64 +4,18 @@ This repository is a collection of applications to demonstrate how we see the mi
 
 The database layer is using `mongodb` and `mongoose` (for conveience with schemas & connections). It can be hosted anywhere, but [MongoDB's Atlas](https://www.mongodb.com/cloud/atlas) is recommended. It has a free tier to get up and running, and saves the hassle of managing the database.
 
-## Getting Started
-
-Add environment variables (replace example values with real ones):
-
-```sh
-cp nft-indexer/.env.example nft-indexer/.env
-```
-
-Install dependencies:
-
-```sh
-yarn
-```
-
-_There is a `postinstall` script in the chain listener and the nft-models that transpiles the typescript to JS so we can import the libs_
-
-Run the NFT indexer:
-
-```sh
-cd nft-indexer && yarn start
-```
-
-Run the API (in a 2nd terminal)
-
-```sh
-cd api && yarn start
-```
-
 ## Contents
 
-### `packages/polkadot-chain-listener`
+- [Litentry API Gateway](https://github.com/litentry/web3-indexer/blob/main/api/README.md)
 
-A Node JS application to extract event data from the block chain.
+- [Substrate Indexer](https://github.com/litentry/web3-indexer/blob/main/substrate-indexer/README.md)
 
-```js
-import polkadotChainListener from "@litenry/polkadot-chain-listener";
+- [packages/demo-schema](https://github.com/litentry/web3-indexer/blob/main/packages/demo-schema/README.md). This is the package with the Polkadot API proxy code. It doesn't interact with indexed data, it's for offloading the Polkadot API work to the server. It feeds into our API gatewat.
 
-(async () => {
-  await polkadotChainListener(provider, types, handlers);
-})();
-```
+- [packages/identity-pallet](https://github.com/litentry/web3-indexer/blob/main/packages/identity-pallet/README.md). This is the mapping layer for the events and extrinsics on the identity pallet. It reads from the data provided by the Substrate Indexer, creates its own data, and feeds that via GraphQL resolvers into our API Gateway. This is [not complete](https://github.com/litentry/web3-indexer/issues/19).
 
-- `provider` is the chain websocket address you want to subscribe to
-- `types` are `RegistryTypes` from `@Polkadot/api`
-- `handlers` is an object keyed on `section` and `EventName`. When an event is detected on chain (e.g. `nft.CreatedClass`) the handler will receive the data, at which point it can do whatever it wants with it.
+## Getting Started
 
-### `nft-indexer`
+This is build with `yarn-workspaces`, to install packages and compile the typescript run `yarn`
 
-A Node JS application that runs the chain listener and listens to events from the NFT pallet. The handlers parse (and sometimes expand on) the data from the event and saves it to `mongodb`.
-
-### `packages/nft-models`
-
-A collection of `mongoose` models shared by the `nft-indexer` and the `api`
-
-### `api`
-
-A `graphql` application to allow the webapp to retrieve data from `mongodb`.
-
-## TODO
-
-Add a workflow script to fire it all up in production.
+_There is a `postinstall` script that triggers `yarn build` in all the packages & applications._
