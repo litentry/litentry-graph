@@ -5,7 +5,7 @@ import type { BlockNumber } from '@polkadot/types/interfaces';
 export async function council(
   _: undefined,
   __: undefined,
-  { api }: ServerContext
+  { api }: ServerContext,
 ) {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),
@@ -28,7 +28,7 @@ export async function council(
 
       return result;
     },
-    {}
+    {},
   );
 
   const members = electionsInfo.members.map(([accountId, balance]) => ({
@@ -51,14 +51,14 @@ export async function council(
     ? {
         address: String(prime),
         backing: electionsInfo.members.find(([accountId]) =>
-          accountId.eq(prime)
+          accountId.eq(prime),
         )?.[1],
       }
     : null;
 
   const { termLeft, percentage } = getTermLeft(
     bnToBn(electionsInfo.termDuration || 0),
-    bestNumber
+    bestNumber,
   );
   const termProgress = {
     termDuration: electionsInfo.termDuration,

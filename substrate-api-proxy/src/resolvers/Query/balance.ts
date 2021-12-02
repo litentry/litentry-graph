@@ -1,12 +1,12 @@
-import type { AccountInfo } from '@polkadot/types/interfaces/system';
 import type { ApiPromise } from '@polkadot/api';
+import type { AccountInfo } from '@polkadot/types/interfaces/system';
 import BN from 'bignumber.js';
 import type { ServerContext } from '../../types';
 
 export default async function balance(
   _: undefined,
   { address, blockNumber }: { address: string; blockNumber?: number },
-  { api }: ServerContext
+  { api }: ServerContext,
 ): Promise<{
   nonce: number;
   consumers: number;

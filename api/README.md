@@ -11,7 +11,7 @@ _If you are working on one of the packages you will need to rebuild the `dist` f
 
 ## Packaging Schemas
 
-Take a look at `packages/demo-schema` to see how we can bundle modules of GraphQL schemas.
+Take a look at `packages/identity-pallet` to see how we can bundle modules of GraphQL schemas.
 
 The schema packages are used in 3 places:
 

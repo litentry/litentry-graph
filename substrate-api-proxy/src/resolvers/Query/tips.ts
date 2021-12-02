@@ -1,7 +1,7 @@
 import type { Option, Bytes } from '@polkadot/types';
+import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
 import { BN_ZERO } from '@polkadot/util';
 import type {
-  OpenTip,
   Hash,
   AccountId,
   // BlockNumber,
@@ -12,12 +12,12 @@ import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
 import type { ServerContext } from '../../types';
 
-type Tip = [string, OpenTip];
+type Tip = [string, PalletTipsOpenTip];
 
 export async function tips(
   _: undefined,
   __: undefined,
-  { api }: ServerContext
+  { api }: ServerContext,
 ): Promise<
   {
     id: string;
@@ -33,9 +33,7 @@ export async function tips(
     .then((keys) => keys.map((key) => key.args[0].toHex()));
 
   if (hashes.length) {
-    const optionTips: Option<OpenTip>[] = await api.query.tips.tips.multi(
-      hashes
-    );
+    const optionTips = await api.query.tips.tips.multi(hashes);
     const openTips = extractTips([hashes, optionTips], hashes);
 
     const tips =
@@ -57,7 +55,7 @@ export async function tips(
 export async function tip(
   _: undefined,
   { id }: { id: string },
-  { api }: ServerContext
+  { api }: ServerContext,
 ) {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();
@@ -71,7 +69,7 @@ export async function tip(
   };
 }
 
-async function extractTipState(tip: OpenTip | OpenTipTo225) {
+async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
   const closes = tip.closes?.unwrapOr(null);
   let finder: AccountId | null = null;
   let deposit: Balance | null = null;
@@ -102,13 +100,15 @@ async function extractTipState(tip: OpenTip | OpenTipTo225) {
   };
 }
 
-function isCurrentTip(tip: OpenTip | OpenTipTo225): tip is OpenTip {
-  return !!(tip as OpenTip)?.findersFee;
+function isCurrentTip(
+  tip: PalletTipsOpenTip | OpenTipTo225,
+): tip is PalletTipsOpenTip {
+  return !!(tip as PalletTipsOpenTip)?.findersFee;
 }
 
 function extractTips(
-  tipsWithHashes?: [string[], Option<OpenTip>[]],
-  inHashes?: string[] | null
+  tipsWithHashes?: [string[], Option<PalletTipsOpenTip>[]],
+  inHashes?: string[] | null,
 ): Tip[] | undefined {
   if (!tipsWithHashes || !inHashes) {
     return undefined;
@@ -117,12 +117,13 @@ function extractTips(
   const [hashes, optTips] = tipsWithHashes;
 
   return optTips
-    ?.map((opt, index): [string, OpenTip | null] => [
+    ?.map((opt, index): [string, PalletTipsOpenTip | null] => [
       hashes[index] as string,
       opt.unwrapOr(null),
     ])
     .filter(
-      (val): val is [string, OpenTip] => inHashes.includes(val[0]) && !!val[1]
+      (val): val is [string, PalletTipsOpenTip] =>
+        inHashes.includes(val[0]) && !!val[1],
     )
     .sort((a, b) =>
       a[1].closes.isNone
@@ -131,7 +132,7 @@ function extractTips(
           : -1
         : b[1].closes.isSome
         ? b[1].closes.unwrap().cmp(a[1].closes.unwrap())
-        : 1
+        : 1,
     );
 }
 

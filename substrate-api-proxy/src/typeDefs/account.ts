@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-core';
-
-export default gql`
+export default /* GraphQL */ `
   type IdentityJudgement {
     isUnknown: Boolean
     isFeePaid: Boolean
@@ -36,7 +34,7 @@ export default gql`
     registration: DeriveAccountRegistration!
   }
 
-  extend type Query {
+  type Query {
     account(address: String!): Account
   }
 `;

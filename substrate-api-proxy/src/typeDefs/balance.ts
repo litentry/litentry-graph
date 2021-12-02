@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-core';
-
-export default gql`
+export default /* GraphQL */ `
   type BalanceData {
     free: Float!
     reserved: Float!
@@ -14,7 +12,7 @@ export default gql`
     sufficients: Int!
     data: BalanceData!
   }
-  extend type Query {
+  type Query {
     balance(address: String!, blockNumber: Int): Balance!
   }
 `;

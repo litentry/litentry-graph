@@ -4,4 +4,4 @@ import chainInfo from './chainInfo';
 import council from './council';
 import tips from './tips';
 
-export default [balance, chainInfo, tips, council, account];
+export default [chainInfo, tips, council, account, balance];

@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-core';
-
-export default gql`
+export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
@@ -11,7 +9,7 @@ export default gql`
     closes: String
     median: String
   }
-  extend type Query {
+  type Query {
     tips: [Tip!]
     tip(id: String!): Tip
   }
