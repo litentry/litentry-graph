@@ -43,7 +43,7 @@ export type BalanceData = {
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
   activeBounties: Scalars['Int'];
-  bountyIndex: Scalars['Float'];
+  bountyCount: Scalars['Float'];
   pastBounties: Scalars['Float'];
   totalValue: Scalars['Float'];
   treasurySpendPeriod: Scalars['Float'];
@@ -327,7 +327,7 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
 
 export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
   activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  bountyIndex?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  bountyCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   pastBounties?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   totalValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   treasurySpendPeriod?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;

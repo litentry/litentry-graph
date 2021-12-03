@@ -1,7 +1,7 @@
 export default /* GraphQL */ `
   type BountiesSummary {
     activeBounties: Int!
-    bountyIndex: Float!
+    bountyCount: Float!
     pastBounties: Float!
     totalValue: Float!
     treasurySpendPeriod: Float!

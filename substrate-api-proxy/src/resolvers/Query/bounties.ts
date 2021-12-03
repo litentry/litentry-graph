@@ -5,7 +5,7 @@ import type { ServerContext } from '../../types';
 
 type BountiesSummary = {
   activeBounties: number
-  bountyIndex: number
+  bountyCount: number
   pastBounties: number
   totalValue: number
   treasurySpendPeriod: number
@@ -17,13 +17,13 @@ export async function bountiesSummary(
   { api }: ServerContext
 ): Promise<BountiesSummary> {
   const deriveBounties = await api.derive.bounties.bounties();
-  const bountyIndex = await (api.query.bounties || api.query.treasury).bountyCount();
+  const bountyCount = await (api.query.bounties || api.query.treasury).bountyCount();
   const activeBounties = deriveBounties.length;
-  const pastBounties = bountyIndex.subn(activeBounties);
+  const pastBounties = bountyCount.subn(activeBounties);
   const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
 
   return {
-    bountyIndex: bountyIndex.toNumber(),
+    bountyCount: bountyCount.toNumber(),
     activeBounties,
     pastBounties: pastBounties.toNumber(),
     totalValue: totalValue.toNumber(),
