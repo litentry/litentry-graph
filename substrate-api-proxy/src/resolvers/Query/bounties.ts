@@ -60,18 +60,16 @@ export async function bounties(
   { api }: ServerContext
 ): Promise<Bounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
-  return deriveBounties.map(({bounty, description, index}) => {
-    return {
-      index,
-      proposer: bounty.proposer,
-      value: bounty.value,
-      fee: bounty.fee,
-      curatorDeposit: bounty.curatorDeposit,
-      bond: bounty.bond,
-      bountyStatus: getBountyStatus(bounty.status),
-      description,
-    }
-  })
+  return deriveBounties.map(({bounty, description, index}) => ({
+    index,
+    proposer: bounty.proposer,
+    value: bounty.value,
+    fee: bounty.fee,
+    curatorDeposit: bounty.curatorDeposit,
+    bond: bounty.bond,
+    bountyStatus: getBountyStatus(bounty.status),
+    description,
+  }))
 }
 
 export async function bounty(
