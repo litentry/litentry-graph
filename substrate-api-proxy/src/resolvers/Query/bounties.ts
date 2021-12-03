@@ -1,20 +1,19 @@
 
 import {BN} from '@polkadot/util';
-import {u32} from '@polkadot/types'
-import {BountyStatus, BountyIndex, AccountId, BlockNumber, Balance} from '@polkadot/types/interfaces';
+import {BountyStatus} from '@polkadot/types/interfaces';
 import type { ServerContext } from '../../types';
 
 export async function bountiesSummary(
-  _: undefined,
-  __: undefined,
+  _: Record<string, string>,
+  __: Record<string, string>,
   { api }: ServerContext
 ): Promise<
 {
   activeBounties: number
-  bountyIndex: u32
-  pastBounties: BN
-  totalValue: BN
-  treasurySpendPeriod: u32
+  bountyIndex: string
+  pastBounties: string
+  totalValue: string
+  treasurySpendPeriod: string
 }
 > {
   const deriveBounties = await api.derive.bounties.bounties();
@@ -24,11 +23,11 @@ export async function bountiesSummary(
   const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
 
   return {
-    bountyIndex,
+    bountyIndex: bountyIndex.toString(),
     activeBounties,
-    pastBounties,
-    totalValue,
-    treasurySpendPeriod: api.consts.treasury.spendPeriod,
+    pastBounties: pastBounties.toString(),
+    totalValue: totalValue.toString(),
+    treasurySpendPeriod: api.consts.treasury.spendPeriod.toString(),
   };
 }
 
@@ -36,49 +35,49 @@ export async function bountiesSummary(
 type StatusName = 'Active' | 'Approved' | 'CuratorProposed' | 'Funded' | 'PendingPayout' | 'Proposed';
 
 type BountyStatusInfo = {
-  beneficiary?: AccountId;
+  beneficiary?: string;
   status: StatusName;
-  curator?: AccountId;
-  unlockAt?: BlockNumber;
-  updateDue?: BlockNumber;
+  curator?: string;
+  unlockAt?: string;
+  updateDue?: string;
 }
 
 type Bounty = {
-  index: BountyIndex;
-  proposer: AccountId;
-  value: Balance;
-  fee: Balance;
-  curatorDeposit: Balance;
-  bond: Balance;
+  index: string;
+  proposer: string;
+  value: string;
+  fee: string;
+  curatorDeposit: string;
+  bond: string;
   bountyStatus: BountyStatusInfo;
   description: string;
 };
 
 export async function bounties(
-  _: undefined,
-  __: undefined,
+  _: Record<string, string>,
+  __: Record<string, string>,
   { api }: ServerContext
 ): Promise<Bounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   return deriveBounties.map(({bounty, description, index}) => ({
-    index,
-    proposer: bounty.proposer,
-    value: bounty.value,
-    fee: bounty.fee,
-    curatorDeposit: bounty.curatorDeposit,
-    bond: bounty.bond,
+    index: index.toString(),
+    proposer: bounty.proposer.toString(),
+    value: bounty.value.toString(),
+    fee: bounty.fee.toString(),
+    curatorDeposit: bounty.curatorDeposit.toString(),
+    bond: bounty.bond.toString(),
     bountyStatus: getBountyStatus(bounty.status),
     description,
   }))
 }
 
 export async function bounty(
-  _: undefined,
-  { index }: { index: BountyIndex },
+  _: Record<string, string>,
+  { index }: { index: string },
   { api }: ServerContext,
-): Promise<Bounty | undefined> {
-  const bountiesList = await bounties(undefined, undefined, {api})
-  return bountiesList.find((bounty) => bounty.index.toString() === index.toString())
+): Promise<Bounty> {
+  const bountiesList = await bounties({}, {}, {api})
+  return bountiesList.find((bounty) => bounty.index.toString() === index) as Bounty
 }
 
 const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
@@ -96,25 +95,25 @@ const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
     result = {
       ...result,
       status: 'CuratorProposed',
-      curator: status.asCuratorProposed.curator,
+      curator: status.asCuratorProposed.curator.toString(),
     };
   }
 
   if (status.isActive) {
     result = {
       ...result,
-      curator: status.asActive.curator,
-      updateDue: status.asActive.updateDue,
+      curator: status.asActive.curator.toString(),
+      updateDue: status.asActive.updateDue.toString(),
     };
   }
 
   if (status.isPendingPayout) {
     result = {
       ...result,
-      beneficiary: status.asPendingPayout.beneficiary,
+      beneficiary: status.asPendingPayout.beneficiary.toString(),
       status: 'PendingPayout',
-      curator: status.asPendingPayout.curator,
-      unlockAt: status.asPendingPayout.unlockAt,
+      curator: status.asPendingPayout.curator.toString(),
+      unlockAt: status.asPendingPayout.unlockAt.toString(),
     };
   }
 
