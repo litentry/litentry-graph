@@ -1,4 +1,3 @@
-// import { Resolvers } from '../generated/graphql';
 import { Resolvers } from '../generated/graphql';
 import { Query } from './Query';
 
