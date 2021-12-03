@@ -4,7 +4,7 @@ import chainInfo from './chainInfo';
 import { council } from './council';
 import { tips, tip } from './tips';
 
-export default {
+export const Query = {
   balance,
   chainInfo,
   tip,

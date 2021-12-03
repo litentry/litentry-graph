@@ -1,10 +1,11 @@
+import { RegistrationJudgement } from '../../generated/graphql';
 import { ServerContext } from '../../types';
 
-export async function account(
-  parent: { address: string } | undefined,
-  args: { address: string } | undefined,
-  context: ServerContext
-) {
+export const account = async (
+  parent: { address?: string },
+  args: { address?: string },
+  context: ServerContext,
+) => {
   const { api } = context;
   const address = parent?.address || args?.address;
 
@@ -24,11 +25,21 @@ export async function account(
     address: address,
     registration: {
       ...info.identity,
-      judgements: info.identity.judgements.map(([index, judgement]) => ({
-        index,
-        judgement,
-      })),
+      judgements: info.identity.judgements.map<RegistrationJudgement>(
+        ([index, judgement]) => ({
+          index: index.toNumber(),
+          judgement: {
+            isErroneous: judgement.isErroneous,
+            isFeePaid: judgement.isFeePaid,
+            isKnownGood: judgement.isKnownGood,
+            isLowQuality: judgement.isLowQuality,
+            isOutOfDate: judgement.isOutOfDate,
+            isReasonable: judgement.isReasonable,
+            isUnknown: judgement.isUnknown,
+          },
+        }),
+      ),
     },
     display: display.toUpperCase(),
   };
-}
+};

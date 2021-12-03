@@ -7,7 +7,7 @@ export default async function registrars(): Promise<Registrar[]> {
 }
 
 export async function registrarById(
-  _: undefined,
+  _: Record<string, never>,
   { id }: { id: number }
 ): Promise<Registrar | null> {
   const registrar = await RegistrarModel.findById(id);

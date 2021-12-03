@@ -2,10 +2,10 @@ export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
-    who: String!
-    finder: String!
+    who: String
+    finder: String
     reason: String!
-    deposit: String!
+    deposit: String
     closes: String
     median: String
   }
