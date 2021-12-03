@@ -74,7 +74,14 @@ export async function bounties(
   })
 }
 
-
+export async function bounty(
+  _: undefined,
+  { index }: { index: BountyIndex },
+  { api }: ServerContext,
+): Promise<Bounty | undefined> {
+  const bountiesList = await bounties(undefined, undefined, {api})
+  return bountiesList.find((bounty) => bounty.index.toString() === index.toString())
+}
 
 const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
   const statusAsString = status.type as StatusName;

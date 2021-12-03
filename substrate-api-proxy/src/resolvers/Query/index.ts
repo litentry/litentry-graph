@@ -3,7 +3,7 @@ import balance from './balance';
 import chainInfo from './chainInfo';
 import { council } from './council';
 import { tips, tip } from './tips';
-import {bountiesSummary, bounties} from './bounties'
+import {bountiesSummary, bounties, bounty} from './bounties'
 
 export default {
   balance,
@@ -14,4 +14,5 @@ export default {
   account,
   bountiesSummary,
   bounties,
+  bounty,
 };

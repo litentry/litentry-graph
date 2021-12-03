@@ -26,5 +26,6 @@ export default /* GraphQL */ `
   type Query {
     bountiesSummary: BountiesSummary!
     bounties: [Bounty!]!
+    bounty(index: Int!): Bounty
   }
 `;
