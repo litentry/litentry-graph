@@ -74,9 +74,9 @@ export async function bounties(
 export async function bounty(
   _: Record<string, string>,
   { index }: { index: string },
-  { api }: ServerContext,
+  serverContext: ServerContext,
 ): Promise<Bounty> {
-  const bountiesList = await bounties({}, {}, {api})
+  const bountiesList = await bounties({}, {}, serverContext)
   return bountiesList.find((bounty) => bounty.index.toString() === index) as Bounty
 }
 
