@@ -1,31 +1,31 @@
 export default /* GraphQL */ `
   type BountiesSummary {
     activeBounties: Int!
-    bountyIndex: String!
-    pastBounties: String!
-    totalValue: String!
-    treasurySpendPeriod: String!
+    bountyIndex: Float!
+    pastBounties: Float!
+    totalValue: Float!
+    treasurySpendPeriod: Float!
   }
   type BountyStatus {
     beneficiary: String
     status: String!
     curator: String
-    unlockAt: String
-    updateDue: String
+    unlockAt: Float
+    updateDue: Float
   }
   type Bounty {
-    index: String!
+    index: Float!
     description: String!
     proposer: String!
-    value: String!
-    fee: String!
-    curatorDeposit: String!
-    bond: String!
+    value: Float!
+    fee: Float!
+    curatorDeposit: Float!
+    bond: Float!
     bountyStatus: BountyStatus
   }
   type Query {
     bountiesSummary: BountiesSummary!
     bounties: [Bounty!]!
-    bounty(index: String!): Bounty
+    bounty(index: Float!): Bounty
   }
 `;

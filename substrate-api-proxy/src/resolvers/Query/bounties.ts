@@ -1,21 +1,21 @@
 
 import {BN} from '@polkadot/util';
-import {BountyStatus} from '@polkadot/types/interfaces';
+import type {BountyStatus} from '@polkadot/types/interfaces';
 import type { ServerContext } from '../../types';
+
+type BountiesSummary = {
+  activeBounties: number
+  bountyIndex: number
+  pastBounties: number
+  totalValue: number
+  treasurySpendPeriod: number
+}
 
 export async function bountiesSummary(
   _: Record<string, string>,
   __: Record<string, string>,
   { api }: ServerContext
-): Promise<
-{
-  activeBounties: number
-  bountyIndex: string
-  pastBounties: string
-  totalValue: string
-  treasurySpendPeriod: string
-}
-> {
+): Promise<BountiesSummary> {
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyIndex = await (api.query.bounties || api.query.treasury).bountyCount();
   const activeBounties = deriveBounties.length;
@@ -23,11 +23,11 @@ export async function bountiesSummary(
   const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
 
   return {
-    bountyIndex: bountyIndex.toString(),
+    bountyIndex: bountyIndex.toNumber(),
     activeBounties,
-    pastBounties: pastBounties.toString(),
-    totalValue: totalValue.toString(),
-    treasurySpendPeriod: api.consts.treasury.spendPeriod.toString(),
+    pastBounties: pastBounties.toNumber(),
+    totalValue: totalValue.toNumber(),
+    treasurySpendPeriod: api.consts.treasury.spendPeriod.toNumber(),
   };
 }
 
@@ -38,17 +38,17 @@ type BountyStatusInfo = {
   beneficiary?: string;
   status: StatusName;
   curator?: string;
-  unlockAt?: string;
-  updateDue?: string;
+  unlockAt?: number;
+  updateDue?: number;
 }
 
 type Bounty = {
-  index: string;
+  index: number;
   proposer: string;
-  value: string;
-  fee: string;
-  curatorDeposit: string;
-  bond: string;
+  value: number;
+  fee: number;
+  curatorDeposit: number;
+  bond: number;
   bountyStatus: BountyStatusInfo;
   description: string;
 };
@@ -60,12 +60,12 @@ export async function bounties(
 ): Promise<Bounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   return deriveBounties.map(({bounty, description, index}) => ({
-    index: index.toString(),
+    index: index.toNumber(),
     proposer: bounty.proposer.toString(),
-    value: bounty.value.toString(),
-    fee: bounty.fee.toString(),
-    curatorDeposit: bounty.curatorDeposit.toString(),
-    bond: bounty.bond.toString(),
+    value: bounty.value.toNumber(),
+    fee: bounty.fee.toNumber(),
+    curatorDeposit: bounty.curatorDeposit.toNumber(),
+    bond: bounty.bond.toNumber(),
     bountyStatus: getBountyStatus(bounty.status),
     description,
   }))
@@ -73,11 +73,11 @@ export async function bounties(
 
 export async function bounty(
   _: Record<string, string>,
-  { index }: { index: string },
+  { index }: { index: number },
   serverContext: ServerContext,
 ): Promise<Bounty> {
   const bountiesList = await bounties({}, {}, serverContext)
-  return bountiesList.find((bounty) => bounty.index.toString() === index) as Bounty
+  return bountiesList.find((bounty) => bounty.index === index) as Bounty
 }
 
 const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
@@ -103,7 +103,7 @@ const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
     result = {
       ...result,
       curator: status.asActive.curator.toString(),
-      updateDue: status.asActive.updateDue.toString(),
+      updateDue: status.asActive.updateDue.toNumber(),
     };
   }
 
@@ -113,7 +113,7 @@ const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
       beneficiary: status.asPendingPayout.beneficiary.toString(),
       status: 'PendingPayout',
       curator: status.asPendingPayout.curator.toString(),
-      unlockAt: status.asPendingPayout.unlockAt.toString(),
+      unlockAt: status.asPendingPayout.unlockAt.toNumber(),
     };
   }
 
