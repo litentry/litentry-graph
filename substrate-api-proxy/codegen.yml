@@ -1,0 +1,15 @@
+overwrite: true
+schema: 'http://localhost:3000/substrate-api-proxy'
+documents: null
+generates:
+  src/generated/graphql.ts:
+    config:
+      # mappers are used when GQL fills the field for us using chain resolvers
+      # eg: https://the-guild.dev/blog/better-type-safety-for-resolvers-with-graphql-codegen
+      # more info also on the https://www.graphql-code-generator.com/plugins/typescript-resolvers
+      mappers:
+        CouncilCandidate: ../resolvers/Query/council#PartialCouncilCandidate
+        CouncilMember: ../resolvers/Query/council#PartialCouncilMember
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'

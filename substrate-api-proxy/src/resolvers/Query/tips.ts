@@ -15,17 +15,17 @@ import type { ServerContext } from '../../types';
 type Tip = [string, PalletTipsOpenTip];
 
 export async function tips(
-  _: undefined,
-  __: undefined,
+  _: Record<string, never>,
+  __: Record<string, never>,
   { api }: ServerContext,
 ): Promise<
   {
     id: string;
-    who: AccountId;
-    finder: AccountId;
+    who: string;
+    finder: string;
     reason: string;
-    // closes: Option<BlockNumber>;
-    deposit: Balance;
+    closes?: string;
+    deposit: string;
   }[]
 > {
   const hashes = await api.query.tips.tips
@@ -39,11 +39,11 @@ export async function tips(
     const tips =
       openTips?.map(async (openTip) => ({
         id: openTip[0],
-        who: openTip[1].who,
-        finder: openTip[1].finder,
+        who: openTip[1].who.toString(),
+        finder: openTip[1].finder.toString(),
         reason: await getTipReason(api, openTip[1].reason),
-        closes: openTip[1].closes.unwrapOr(null),
-        deposit: openTip[1].deposit,
+        closes: openTip[1].closes.unwrapOr(null)?.toString(),
+        deposit: openTip[1].deposit.toString(),
       })) || [];
 
     return Promise.all(tips);
@@ -53,7 +53,7 @@ export async function tips(
 }
 
 export async function tip(
-  _: undefined,
+  _: Record<string, never>,
   { id }: { id: string },
   { api }: ServerContext,
 ) {
@@ -63,14 +63,14 @@ export async function tip(
 
   return {
     id,
-    who: tip.who,
+    who: tip.who.toString(),
     reason: await getTipReason(api, tip.reason),
     ...tipState,
   };
 }
 
 async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
-  const closes = tip.closes?.unwrapOr(null);
+  const closes = tip.closes?.unwrapOr(null)?.toString();
   let finder: AccountId | null = null;
   let deposit: Balance | null = null;
 
@@ -94,9 +94,9 @@ async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
 
   return {
     closes,
-    deposit,
-    finder,
-    median,
+    deposit: deposit?.toString(),
+    finder: finder?.toString(),
+    median: median.toString(),
   };
 }
 

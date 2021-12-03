@@ -5,7 +5,7 @@ import { council } from './council';
 import { tips, tip } from './tips';
 import {bountiesSummary, bounties, bounty} from './bounties'
 
-export default {
+export const Query = {
   balance,
   chainInfo,
   tip,
