@@ -2,7 +2,6 @@ export default /* GraphQL */ `
   type IdentityJudgement {
     isUnknown: Boolean
     isFeePaid: Boolean
-    asFeePaid: Balance
     isReasonable: Boolean
     isKnownGood: Boolean
     isOutOfDate: Boolean

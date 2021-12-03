@@ -3,8 +3,8 @@ import { BN, bnToBn } from '@polkadot/util';
 import type { BlockNumber } from '@polkadot/types/interfaces';
 
 export async function council(
-  _: undefined,
-  __: undefined,
+  _: Record<string, never>,
+  __: Record<string, never>,
   { api }: ServerContext,
 ) {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
@@ -31,28 +31,35 @@ export async function council(
     {},
   );
 
-  const members = electionsInfo.members.map(([accountId, balance]) => ({
-    address: accountId,
-    backing: balance,
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const members = electionsInfo.members.map<PartialCouncilMember>(
+    ([accountId, balance]) => ({
+      address: String(accountId),
+      backing: balance.toString(),
+      voters: votesByCandidates[String(accountId)] || [],
+    }),
+  );
 
-  const runnersUp = electionsInfo.runnersUp.map(([accountId, balance]) => ({
-    accountId,
-    backing: balance,
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const runnersUp = electionsInfo.runnersUp.map<PartialCouncilMember>(
+    ([accountId, balance]) => ({
+      address: String(accountId),
+      backing: balance.toString(),
+      voters: votesByCandidates[String(accountId)] || [],
+    }),
+  );
 
-  const candidates = electionsInfo.candidates.map((accountId) => ({
-    address: String(accountId),
-  }));
+  const candidates = electionsInfo.candidates.map<PartialCouncilCandidate>(
+    (accountId) => ({
+      address: String(accountId),
+    }),
+  );
 
-  const primeMember = prime
+  const primeMember: PartialCouncilMember | null = prime
     ? {
         address: String(prime),
-        backing: electionsInfo.members.find(([accountId]) =>
-          accountId.eq(prime),
-        )?.[1],
+        backing: electionsInfo.members
+          .find(([accountId]) => accountId.eq(prime))?.[1]
+          ?.toString(),
+        voters: [],
       }
     : null;
 
@@ -61,8 +68,8 @@ export async function council(
     bestNumber,
   );
   const termProgress = {
-    termDuration: electionsInfo.termDuration,
-    termLeft,
+    termDuration: electionsInfo.termDuration?.toString(),
+    termLeft: termLeft.toString(),
     percentage,
   };
 
@@ -93,3 +100,13 @@ function getTermLeft(termDuration: BN, bestNumber: BlockNumber) {
     percentage,
   };
 }
+
+export type PartialCouncilCandidate = {
+  address: string;
+};
+
+export type PartialCouncilMember = {
+  address: string;
+  backing?: string;
+  voters: string[];
+};

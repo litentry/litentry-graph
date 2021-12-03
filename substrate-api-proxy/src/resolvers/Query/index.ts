@@ -5,7 +5,7 @@ import { council } from './council';
 import { tips, tip } from './tips';
 import { eventsResolver as events } from './events';
 
-export default {
+export const Query = {
   balance,
   chainInfo,
   tip,
