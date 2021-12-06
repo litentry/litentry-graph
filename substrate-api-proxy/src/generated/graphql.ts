@@ -86,6 +86,14 @@ export type DeriveAccountRegistration = {
   web?: Maybe<Scalars['String']>;
 };
 
+export type Event = {
+  __typename?: 'Event';
+  blockNumber: Scalars['String'];
+  date: Scalars['String'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+};
+
 export type IdentityJudgement = {
   __typename?: 'IdentityJudgement';
   isErroneous?: Maybe<Scalars['Boolean']>;
@@ -103,6 +111,7 @@ export type Query = {
   balance: Balance;
   chainInfo: ChainInfo;
   council: Council;
+  events: Array<Event>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
 };
@@ -226,7 +235,9 @@ export type ResolversTypes = {
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
+  Event: ResolverTypeWrapper<Event>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Query: ResolverTypeWrapper<{}>;
@@ -247,7 +258,9 @@ export type ResolversParentTypes = {
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
   DeriveAccountRegistration: DeriveAccountRegistration;
+  Event: Event;
   Float: Scalars['Float'];
+  ID: Scalars['ID'];
   IdentityJudgement: IdentityJudgement;
   Int: Scalars['Int'];
   Query: {};
@@ -327,6 +340,14 @@ export type DeriveAccountRegistrationResolvers<ContextType = any, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type IdentityJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['IdentityJudgement'] = ResolversParentTypes['IdentityJudgement']> = {
   isErroneous?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isFeePaid?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -343,6 +364,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   balance?: Resolver<ResolversTypes['Balance'], ParentType, ContextType, RequireFields<QueryBalanceArgs, 'address'>>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
+  events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
 };
@@ -380,6 +402,7 @@ export type Resolvers<ContextType = any> = {
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
+  Event?: EventResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
