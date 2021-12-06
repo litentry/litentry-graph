@@ -43,22 +43,22 @@ export type BalanceData = {
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
   activeBounties: Scalars['Int'];
-  bountyCount: Scalars['Float'];
-  pastBounties: Scalars['Float'];
-  totalValue: Scalars['Float'];
-  treasurySpendPeriod: Scalars['Float'];
+  bountyCount: Scalars['String'];
+  pastBounties: Scalars['String'];
+  totalValue: Scalars['String'];
+  treasurySpendPeriod: Scalars['String'];
 };
 
 export type Bounty = {
   __typename?: 'Bounty';
-  bond: Scalars['Float'];
+  bond: Scalars['String'];
   bountyStatus?: Maybe<BountyStatus>;
-  curatorDeposit: Scalars['Float'];
+  curatorDeposit: Scalars['String'];
   description: Scalars['String'];
-  fee: Scalars['Float'];
-  index: Scalars['Float'];
+  fee: Scalars['String'];
+  index: Scalars['String'];
   proposer: Scalars['String'];
-  value: Scalars['Float'];
+  value: Scalars['String'];
 };
 
 export type BountyStatus = {
@@ -66,8 +66,8 @@ export type BountyStatus = {
   beneficiary?: Maybe<Scalars['String']>;
   curator?: Maybe<Scalars['String']>;
   status: Scalars['String'];
-  unlockAt?: Maybe<Scalars['Float']>;
-  updateDue?: Maybe<Scalars['Float']>;
+  unlockAt?: Maybe<Scalars['String']>;
+  updateDue?: Maybe<Scalars['String']>;
 };
 
 export type ChainInfo = {
@@ -153,7 +153,7 @@ export type QueryBalanceArgs = {
 
 
 export type QueryBountyArgs = {
-  index: Scalars['Float'];
+  index: Scalars['String'];
 };
 
 
@@ -327,22 +327,22 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
 
 export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
   activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  bountyCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  pastBounties?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  totalValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  treasurySpendPeriod?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pastBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  treasurySpendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type BountyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty']> = {
-  bond?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyStatus?: Resolver<Maybe<ResolversTypes['BountyStatus']>, ParentType, ContextType>;
-  curatorDeposit?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  curatorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  fee?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  index?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  value?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -350,8 +350,8 @@ export type BountyStatusResolvers<ContextType = any, ParentType extends Resolver
   beneficiary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   curator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  unlockAt?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  updateDue?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  unlockAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updateDue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
