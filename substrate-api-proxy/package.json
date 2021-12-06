@@ -15,7 +15,7 @@
     "build:dev": "nodemon 'src/index.ts' --exec 'ts-node' src/index.ts -e ts,graphql",
     "start:dev": "yarn build:dev",
     "codegen": "graphql-codegen --config codegen.yml",
-    "test": "yarn tsc --noEmit"
+    "typecheck": "yarn tsc --noEmit"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
