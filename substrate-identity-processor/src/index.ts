@@ -1,34 +1,43 @@
 import { connect } from 'mongoose';
+import cliProgress from 'cli-progress';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import config from './config';
-import mongoUri from './mongoUri';
-import getUniqueAccounts from './getUniqueAccounts';
-import chainQueries from './chainQueries';
-import AccountIdentityModel from './models/AccountIdentityModel';
+import { IdentityEvent } from './types';
+import getEvents from './getEvents';
+import eventHandlers from './eventHandlers';
 import processNewEvents from './processNewEvents';
 
 async function run() {
-  console.time('Historical events processed');
-
   try {
-    await connect(mongoUri);
+    console.time('Initialized mongo and Polkadot API');
+
+    await connect(config.mongoUri);
 
     const api = await ApiPromise.create({
       provider: new WsProvider(config.provider),
     });
 
-    // query events
-    const accounts = await getUniqueAccounts();
+    console.timeEnd('Initialized mongo and Polkadot API');
 
-    // query polkadot api
-    const identities = await chainQueries.getIdentities(api, accounts, true);
+    console.time('Fetched events from substrate-indexer');
 
-    // delete then insert the data, this is much easier and less error prone than upserting
-    await AccountIdentityModel.deleteMany();
-    await AccountIdentityModel.insertMany(identities);
+    const events = await getEvents<IdentityEvent>([IdentityEvent.IdentitySet]);
 
-    console.timeEnd('Historical events processed');
+    console.timeEnd('Fetched events from substrate-indexer');
 
+    const bar = new cliProgress.SingleBar(
+      {},
+      cliProgress.Presets.shades_classic
+    );
+    bar.start(events.length, 0);
+
+    for (let i = 0; i < events.length; i++) {
+      await eventHandlers[events[i].method](api, events[i].data);
+      bar.update(i);
+    }
+    bar.stop();
+
+    console.log('Watching for new events');
     processNewEvents(api);
   } catch (e) {
     console.error(e);

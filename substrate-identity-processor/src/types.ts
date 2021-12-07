@@ -1,4 +1,5 @@
-/** @public */
+import { ApiPromise } from '@polkadot/api';
+
 export type BlockEvent = {
   _id: string;
   blockNumber: number;
@@ -10,27 +11,13 @@ export type BlockEvent = {
   topics: unknown[];
 };
 
-/** @public */
-export type BlockExtrinsic = {
-  _id: string;
-  blockNumber: number;
-  index: number;
-  section: string;
-  method: string;
-  args: string[];
-  tip: number;
-  isSigned: boolean;
-  signer?: string;
-  nonce?: number;
-  signature?: string;
-  immortalEra?: string;
-  mortalEra?: {
-    period: number;
-    phase: number;
-  };
-};
+export enum IdentityEvent {
+  IdentitySet = 'IdentitySet',
+}
 
-/** @public */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EventHandler = (api: ApiPromise, data: any[]) => Promise<void>;
+
 export type AccountIdentity = {
   _id: string;
   judgements: {

@@ -28,10 +28,19 @@ A Node JS application to process substrate chain data from the identity pallet.
 
 ## Performance
 
-Currently this only processed `IdentitySet` events, it can process the entire chain history in a couple of seconds.
+Currently this only processes `IdentitySet` events, it can process the entire chain history in a couple of minutes.
 
 ## TODO
 
-- `const chainData = await api.query.identity.identityOf.multi(accounts)` is used to hydrate identities, consider batching this else we may run into resource issues as the chain grows
-
 - consider exposing event data on the API gateway to avoid creating a web of database dependencies
+
+- consider adding event filters and batch handlers, this can run in under 3 seconds if we don't process one event at a time and focus only on the data we care about
+
+For example:
+
+```
+Get all IdentitySet events
+Get all unique accounts from data[0]
+Run query.multi on all unique accounts and map data
+Then collection.insertMany
+```

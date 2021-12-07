@@ -1,7 +1,7 @@
 import { Option } from '@polkadot/types';
 import { PalletIdentityRegistration } from '@polkadot/types/lookup';
 import { u8aToString } from '@polkadot/util';
-import { AccountIdentity } from './types';
+import { AccountIdentity } from '../../types';
 
 export default function mapAccountIdentity(
   account: string,

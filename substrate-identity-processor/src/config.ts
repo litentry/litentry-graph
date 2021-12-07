@@ -34,8 +34,5 @@ if (!databaseName) {
 
 export default {
   provider,
-  username,
-  password,
-  clusterUrl,
-  databaseName,
+  mongoUri: `mongodb+srv://${username}:${password}@${clusterUrl}/${databaseName}?retryWrites=true&w=majority`,
 };

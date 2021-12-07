@@ -1,5 +1,5 @@
-import getIdentities from './getIdentities';
+import getIdentity from './getIdentity';
 
 export default {
-  getIdentities,
+  getIdentity,
 };
