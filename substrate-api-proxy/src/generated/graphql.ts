@@ -40,6 +40,36 @@ export type BalanceData = {
   reserved: Scalars['Float'];
 };
 
+export type BountiesSummary = {
+  __typename?: 'BountiesSummary';
+  activeBounties: Scalars['Int'];
+  bountyCount: Scalars['String'];
+  pastBounties: Scalars['String'];
+  totalValue: Scalars['String'];
+  treasurySpendPeriod: Scalars['String'];
+};
+
+export type Bounty = {
+  __typename?: 'Bounty';
+  bond: Scalars['String'];
+  bountyStatus?: Maybe<BountyStatus>;
+  curatorDeposit: Scalars['String'];
+  description: Scalars['String'];
+  fee: Scalars['String'];
+  index: Scalars['String'];
+  proposer: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type BountyStatus = {
+  __typename?: 'BountyStatus';
+  beneficiary?: Maybe<Scalars['String']>;
+  curator?: Maybe<Scalars['String']>;
+  status: Scalars['String'];
+  unlockAt?: Maybe<Scalars['String']>;
+  updateDue?: Maybe<Scalars['String']>;
+};
+
 export type ChainInfo = {
   __typename?: 'ChainInfo';
   chain: Scalars['String'];
@@ -109,6 +139,9 @@ export type Query = {
   __typename?: 'Query';
   account?: Maybe<Account>;
   balance: Balance;
+  bounties: Array<Bounty>;
+  bountiesSummary: BountiesSummary;
+  bounty?: Maybe<Bounty>;
   chainInfo: ChainInfo;
   council: Council;
   events: Array<Event>;
@@ -125,6 +158,11 @@ export type QueryAccountArgs = {
 export type QueryBalanceArgs = {
   address: Scalars['String'];
   blockNumber?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryBountyArgs = {
+  index: Scalars['String'];
 };
 
 
@@ -230,6 +268,9 @@ export type ResolversTypes = {
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
+  Bounty: ResolverTypeWrapper<Bounty>;
+  BountyStatus: ResolverTypeWrapper<BountyStatus>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   Council: ResolverTypeWrapper<Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversTypes['CouncilCandidate']>, members: Array<ResolversTypes['CouncilMember']>, primeMember?: Maybe<ResolversTypes['CouncilMember']>, runnersUp: Array<ResolversTypes['CouncilMember']> }>;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
@@ -253,6 +294,9 @@ export type ResolversParentTypes = {
   Balance: Balance;
   BalanceData: BalanceData;
   Boolean: Scalars['Boolean'];
+  BountiesSummary: BountiesSummary;
+  Bounty: Bounty;
+  BountyStatus: BountyStatus;
   ChainInfo: ChainInfo;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversParentTypes['CouncilCandidate']>, members: Array<ResolversParentTypes['CouncilMember']>, primeMember?: Maybe<ResolversParentTypes['CouncilMember']>, runnersUp: Array<ResolversParentTypes['CouncilMember']> };
   CouncilCandidate: PartialCouncilCandidate;
@@ -291,6 +335,36 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
   free?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   miscFrozen?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   reserved?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
+  activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pastBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  treasurySpendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BountyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty']> = {
+  bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bountyStatus?: Resolver<Maybe<ResolversTypes['BountyStatus']>, ParentType, ContextType>;
+  curatorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BountyStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus']> = {
+  beneficiary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  curator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  unlockAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updateDue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -362,6 +436,9 @@ export type IdentityJudgementResolvers<ContextType = any, ParentType extends Res
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'address'>>;
   balance?: Resolver<ResolversTypes['Balance'], ParentType, ContextType, RequireFields<QueryBalanceArgs, 'address'>>;
+  bounties?: Resolver<Array<ResolversTypes['Bounty']>, ParentType, ContextType>;
+  bountiesSummary?: Resolver<ResolversTypes['BountiesSummary'], ParentType, ContextType>;
+  bounty?: Resolver<Maybe<ResolversTypes['Bounty']>, ParentType, ContextType, RequireFields<QueryBountyArgs, 'index'>>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
@@ -397,6 +474,9 @@ export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
+  BountiesSummary?: BountiesSummaryResolvers<ContextType>;
+  Bounty?: BountyResolvers<ContextType>;
+  BountyStatus?: BountyStatusResolvers<ContextType>;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;

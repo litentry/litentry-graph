@@ -46,7 +46,7 @@ async function run() {
       wsServer,
     );
     console.info(
-      `🚀GraphQL-Server is running on http://localhost:${PORT}/${PATH}`,
+      `🚀 GraphQL-Server is running on http://localhost:${PORT}/${PATH}`,
     );
   });
 }
