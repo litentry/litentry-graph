@@ -1,23 +1,22 @@
 {
-    "private": true,
-    "scripts": {
-        "postinstall": "yarn workspaces run build"
-    },
-    "workspaces": [
-        "packages/*",
-        "api",
-        "substrate-indexer",
-        "substrate-api-proxy"
-    ],
-    "resolutions": {
-        "@polkadot/api": "^6.10.3",
-        "@polkadot/api-contract": "^6.10.3",
-        "@polkadot/rpc-provider": "^6.10.3",
-        "@polkadot/types": "^6.10.3",
-        "@polkadot/types-known": "^6.10.3",
-        "@polkadot/types-support": "^6.10.3",
-        "@polkadot/util": "^8.0.4",
-        "@polkadot/util-crypto": "^8.0.4",
-        "@polkadot/wasm-crypto": "^4.4.1"
-    }
+  "private": true,
+  "scripts": {
+    "start": "cd api-gateway && yarn start",
+    "postinstall": "yarn workspaces run build"
+  },
+  "workspaces": [
+    "api-gateway",
+    "subschemas/*"
+  ],
+  "resolutions": {
+    "@polkadot/api": "^6.10.3",
+    "@polkadot/api-contract": "^6.10.3",
+    "@polkadot/rpc-provider": "^6.10.3",
+    "@polkadot/types": "^6.10.3",
+    "@polkadot/types-known": "^6.10.3",
+    "@polkadot/types-support": "^6.10.3",
+    "@polkadot/util": "^8.0.4",
+    "@polkadot/util-crypto": "^8.0.4",
+    "@polkadot/wasm-crypto": "^4.4.1"
+  }
 }
