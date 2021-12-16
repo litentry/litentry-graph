@@ -10,8 +10,4 @@ This repository contains the GraphQL API Gateway and the subschemas that are exp
 
 ## Getting Started
 
-This is built with `yarn-workspaces`, to install packages and compile the typescript run `yarn`.
-
-_There is a `postinstall` script that triggers `yarn build` in all the packages & applications._
-
-To run the API locally run `cd api-gateway && yarn dev`.
+Run `yarn && yart start`
