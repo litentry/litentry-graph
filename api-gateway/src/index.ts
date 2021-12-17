@@ -38,7 +38,7 @@ async function run() {
 
       return {
         schema,
-        graphiql: true,
+        graphiql: { headerEditorEnabled: true },
         context: { api },
       };
     })
