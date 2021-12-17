@@ -10,4 +10,4 @@ This repository contains the GraphQL API Gateway and the subschemas that are exp
 
 ## Getting Started
 
-Run `yarn && yart start`
+Run `yarn && yarn start`
