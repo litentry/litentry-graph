@@ -1,6 +1,7 @@
 import { ServerContext } from '../../types';
 import { isAscii, isHex, isU8a, u8aToHex, u8aToString } from '@polkadot/util';
 import { IExtrinsic, IMethod } from '@polkadot/types/types';
+import { notEmpty } from '../../utils/notEmpty';
 
 export const democracySummary = async (
   parent: { address?: string },
@@ -18,10 +19,10 @@ export const democracySummary = async (
 
   return {
     activeProposalsCount: activeProposals.length,
-    publicPropCount,
-    referendumTotal,
+    publicPropCount: publicPropCount.toNumber(),
+    referendumTotal: referendumTotal.toNumber(),
     referenda: referendumIds.length,
-    launchPeriod: api.consts.democracy.launchPeriod,
+    launchPeriod: String(api.consts.democracy.launchPeriod),
   };
 };
 
@@ -35,13 +36,19 @@ export const democracy = async (
     api.derive.democracy.proposals(),
   ]);
 
-  const proposals = activeProposals.map((proposal) => {
-    const imageProposal = proposal.image?.proposal;
+  const proposals = activeProposals
+    .map((proposal) => {
+      const imageProposal = proposal.image?.proposal;
 
-    if (imageProposal) {
-      return { hash: imageProposal?.hash, ...getCallParams(imageProposal) };
-    }
-  });
+      if (imageProposal) {
+        return {
+          proposer: { address: String(proposal.proposer) },
+          hash: String(imageProposal.hash),
+          ...getCallParams(imageProposal),
+        };
+      }
+    })
+    .filter(notEmpty);
 
   return {
     proposals,
@@ -75,8 +82,8 @@ function getCallParams(c: IExtrinsic | IMethod) {
       }
 
       return {
-        name: a.name,
-        type: a.type.toString(),
+        name: String(a.name),
+        type: String(a.type),
         value: String(value),
         subCalls,
       };

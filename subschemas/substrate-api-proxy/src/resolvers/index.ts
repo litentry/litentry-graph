@@ -9,4 +9,7 @@ export const resolvers: Resolvers = {
   CouncilCandidate: {
     account: Query.account,
   },
+  Proposer: {
+    account: Query.account,
+  },
 };

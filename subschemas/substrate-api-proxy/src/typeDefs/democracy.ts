@@ -14,10 +14,17 @@ export default /* GraphQL */ `
     subCalls: [Proposal]
   }
 
+  type Proposer {
+    address: String!
+    account: Account
+  }
+
   type Proposal {
     method: String!
     section: String!
     args: [ProposalArg!]!
+    hash: String!
+    proposer: Proposer!
   }
 
   type Democracy {
