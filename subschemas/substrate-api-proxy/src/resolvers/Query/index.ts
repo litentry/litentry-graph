@@ -5,7 +5,7 @@ import { council } from './council';
 import { tips, tip } from './tips';
 import { bountiesSummary, bounties, bounty } from './bounties';
 import { eventsResolver as events } from './events';
-import { democracySummary } from './democracySummary';
+import { democracySummary, democracy } from './democracy';
 
 export const Query = {
   balance,
@@ -19,4 +19,5 @@ export const Query = {
   bounty,
   events,
   democracySummary,
+  democracy,
 };

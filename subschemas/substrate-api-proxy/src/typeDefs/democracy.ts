@@ -7,7 +7,25 @@ export default /* GraphQL */ `
     launchPeriod: String!
   }
 
+  type ProposalArg {
+    name: String
+    type: String
+    value: String
+    subCalls: [Proposal]
+  }
+
+  type Proposal {
+    method: String!
+    section: String!
+    args: [ProposalArg!]!
+  }
+
+  type Democracy {
+    proposals: [Proposal]!
+  }
+
   type Query {
-    democracySummary: DemocracySummary
+    democracySummary: DemocracySummary!
+    democracy: Democracy!
   }
 `;
