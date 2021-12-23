@@ -69,9 +69,8 @@ function getCallParams(c: IExtrinsic | IMethod) {
       if (value) {
         if (Array.isArray(value) && a.type.toString() === 'Vec<Call>') {
           subCalls = value.map(getCallParams);
-        }
-
-        if (a.type.toString() === 'Bytes') {
+          value = 'SubCalls';
+        } else if (a.type.toString() === 'Bytes') {
           value =
             isU8a(value) && isAscii(value)
               ? u8aToString(value)
