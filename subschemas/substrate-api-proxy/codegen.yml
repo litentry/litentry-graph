@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://localhost:3000/substrate-api-proxy'
+schema: 'http://localhost:1234/graphql'
 documents: null
 generates:
   src/generated/graphql.ts:

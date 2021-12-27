@@ -36,5 +36,15 @@
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src",
+      "../subschemas/substrate-api-proxy/dist"
+    ],
+    "ext": "ts,js,json",
+    "ignore": [
+      "node_modules/*"
+    ]
   }
 }

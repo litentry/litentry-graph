@@ -5,5 +5,15 @@ import council from './council';
 import tips from './tips';
 import bounties from './bounties';
 import events from './events';
+import democracy from './democracy';
 
-export default [chainInfo, tips, council, account, balance, events, bounties];
+export default [
+  chainInfo,
+  tips,
+  council,
+  account,
+  balance,
+  events,
+  bounties,
+  democracy,
+];
