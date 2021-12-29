@@ -6,7 +6,7 @@ import { tips, tip } from './tips';
 import { bountiesSummary, bounties, bounty } from './bounties';
 import { eventsResolver as events } from './events';
 import { democracySummary, democracy } from './democracy';
-import {treasurySummary} from './treasury'
+import {treasurySummary, treasuryInfo} from './treasury'
 
 export const Query = {
   balance,
@@ -22,4 +22,5 @@ export const Query = {
   democracySummary,
   democracy,
   treasurySummary,
+  treasuryInfo,
 };

@@ -83,6 +83,13 @@ export type ChainInfo = {
   nodeVersion: Scalars['String'];
 };
 
+export type CollectiveProposal = {
+  __typename?: 'CollectiveProposal';
+  callIndex: Scalars['String'];
+  hash: Scalars['String'];
+  votes: ProposalVotes;
+};
+
 export type Council = {
   __typename?: 'Council';
   candidates: Array<CouncilCandidate>;
@@ -377,6 +384,14 @@ export type PageInfo = {
   startCursor: Scalars['String'];
 };
 
+export type PalletProposal = {
+  __typename?: 'PalletProposal';
+  beneficiary: Scalars['String'];
+  bond: Scalars['String'];
+  proposer: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type Proposal = {
   __typename?: 'Proposal';
   args: Array<ProposalArg>;
@@ -392,6 +407,15 @@ export type ProposalArg = {
   subCalls?: Maybe<Array<Maybe<Proposal>>>;
   type?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+};
+
+export type ProposalVotes = {
+  __typename?: 'ProposalVotes';
+  ayes?: Maybe<Array<Scalars['String']>>;
+  end?: Maybe<Scalars['String']>;
+  index?: Maybe<Scalars['String']>;
+  nays?: Maybe<Array<Scalars['String']>>;
+  threshold?: Maybe<Scalars['String']>;
 };
 
 export type Proposer = {
@@ -419,6 +443,7 @@ export type Query = {
   identityByUniqueInput?: Maybe<Identity>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
+  treasuryInfo: TreasuryInfo;
   treasurySummary: TreasurySummary;
 };
 
@@ -503,6 +528,19 @@ export type TreasuryBalance = {
   frozenMisc: Scalars['String'];
   reservedBalance: Scalars['String'];
   votingBalance: Scalars['String'];
+};
+
+export type TreasuryInfo = {
+  __typename?: 'TreasuryInfo';
+  approvals: Array<TreasuryProposal>;
+  proposals: Array<TreasuryProposal>;
+};
+
+export type TreasuryProposal = {
+  __typename?: 'TreasuryProposal';
+  council: Array<CollectiveProposal>;
+  id: Scalars['String'];
+  proposal: PalletProposal;
 };
 
 export type TreasurySummary = {
@@ -594,6 +632,7 @@ export type ResolversTypes = {
   BountyStatus: ResolverTypeWrapper<BountyStatus>;
   Bytes: ResolverTypeWrapper<Scalars['Bytes']>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
+  CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Council: ResolverTypeWrapper<Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversTypes['CouncilCandidate']>, members: Array<ResolversTypes['CouncilMember']>, primeMember?: Maybe<ResolversTypes['CouncilMember']>, runnersUp: Array<ResolversTypes['CouncilMember']> }>;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
@@ -613,8 +652,10 @@ export type ResolversTypes = {
   IdentityWhereUniqueInput: IdentityWhereUniqueInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
+  PalletProposal: ResolverTypeWrapper<PalletProposal>;
   Proposal: ResolverTypeWrapper<Proposal>;
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
+  ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<Proposer>;
   Query: ResolverTypeWrapper<{}>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
@@ -622,6 +663,8 @@ export type ResolversTypes = {
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<Tip>;
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
+  TreasuryInfo: ResolverTypeWrapper<TreasuryInfo>;
+  TreasuryProposal: ResolverTypeWrapper<TreasuryProposal>;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
 };
 
@@ -637,6 +680,7 @@ export type ResolversParentTypes = {
   BountyStatus: BountyStatus;
   Bytes: Scalars['Bytes'];
   ChainInfo: ChainInfo;
+  CollectiveProposal: CollectiveProposal;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversParentTypes['CouncilCandidate']>, members: Array<ResolversParentTypes['CouncilMember']>, primeMember?: Maybe<ResolversParentTypes['CouncilMember']>, runnersUp: Array<ResolversParentTypes['CouncilMember']> };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
@@ -655,8 +699,10 @@ export type ResolversParentTypes = {
   IdentityWhereUniqueInput: IdentityWhereUniqueInput;
   Int: Scalars['Int'];
   PageInfo: PageInfo;
+  PalletProposal: PalletProposal;
   Proposal: Proposal;
   ProposalArg: ProposalArg;
+  ProposalVotes: ProposalVotes;
   Proposer: Proposer;
   Query: {};
   RegistrationJudgement: RegistrationJudgement;
@@ -664,6 +710,8 @@ export type ResolversParentTypes = {
   TermProgress: TermProgress;
   Tip: Tip;
   TreasuryBalance: TreasuryBalance;
+  TreasuryInfo: TreasuryInfo;
+  TreasuryProposal: TreasuryProposal;
   TreasurySummary: TreasurySummary;
 };
 
@@ -733,6 +781,13 @@ export type ChainInfoResolvers<ContextType = any, ParentType extends ResolversPa
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CollectiveProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['CollectiveProposal'] = ResolversParentTypes['CollectiveProposal']> = {
+  callIndex?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votes?: Resolver<ResolversTypes['ProposalVotes'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -849,6 +904,14 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PalletProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['PalletProposal'] = ResolversParentTypes['PalletProposal']> = {
+  beneficiary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal']> = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -863,6 +926,15 @@ export type ProposalArgResolvers<ContextType = any, ParentType extends Resolvers
   subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['Proposal']>>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   value?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProposalVotesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProposalVotes'] = ResolversParentTypes['ProposalVotes']> = {
+  ayes?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  nays?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  threshold?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -889,6 +961,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   identityByUniqueInput?: Resolver<Maybe<ResolversTypes['Identity']>, ParentType, ContextType, RequireFields<QueryIdentityByUniqueInputArgs, 'where'>>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
+  treasuryInfo?: Resolver<ResolversTypes['TreasuryInfo'], ParentType, ContextType>;
   treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
 };
 
@@ -927,6 +1000,19 @@ export type TreasuryBalanceResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TreasuryInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryInfo'] = ResolversParentTypes['TreasuryInfo']> = {
+  approvals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
+  proposals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TreasuryProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryProposal'] = ResolversParentTypes['TreasuryProposal']> = {
+  council?: Resolver<Array<ResolversTypes['CollectiveProposal']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposal?: Resolver<ResolversTypes['PalletProposal'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TreasurySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasurySummary'] = ResolversParentTypes['TreasurySummary']> = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   approvedProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -947,6 +1033,7 @@ export type Resolvers<ContextType = any> = {
   BountyStatus?: BountyStatusResolvers<ContextType>;
   Bytes?: GraphQLScalarType;
   ChainInfo?: ChainInfoResolvers<ContextType>;
+  CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
@@ -960,14 +1047,18 @@ export type Resolvers<ContextType = any> = {
   IdentityEdge?: IdentityEdgeResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  PalletProposal?: PalletProposalResolvers<ContextType>;
   Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
+  ProposalVotes?: ProposalVotesResolvers<ContextType>;
   Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
   TreasuryBalance?: TreasuryBalanceResolvers<ContextType>;
+  TreasuryInfo?: TreasuryInfoResolvers<ContextType>;
+  TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
 };
 
