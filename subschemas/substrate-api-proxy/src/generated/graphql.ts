@@ -419,6 +419,7 @@ export type Query = {
   identityByUniqueInput?: Maybe<Identity>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
+  treasurySummary: TreasurySummary;
 };
 
 
@@ -491,6 +492,27 @@ export type Tip = {
   median?: Maybe<Scalars['String']>;
   reason: Scalars['String'];
   who?: Maybe<Scalars['String']>;
+};
+
+export type TreasuryBalance = {
+  __typename?: 'TreasuryBalance';
+  accountId: Scalars['String'];
+  accountNonce: Scalars['String'];
+  freeBalance: Scalars['String'];
+  frozenFee: Scalars['String'];
+  frozenMisc: Scalars['String'];
+  reservedBalance: Scalars['String'];
+  votingBalance: Scalars['String'];
+};
+
+export type TreasurySummary = {
+  __typename?: 'TreasurySummary';
+  activeProposals: Scalars['Int'];
+  approvedProposals: Scalars['Int'];
+  burn?: Maybe<Scalars['String']>;
+  proposalCount: Scalars['String'];
+  spendPeriod: Scalars['String'];
+  treasuryBalance: TreasuryBalance;
 };
 
 
@@ -599,6 +621,8 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<Tip>;
+  TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
+  TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -639,6 +663,8 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   TermProgress: TermProgress;
   Tip: Tip;
+  TreasuryBalance: TreasuryBalance;
+  TreasurySummary: TreasurySummary;
 };
 
 export type AccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = {
@@ -863,6 +889,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   identityByUniqueInput?: Resolver<Maybe<ResolversTypes['Identity']>, ParentType, ContextType, RequireFields<QueryIdentityByUniqueInputArgs, 'where'>>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
+  treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
 };
 
 export type RegistrationJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegistrationJudgement'] = ResolversParentTypes['RegistrationJudgement']> = {
@@ -886,6 +913,27 @@ export type TipResolvers<ContextType = any, ParentType extends ResolversParentTy
   median?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   who?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TreasuryBalanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryBalance'] = ResolversParentTypes['TreasuryBalance']> = {
+  accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  accountNonce?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  freeBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  frozenFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  frozenMisc?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reservedBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votingBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TreasurySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasurySummary'] = ResolversParentTypes['TreasurySummary']> = {
+  activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  approvedProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  burn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  proposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  spendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  treasuryBalance?: Resolver<ResolversTypes['TreasuryBalance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -919,5 +967,7 @@ export type Resolvers<ContextType = any> = {
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
+  TreasuryBalance?: TreasuryBalanceResolvers<ContextType>;
+  TreasurySummary?: TreasurySummaryResolvers<ContextType>;
 };
 
