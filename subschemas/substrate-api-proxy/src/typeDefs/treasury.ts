@@ -27,7 +27,7 @@ export default /* GraphQL */ `
     bond: String!
   }
   type TreasuryProposal {
-    council: [CollectiveProposal!]!
+    councils: [CollectiveProposal!]!
     id: String!
     proposal: PalletProposal!
   }

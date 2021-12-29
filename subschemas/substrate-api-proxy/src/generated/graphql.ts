@@ -538,7 +538,7 @@ export type TreasuryInfo = {
 
 export type TreasuryProposal = {
   __typename?: 'TreasuryProposal';
-  council: Array<CollectiveProposal>;
+  councils: Array<CollectiveProposal>;
   id: Scalars['String'];
   proposal: PalletProposal;
 };
@@ -1007,7 +1007,7 @@ export type TreasuryInfoResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type TreasuryProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryProposal'] = ResolversParentTypes['TreasuryProposal']> = {
-  council?: Resolver<Array<ResolversTypes['CollectiveProposal']>, ParentType, ContextType>;
+  councils?: Resolver<Array<ResolversTypes['CollectiveProposal']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposal?: Resolver<ResolversTypes['PalletProposal'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

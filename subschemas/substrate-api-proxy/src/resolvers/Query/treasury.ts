@@ -86,7 +86,7 @@ type Council = {
 
 type TreasuryProposal = {
   id: string
-  council: Council[]
+  councils: Council[]
   proposal: Proposal
 }
 
@@ -118,7 +118,7 @@ function processProposals(proposals: DeriveTreasuryProposal[]) {
       beneficiary: data.proposal.beneficiary.toString(),
       bond: data.proposal.bond.toString(),
     },
-    council: processTreasuryCouncils(data.council)
+    councils: processTreasuryCouncils(data.council)
   }))
 }
 
