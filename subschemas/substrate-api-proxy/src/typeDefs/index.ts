@@ -6,6 +6,7 @@ import tips from './tips';
 import bounties from './bounties';
 import events from './events';
 import democracy from './democracy';
+import treasury from './treasury';
 
 export default [
   chainInfo,
@@ -16,4 +17,5 @@ export default [
   events,
   bounties,
   democracy,
+  treasury,
 ];
