@@ -1,6 +1,6 @@
 import type { ServerContext } from '../../types';
 import { CouncilMotion } from '../../generated/graphql';
-import { getCallParams } from './democracy';
+import { getCallParams } from '../../utils/call';
 
 export async function councilMotions(
   _: Record<string, never>,
