@@ -55,7 +55,7 @@ export const democracy = async (
   };
 };
 
-function getCallParams(c: IExtrinsic | IMethod) {
+export function getCallParams(c: IExtrinsic | IMethod) {
   const { method, section } = c?.registry.findMetaCall(c.callIndex) ?? {};
 
   return {

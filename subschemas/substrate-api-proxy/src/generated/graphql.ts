@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { GraphQLResolveInfo } from 'graphql';
 import { PartialCouncilCandidate, PartialCouncilMember } from '../resolvers/Query/council';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -14,12 +14,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** Big number integer */
-  BigInt: any;
-  /** Binary data encoded as a hex string always prefixed with 0x */
-  Bytes: any;
-  /** A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ) */
-  DateTime: any;
 };
 
 export type Account = {
@@ -115,6 +109,13 @@ export type CouncilMember = {
   voters: Array<Scalars['String']>;
 };
 
+export type CouncilMotion = {
+  __typename?: 'CouncilMotion';
+  hash: Scalars['String'];
+  proposal: MotionProposal;
+  votes?: Maybe<MotionVotes>;
+};
+
 export type Democracy = {
   __typename?: 'Democracy';
   proposals: Array<Maybe<Proposal>>;
@@ -151,35 +152,6 @@ export type Event = {
   title: Scalars['String'];
 };
 
-export type IdentitiesConnection = {
-  __typename?: 'IdentitiesConnection';
-  edges: Array<IdentityEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
-};
-
-export type Identity = {
-  __typename?: 'Identity';
-  additional?: Maybe<Array<Maybe<Scalars['String']>>>;
-  address: Scalars['String'];
-  deposit: Scalars['BigInt'];
-  display: Scalars['String'];
-  email?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  image?: Maybe<Scalars['String']>;
-  legal?: Maybe<Scalars['String']>;
-  pgpFingerprint?: Maybe<Scalars['String']>;
-  riot?: Maybe<Scalars['String']>;
-  twitter?: Maybe<Scalars['String']>;
-  web?: Maybe<Scalars['String']>;
-};
-
-export type IdentityEdge = {
-  __typename?: 'IdentityEdge';
-  cursor: Scalars['String'];
-  node: Identity;
-};
-
 export type IdentityJudgement = {
   __typename?: 'IdentityJudgement';
   isErroneous?: Maybe<Scalars['Boolean']>;
@@ -191,197 +163,21 @@ export type IdentityJudgement = {
   isUnknown?: Maybe<Scalars['Boolean']>;
 };
 
-export enum IdentityOrderByInput {
-  AddressAsc = 'address_ASC',
-  AddressDesc = 'address_DESC',
-  DepositAsc = 'deposit_ASC',
-  DepositDesc = 'deposit_DESC',
-  DisplayAsc = 'display_ASC',
-  DisplayDesc = 'display_DESC',
-  EmailAsc = 'email_ASC',
-  EmailDesc = 'email_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  ImageAsc = 'image_ASC',
-  ImageDesc = 'image_DESC',
-  LegalAsc = 'legal_ASC',
-  LegalDesc = 'legal_DESC',
-  PgpFingerprintAsc = 'pgpFingerprint_ASC',
-  PgpFingerprintDesc = 'pgpFingerprint_DESC',
-  RiotAsc = 'riot_ASC',
-  RiotDesc = 'riot_DESC',
-  TwitterAsc = 'twitter_ASC',
-  TwitterDesc = 'twitter_DESC',
-  WebAsc = 'web_ASC',
-  WebDesc = 'web_DESC'
-}
-
-export type IdentityWhereInput = {
-  AND?: InputMaybe<Array<IdentityWhereInput>>;
-  OR?: InputMaybe<Array<IdentityWhereInput>>;
-  additional_containsAll?: InputMaybe<Array<Scalars['String']>>;
-  additional_containsAny?: InputMaybe<Array<Scalars['String']>>;
-  additional_containsNone?: InputMaybe<Array<Scalars['String']>>;
-  address_contains?: InputMaybe<Scalars['String']>;
-  address_endsWith?: InputMaybe<Scalars['String']>;
-  address_eq?: InputMaybe<Scalars['String']>;
-  address_gt?: InputMaybe<Scalars['String']>;
-  address_gte?: InputMaybe<Scalars['String']>;
-  address_in?: InputMaybe<Array<Scalars['String']>>;
-  address_lt?: InputMaybe<Scalars['String']>;
-  address_lte?: InputMaybe<Scalars['String']>;
-  address_not_contains?: InputMaybe<Scalars['String']>;
-  address_not_endsWith?: InputMaybe<Scalars['String']>;
-  address_not_eq?: InputMaybe<Scalars['String']>;
-  address_not_in?: InputMaybe<Array<Scalars['String']>>;
-  address_not_startsWith?: InputMaybe<Scalars['String']>;
-  address_startsWith?: InputMaybe<Scalars['String']>;
-  deposit_eq?: InputMaybe<Scalars['BigInt']>;
-  deposit_gt?: InputMaybe<Scalars['BigInt']>;
-  deposit_gte?: InputMaybe<Scalars['BigInt']>;
-  deposit_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  deposit_lt?: InputMaybe<Scalars['BigInt']>;
-  deposit_lte?: InputMaybe<Scalars['BigInt']>;
-  deposit_not_eq?: InputMaybe<Scalars['BigInt']>;
-  deposit_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  display_contains?: InputMaybe<Scalars['String']>;
-  display_endsWith?: InputMaybe<Scalars['String']>;
-  display_eq?: InputMaybe<Scalars['String']>;
-  display_gt?: InputMaybe<Scalars['String']>;
-  display_gte?: InputMaybe<Scalars['String']>;
-  display_in?: InputMaybe<Array<Scalars['String']>>;
-  display_lt?: InputMaybe<Scalars['String']>;
-  display_lte?: InputMaybe<Scalars['String']>;
-  display_not_contains?: InputMaybe<Scalars['String']>;
-  display_not_endsWith?: InputMaybe<Scalars['String']>;
-  display_not_eq?: InputMaybe<Scalars['String']>;
-  display_not_in?: InputMaybe<Array<Scalars['String']>>;
-  display_not_startsWith?: InputMaybe<Scalars['String']>;
-  display_startsWith?: InputMaybe<Scalars['String']>;
-  email_contains?: InputMaybe<Scalars['String']>;
-  email_endsWith?: InputMaybe<Scalars['String']>;
-  email_eq?: InputMaybe<Scalars['String']>;
-  email_gt?: InputMaybe<Scalars['String']>;
-  email_gte?: InputMaybe<Scalars['String']>;
-  email_in?: InputMaybe<Array<Scalars['String']>>;
-  email_lt?: InputMaybe<Scalars['String']>;
-  email_lte?: InputMaybe<Scalars['String']>;
-  email_not_contains?: InputMaybe<Scalars['String']>;
-  email_not_endsWith?: InputMaybe<Scalars['String']>;
-  email_not_eq?: InputMaybe<Scalars['String']>;
-  email_not_in?: InputMaybe<Array<Scalars['String']>>;
-  email_not_startsWith?: InputMaybe<Scalars['String']>;
-  email_startsWith?: InputMaybe<Scalars['String']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_endsWith?: InputMaybe<Scalars['ID']>;
-  id_eq?: InputMaybe<Scalars['ID']>;
-  id_gt?: InputMaybe<Scalars['ID']>;
-  id_gte?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_lt?: InputMaybe<Scalars['ID']>;
-  id_lte?: InputMaybe<Scalars['ID']>;
-  id_not_contains?: InputMaybe<Scalars['ID']>;
-  id_not_endsWith?: InputMaybe<Scalars['ID']>;
-  id_not_eq?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not_startsWith?: InputMaybe<Scalars['ID']>;
-  id_startsWith?: InputMaybe<Scalars['ID']>;
-  image_contains?: InputMaybe<Scalars['String']>;
-  image_endsWith?: InputMaybe<Scalars['String']>;
-  image_eq?: InputMaybe<Scalars['String']>;
-  image_gt?: InputMaybe<Scalars['String']>;
-  image_gte?: InputMaybe<Scalars['String']>;
-  image_in?: InputMaybe<Array<Scalars['String']>>;
-  image_lt?: InputMaybe<Scalars['String']>;
-  image_lte?: InputMaybe<Scalars['String']>;
-  image_not_contains?: InputMaybe<Scalars['String']>;
-  image_not_endsWith?: InputMaybe<Scalars['String']>;
-  image_not_eq?: InputMaybe<Scalars['String']>;
-  image_not_in?: InputMaybe<Array<Scalars['String']>>;
-  image_not_startsWith?: InputMaybe<Scalars['String']>;
-  image_startsWith?: InputMaybe<Scalars['String']>;
-  legal_contains?: InputMaybe<Scalars['String']>;
-  legal_endsWith?: InputMaybe<Scalars['String']>;
-  legal_eq?: InputMaybe<Scalars['String']>;
-  legal_gt?: InputMaybe<Scalars['String']>;
-  legal_gte?: InputMaybe<Scalars['String']>;
-  legal_in?: InputMaybe<Array<Scalars['String']>>;
-  legal_lt?: InputMaybe<Scalars['String']>;
-  legal_lte?: InputMaybe<Scalars['String']>;
-  legal_not_contains?: InputMaybe<Scalars['String']>;
-  legal_not_endsWith?: InputMaybe<Scalars['String']>;
-  legal_not_eq?: InputMaybe<Scalars['String']>;
-  legal_not_in?: InputMaybe<Array<Scalars['String']>>;
-  legal_not_startsWith?: InputMaybe<Scalars['String']>;
-  legal_startsWith?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_contains?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_endsWith?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_eq?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_gt?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_gte?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_in?: InputMaybe<Array<Scalars['String']>>;
-  pgpFingerprint_lt?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_lte?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_not_contains?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_not_endsWith?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_not_eq?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_not_in?: InputMaybe<Array<Scalars['String']>>;
-  pgpFingerprint_not_startsWith?: InputMaybe<Scalars['String']>;
-  pgpFingerprint_startsWith?: InputMaybe<Scalars['String']>;
-  riot_contains?: InputMaybe<Scalars['String']>;
-  riot_endsWith?: InputMaybe<Scalars['String']>;
-  riot_eq?: InputMaybe<Scalars['String']>;
-  riot_gt?: InputMaybe<Scalars['String']>;
-  riot_gte?: InputMaybe<Scalars['String']>;
-  riot_in?: InputMaybe<Array<Scalars['String']>>;
-  riot_lt?: InputMaybe<Scalars['String']>;
-  riot_lte?: InputMaybe<Scalars['String']>;
-  riot_not_contains?: InputMaybe<Scalars['String']>;
-  riot_not_endsWith?: InputMaybe<Scalars['String']>;
-  riot_not_eq?: InputMaybe<Scalars['String']>;
-  riot_not_in?: InputMaybe<Array<Scalars['String']>>;
-  riot_not_startsWith?: InputMaybe<Scalars['String']>;
-  riot_startsWith?: InputMaybe<Scalars['String']>;
-  twitter_contains?: InputMaybe<Scalars['String']>;
-  twitter_endsWith?: InputMaybe<Scalars['String']>;
-  twitter_eq?: InputMaybe<Scalars['String']>;
-  twitter_gt?: InputMaybe<Scalars['String']>;
-  twitter_gte?: InputMaybe<Scalars['String']>;
-  twitter_in?: InputMaybe<Array<Scalars['String']>>;
-  twitter_lt?: InputMaybe<Scalars['String']>;
-  twitter_lte?: InputMaybe<Scalars['String']>;
-  twitter_not_contains?: InputMaybe<Scalars['String']>;
-  twitter_not_endsWith?: InputMaybe<Scalars['String']>;
-  twitter_not_eq?: InputMaybe<Scalars['String']>;
-  twitter_not_in?: InputMaybe<Array<Scalars['String']>>;
-  twitter_not_startsWith?: InputMaybe<Scalars['String']>;
-  twitter_startsWith?: InputMaybe<Scalars['String']>;
-  web_contains?: InputMaybe<Scalars['String']>;
-  web_endsWith?: InputMaybe<Scalars['String']>;
-  web_eq?: InputMaybe<Scalars['String']>;
-  web_gt?: InputMaybe<Scalars['String']>;
-  web_gte?: InputMaybe<Scalars['String']>;
-  web_in?: InputMaybe<Array<Scalars['String']>>;
-  web_lt?: InputMaybe<Scalars['String']>;
-  web_lte?: InputMaybe<Scalars['String']>;
-  web_not_contains?: InputMaybe<Scalars['String']>;
-  web_not_endsWith?: InputMaybe<Scalars['String']>;
-  web_not_eq?: InputMaybe<Scalars['String']>;
-  web_not_in?: InputMaybe<Array<Scalars['String']>>;
-  web_not_startsWith?: InputMaybe<Scalars['String']>;
-  web_startsWith?: InputMaybe<Scalars['String']>;
+export type MotionProposal = {
+  __typename?: 'MotionProposal';
+  args: Array<ProposalArg>;
+  hash: Scalars['String'];
+  method: Scalars['String'];
+  section: Scalars['String'];
 };
 
-export type IdentityWhereUniqueInput = {
-  id: Scalars['ID'];
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor: Scalars['String'];
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor: Scalars['String'];
+export type MotionVotes = {
+  __typename?: 'MotionVotes';
+  ayes: Array<Scalars['String']>;
+  end: Scalars['String'];
+  index: Scalars['Int'];
+  nays: Array<Scalars['String']>;
+  threshold: Scalars['Int'];
 };
 
 export type PalletProposal = {
@@ -433,14 +229,10 @@ export type Query = {
   bounty?: Maybe<Bounty>;
   chainInfo: ChainInfo;
   council: Council;
+  councilMotions: Array<CouncilMotion>;
   democracy: Democracy;
   democracySummary: DemocracySummary;
   events: Array<Event>;
-  identities: Array<Identity>;
-  identitiesConnection: IdentitiesConnection;
-  identityById?: Maybe<Identity>;
-  /** @deprecated Use `identityById` */
-  identityByUniqueInput?: Maybe<Identity>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasuryInfo: TreasuryInfo;
@@ -461,32 +253,6 @@ export type QueryBalanceArgs = {
 
 export type QueryBountyArgs = {
   index: Scalars['String'];
-};
-
-
-export type QueryIdentitiesArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<InputMaybe<IdentityOrderByInput>>>;
-  where?: InputMaybe<IdentityWhereInput>;
-};
-
-
-export type QueryIdentitiesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy: Array<IdentityOrderByInput>;
-  where?: InputMaybe<IdentityWhereInput>;
-};
-
-
-export type QueryIdentityByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryIdentityByUniqueInputArgs = {
-  where: IdentityWhereUniqueInput;
 };
 
 
@@ -625,33 +391,26 @@ export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
-  BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
   Bounty: ResolverTypeWrapper<Bounty>;
   BountyStatus: ResolverTypeWrapper<BountyStatus>;
-  Bytes: ResolverTypeWrapper<Scalars['Bytes']>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Council: ResolverTypeWrapper<Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversTypes['CouncilCandidate']>, members: Array<ResolversTypes['CouncilMember']>, primeMember?: Maybe<ResolversTypes['CouncilMember']>, runnersUp: Array<ResolversTypes['CouncilMember']> }>;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
-  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  CouncilMotion: ResolverTypeWrapper<CouncilMotion>;
   Democracy: ResolverTypeWrapper<Democracy>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
   Event: ResolverTypeWrapper<Event>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  IdentitiesConnection: ResolverTypeWrapper<IdentitiesConnection>;
-  Identity: ResolverTypeWrapper<Identity>;
-  IdentityEdge: ResolverTypeWrapper<IdentityEdge>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
-  IdentityOrderByInput: IdentityOrderByInput;
-  IdentityWhereInput: IdentityWhereInput;
-  IdentityWhereUniqueInput: IdentityWhereUniqueInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  PageInfo: ResolverTypeWrapper<PageInfo>;
+  MotionProposal: ResolverTypeWrapper<MotionProposal>;
+  MotionVotes: ResolverTypeWrapper<MotionVotes>;
   PalletProposal: ResolverTypeWrapper<PalletProposal>;
   Proposal: ResolverTypeWrapper<Proposal>;
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
@@ -673,32 +432,26 @@ export type ResolversParentTypes = {
   Account: Account;
   Balance: Balance;
   BalanceData: BalanceData;
-  BigInt: Scalars['BigInt'];
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
   Bounty: Bounty;
   BountyStatus: BountyStatus;
-  Bytes: Scalars['Bytes'];
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversParentTypes['CouncilCandidate']>, members: Array<ResolversParentTypes['CouncilMember']>, primeMember?: Maybe<ResolversParentTypes['CouncilMember']>, runnersUp: Array<ResolversParentTypes['CouncilMember']> };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
-  DateTime: Scalars['DateTime'];
+  CouncilMotion: CouncilMotion;
   Democracy: Democracy;
   DemocracySummary: DemocracySummary;
   DeriveAccountRegistration: DeriveAccountRegistration;
   Event: Event;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
-  IdentitiesConnection: IdentitiesConnection;
-  Identity: Identity;
-  IdentityEdge: IdentityEdge;
   IdentityJudgement: IdentityJudgement;
-  IdentityWhereInput: IdentityWhereInput;
-  IdentityWhereUniqueInput: IdentityWhereUniqueInput;
   Int: Scalars['Int'];
-  PageInfo: PageInfo;
+  MotionProposal: MotionProposal;
+  MotionVotes: MotionVotes;
   PalletProposal: PalletProposal;
   Proposal: Proposal;
   ProposalArg: ProposalArg;
@@ -739,10 +492,6 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export interface BigIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BigInt'], any> {
-  name: 'BigInt';
-}
-
 export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
   activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -772,10 +521,6 @@ export type BountyStatusResolvers<ContextType = any, ParentType extends Resolver
   updateDue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
-
-export interface BytesScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Bytes'], any> {
-  name: 'Bytes';
-}
 
 export type ChainInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo']> = {
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -816,9 +561,12 @@ export type CouncilMemberResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
-  name: 'DateTime';
-}
+export type CouncilMotionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CouncilMotion'] = ResolversParentTypes['CouncilMotion']> = {
+  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposal?: Resolver<ResolversTypes['MotionProposal'], ParentType, ContextType>;
+  votes?: Resolver<Maybe<ResolversTypes['MotionVotes']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type DemocracyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Democracy'] = ResolversParentTypes['Democracy']> = {
   proposals?: Resolver<Array<Maybe<ResolversTypes['Proposal']>>, ParentType, ContextType>;
@@ -856,35 +604,6 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type IdentitiesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['IdentitiesConnection'] = ResolversParentTypes['IdentitiesConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['IdentityEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type IdentityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Identity'] = ResolversParentTypes['Identity']> = {
-  additional?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  deposit?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  legal?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  pgpFingerprint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  riot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  twitter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  web?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type IdentityEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['IdentityEdge'] = ResolversParentTypes['IdentityEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Identity'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type IdentityJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['IdentityJudgement'] = ResolversParentTypes['IdentityJudgement']> = {
   isErroneous?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isFeePaid?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -896,11 +615,20 @@ export type IdentityJudgementResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
-  endCursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  startCursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type MotionProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['MotionProposal'] = ResolversParentTypes['MotionProposal']> = {
+  args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
+  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MotionVotesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MotionVotes'] = ResolversParentTypes['MotionVotes']> = {
+  ayes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  end?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  nays?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  threshold?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -952,13 +680,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   bounty?: Resolver<Maybe<ResolversTypes['Bounty']>, ParentType, ContextType, RequireFields<QueryBountyArgs, 'index'>>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
+  councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
   democracy?: Resolver<ResolversTypes['Democracy'], ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
-  identities?: Resolver<Array<ResolversTypes['Identity']>, ParentType, ContextType, RequireFields<QueryIdentitiesArgs, never>>;
-  identitiesConnection?: Resolver<ResolversTypes['IdentitiesConnection'], ParentType, ContextType, RequireFields<QueryIdentitiesConnectionArgs, 'orderBy'>>;
-  identityById?: Resolver<Maybe<ResolversTypes['Identity']>, ParentType, ContextType, RequireFields<QueryIdentityByIdArgs, 'id'>>;
-  identityByUniqueInput?: Resolver<Maybe<ResolversTypes['Identity']>, ParentType, ContextType, RequireFields<QueryIdentityByUniqueInputArgs, 'where'>>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasuryInfo?: Resolver<ResolversTypes['TreasuryInfo'], ParentType, ContextType>;
@@ -1027,26 +752,22 @@ export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
-  BigInt?: GraphQLScalarType;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
-  Bytes?: GraphQLScalarType;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
+  CouncilMotion?: CouncilMotionResolvers<ContextType>;
   Democracy?: DemocracyResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
-  IdentitiesConnection?: IdentitiesConnectionResolvers<ContextType>;
-  Identity?: IdentityResolvers<ContextType>;
-  IdentityEdge?: IdentityEdgeResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
-  PageInfo?: PageInfoResolvers<ContextType>;
+  MotionProposal?: MotionProposalResolvers<ContextType>;
+  MotionVotes?: MotionVotesResolvers<ContextType>;
   PalletProposal?: PalletProposalResolvers<ContextType>;
   Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
