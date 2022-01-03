@@ -27,7 +27,29 @@ export default /* GraphQL */ `
     termProgress: TermProgress!
   }
 
+  type MotionVotes {
+    index: Int!
+    threshold: Int!
+    ayes: [String!]!
+    nays: [String!]!
+    end: String!
+  }
+
+  type MotionProposal {
+    method: String!
+    section: String!
+    args: [ProposalArg!]!
+    hash: String!
+  }
+
+  type CouncilMotion {
+    hash: String!
+    proposal: MotionProposal!
+    votes: MotionVotes
+  }
+
   type Query {
     council: Council!
+    councilMotions: [CouncilMotion!]!
   }
 `;
