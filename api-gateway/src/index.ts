@@ -27,7 +27,7 @@ async function makeGatewaySchema() {
       wrappedProxySchema,
       {
         schema: await introspectSchema(subsquidExec),
-        executor: ethExec,
+        executor: subsquidExec,
       },
       {
         schema: await introspectSchema(ethExec),
