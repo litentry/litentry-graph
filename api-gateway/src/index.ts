@@ -11,10 +11,10 @@ import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 async function makeGatewaySchema() {
   const subsquidExec = makeRemoteExecutor('http://localhost:4000/graphql');
   const ethExec = makeRemoteExecutor(
-    'https://thegraph.com/hosted-service/subgraph/litentry/identity-subgraph'
+    'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph'
   );
   const bscExec = makeRemoteExecutor(
-    'https://thegraph.com/hosted-service/subgraph/litentry/identity-subgraph-bsc'
+    'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph-bsc'
   );
 
   const wrappedProxySchema = wrapSchema({
