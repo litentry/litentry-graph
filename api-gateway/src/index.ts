@@ -1,8 +1,9 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
+import { RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
-import { schema } from 'substrate-api-proxy';
+import { schema as proxySchema } from 'substrate-api-proxy';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
@@ -16,9 +17,14 @@ async function makeGatewaySchema() {
     'https://thegraph.com/hosted-service/subgraph/litentry/identity-subgraph-bsc'
   );
 
+  const wrappedProxySchema = wrapSchema({
+    schema: proxySchema,
+    transforms: [new RenameTypes((name) => `proxy_${name}`)],
+  });
+
   return stitchSchemas({
     subschemas: [
-      schema,
+      wrappedProxySchema,
       {
         schema: await introspectSchema(subsquidExec),
         executor: ethExec,
