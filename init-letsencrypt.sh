@@ -28,7 +28,7 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
 fi
 
 echo "### Starting nginx ..."
-docker run --name "nginx-certbot-challenge" -v "/$(pwd)/data/nginx/certbot.conf:/etc/nginx/conf.d/certbot.conf" -v "$(pwd)/data/certbot/www:/var/www/certbot" -p 80:80 -d nginx:1.15-alpine
+docker run --name "nginx-certbot-challenge" -v "/$(pwd)/data/nginx/certbot.conf:/etc/nginx/conf.d/certbot.conf" -v "$(pwd)/data/certbot/www:/var/www/certbot" -p 80:80 --rm -d nginx:1.15-alpine
 echo
 
 echo "### Deleting any existing certificate for $domains ..."
@@ -65,5 +65,5 @@ docker-compose run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
-echo "### Kill nginx ..."
-docker kill nginx-certbot-challenge
+echo "### Stop nginx ..."
+docker stop nginx-certbot-challenge
