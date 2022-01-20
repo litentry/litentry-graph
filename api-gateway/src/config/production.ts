@@ -1,4 +1,6 @@
-export default {
+import Config from './Config';
+
+const config: Config = {
   apiPort: 4000,
   remoteSchemaConfig: [
     { name: 'khala', url: 'http://query-node:4000/graphql' },
@@ -12,3 +14,5 @@ export default {
     },
   ],
 };
+
+export default config;
