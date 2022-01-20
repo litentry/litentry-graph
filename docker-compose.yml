@@ -1,5 +1,9 @@
 version: "3"
 
+networks:
+  default:
+    name: subsquid-mappings-khala_default
+
 services:
   api-gateway:
     build: .
