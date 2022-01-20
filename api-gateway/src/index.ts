@@ -9,13 +9,16 @@ import config from './config';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 
 async function makeGatewaySchema() {
-  const subsquidExec = makeRemoteExecutor('http://localhost:4000/graphql');
-  const ethExec = makeRemoteExecutor(
-    'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph'
-  );
-  const bscExec = makeRemoteExecutor(
-    'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph-bsc'
-  );
+  const remoteSchemas = [];
+
+  for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
+    const executor = makeRemoteExecutor(config.remoteSchemaConfig[i].url);
+    const schema = await introspectSchema(executor);
+    remoteSchemas.push({
+      schema,
+      executor,
+    });
+  }
 
   const wrappedProxySchema = wrapSchema({
     schema: proxySchema,
@@ -23,21 +26,7 @@ async function makeGatewaySchema() {
   });
 
   return stitchSchemas({
-    subschemas: [
-      wrappedProxySchema,
-      {
-        schema: await introspectSchema(subsquidExec),
-        executor: subsquidExec,
-      },
-      {
-        schema: await introspectSchema(ethExec),
-        executor: ethExec,
-      },
-      {
-        schema: await introspectSchema(bscExec),
-        executor: bscExec,
-      },
-    ],
+    subschemas: [wrappedProxySchema, remoteSchemas],
   });
 }
 
