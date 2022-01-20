@@ -10,6 +10,8 @@ services:
     ports:
       - 5000:5000
     restart: unless-stopped
+    environment:
+      - REMOTE_SCHEMA_URLS: "http://query-node:4000/graphql,https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph,https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph-bsc"
 
   nginx:
     image: nginx:1.15-alpine
