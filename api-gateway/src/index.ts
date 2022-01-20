@@ -14,10 +14,13 @@ async function makeGatewaySchema() {
   for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
     const executor = makeRemoteExecutor(config.remoteSchemaConfig[i].url);
     const schema = await introspectSchema(executor);
-    remoteSchemas.push({
-      schema,
-      executor,
-    });
+    remoteSchemas.push(
+      // without wrapSchema the schemas from The Graph's hosted service fail on null __typename
+      wrapSchema({
+        schema,
+        executor,
+      })
+    );
   }
 
   const wrappedProxySchema = wrapSchema({
@@ -26,7 +29,7 @@ async function makeGatewaySchema() {
   });
 
   return stitchSchemas({
-    subschemas: [wrappedProxySchema, remoteSchemas],
+    subschemas: [wrappedProxySchema, ...remoteSchemas],
   });
 }
 
