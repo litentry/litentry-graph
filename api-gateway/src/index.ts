@@ -11,8 +11,8 @@ import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 async function makeGatewaySchema() {
   const remoteSchemas = [];
 
-  for (let i = 0; i < config.remoteSchemaUrls.length; i++) {
-    const executor = makeRemoteExecutor(config.remoteSchemaUrls[i]);
+  for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
+    const executor = makeRemoteExecutor(config.remoteSchemaConfig[i].url);
     const schema = await introspectSchema(executor);
     remoteSchemas.push({
       schema,

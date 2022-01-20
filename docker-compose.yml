@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 networks:
   default:
@@ -11,18 +11,18 @@ services:
       - 5000:5000
     restart: unless-stopped
     environment:
-      - REMOTE_SCHEMA_URLS: "http://query-node:4000/graphql,https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph,https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph-bsc"
+      - STAGE: 'PRODUCTION'
 
   nginx:
     image: nginx:1.15-alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot:
     image: certbot/certbot
