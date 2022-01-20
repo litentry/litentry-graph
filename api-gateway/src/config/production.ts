@@ -1,7 +1,7 @@
 import Config from './Config';
 
 const config: Config = {
-  apiPort: 4000,
+  apiPort: 5000,
   remoteSchemaConfig: [
     { name: 'khala', url: 'http://query-node:4000/graphql' },
     {
