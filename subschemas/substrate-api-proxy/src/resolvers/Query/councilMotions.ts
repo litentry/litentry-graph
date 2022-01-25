@@ -1,5 +1,5 @@
 import type { ServerContext } from '../../types';
-import { CouncilMotion } from '../../generated/graphql';
+import { CouncilMotion } from '../../generated/resolvers-types';
 import { getCallParams } from '../../utils/call';
 
 export async function councilMotions(
