@@ -2,27 +2,9 @@ import type { ServerContext } from '../../types';
 import {u8aConcat, BN_MILLION} from '@polkadot/util';
 import {AccountId} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types'
+import type {TreasurySummary, Treasury} from '../../generated/resolvers-types'
 
 const EMPTY_U8A_32 = new Uint8Array(32);
-
-type TreasuryBalance = {
-  accountId: string
-  accountNonce: string
-  freeBalance: string
-  frozenFee: string
-  frozenMisc: string
-  reservedBalance: string
-  votingBalance: string
-}
-
-type TreasurySummary = {
-  activeProposals: number
-  proposalCount: string
-  approvedProposals: number
-  spendPeriod: string
-  treasuryBalance: TreasuryBalance
-  burn?: string
-}
 
 export async function treasurySummary(
   _: Record<string, string>,
@@ -62,39 +44,6 @@ export async function treasurySummary(
     };
 }
 
-
-type Votes = {
-  index?: string
-  threshold?: string
-  ayes?: string[]
-  nays?: string[]
-  end?: string
-}
-
-type Proposal = {
-  proposer: string
-  value: string
-  beneficiary: string
-  bond: string
-}
-
-type Council = {
-  hash: string
-  votes: Votes
-  callIndex: string
-}
-
-type TreasuryProposal = {
-  id: string
-  councils: Council[]
-  proposal: Proposal
-}
-
-type TreasuryInfo = {
-  approvals: TreasuryProposal[]
-  proposals: TreasuryProposal[]
-}
-
 function processTreasuryCouncils(councils: DeriveCollectiveProposal[]) {
   return councils.map((council) => ({
     hash: council.hash.toString(),
@@ -123,11 +72,11 @@ function processProposals(proposals: DeriveTreasuryProposal[]) {
 }
 
 
-export async function treasuryInfo(
+export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
   { api }: ServerContext
-  ): Promise<TreasuryInfo> {
+  ): Promise<Treasury> {
     const proposals = await api.derive.treasury.proposals();
 
     return {

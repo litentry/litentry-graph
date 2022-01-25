@@ -8,7 +8,7 @@ export default /* GraphQL */ `
   }
   type BountyStatus {
     beneficiary: String
-    status: String!
+    status: String
     curator: String
     unlockAt: String
     updateDue: String

@@ -2,23 +2,13 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AccountInfo } from '@polkadot/types/interfaces/system';
 import BN from 'bignumber.js';
 import type { ServerContext } from '../../types';
+import type {Balance} from '../../generated/resolvers-types'
 
 export default async function balance(
   _: Record<string, never>,
   { address, blockNumber }: { address: string; blockNumber?: number | null },
   { api }: ServerContext,
-): Promise<{
-  nonce: number;
-  consumers: number;
-  providers: number;
-  sufficients: number;
-  data: {
-    free: number;
-    reserved: number;
-    miscFrozen: number;
-    feeFrozen: number;
-  };
-}> {
+): Promise<Balance> {
   let raw: AccountInfo;
 
   if (blockNumber) {

@@ -11,23 +11,13 @@ import type {
 import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
 import type { ServerContext } from '../../types';
-
-type Tip = [string, PalletTipsOpenTip];
+import type {Tip} from '../../generated/resolvers-types'
 
 export async function tips(
   _: Record<string, never>,
   __: Record<string, never>,
   { api }: ServerContext,
-): Promise<
-  {
-    id: string;
-    who: string;
-    finder: string;
-    reason: string;
-    closes?: string;
-    deposit: string;
-  }[]
-> {
+): Promise<Tip[]> {
   const hashes = await api.query.tips.tips
     .keys()
     .then((keys) => keys.map((key) => key.args[0].toHex()));
@@ -56,7 +46,7 @@ export async function tip(
   _: Record<string, never>,
   { id }: { id: string },
   { api }: ServerContext,
-) {
+): Promise<Tip> {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();
   const tipState = await extractTipState(tip);
@@ -109,7 +99,7 @@ function isCurrentTip(
 function extractTips(
   tipsWithHashes?: [string[], Option<PalletTipsOpenTip>[]],
   inHashes?: string[] | null,
-): Tip[] | undefined {
+): [string, PalletTipsOpenTip][] | undefined {
   if (!tipsWithHashes || !inHashes) {
     return undefined;
   }

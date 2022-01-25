@@ -1,12 +1,13 @@
 import { ServerContext } from '../../types';
 import { getCallParams } from '../../utils/call';
 import { notEmpty } from '../../utils/notEmpty';
+import type {DemocracySummary, Democracy} from '../../generated/resolvers-types'
 
 export const democracySummary = async (
-  parent: { address?: string },
-  args: { address?: string },
+  _: { address?: string },
+  __: { address?: string },
   context: ServerContext,
-) => {
+): Promise<DemocracySummary> => {
   const { api } = context;
   const [referendumIds, activeProposals, publicPropCount, referendumTotal] =
     await Promise.all([
@@ -26,10 +27,10 @@ export const democracySummary = async (
 };
 
 export const democracy = async (
-  parent: { address?: string },
-  args: { address?: string },
+  _: { address?: string },
+  __: { address?: string },
   context: ServerContext,
-) => {
+): Promise<Democracy> => {
   const { api } = context;
   const [activeProposals] = await Promise.all([
     api.derive.democracy.proposals(),
