@@ -1,4 +1,4 @@
-import { RegistrationJudgement } from '../../generated/graphql';
+import { RegistrationJudgement } from '../../generated/resolvers-types';
 import { ServerContext } from '../../types';
 
 export const account = async (
