@@ -4,9 +4,9 @@ import chainInfo from './chainInfo';
 import { council } from './council';
 import { tips, tip } from './tips';
 import { bountiesSummary, bounties, bounty } from './bounties';
-import { eventsResolver as events } from './events';
+import { events } from './events';
 import { democracySummary, democracy } from './democracy';
-import { treasurySummary, treasuryInfo } from './treasury';
+import { treasurySummary, treasury } from './treasury';
 import { councilMotions } from './councilMotions';
 import { registrars } from './registrars';
 
@@ -25,6 +25,6 @@ export const Query = {
   democracySummary,
   democracy,
   treasurySummary,
-  treasuryInfo,
+  treasury,
   registrars,
 };

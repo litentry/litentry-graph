@@ -1,12 +1,20 @@
 import type { Context } from '../../types';
 import { BN, bnToBn } from '@polkadot/util';
 import type { BlockNumber } from '@polkadot/types/interfaces';
+import type {Council} from '../../generated/resolvers-types'
+
+interface CouncilInfo extends Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'> {
+  members: PartialCouncilMember[]
+  runnersUp: PartialCouncilMember[]
+  candidates: PartialCouncilCandidate[]
+  primeMember: PartialCouncilMember | null
+}
 
 export async function council(
   _: Record<string, never>,
   __: Record<string, never>,
   { api }: Context,
-) {
+): Promise<CouncilInfo> {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),
     api.derive.council.votes(),

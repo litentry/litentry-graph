@@ -39,12 +39,12 @@ export default /* GraphQL */ `
     treasuryBalance: TreasuryBalance!
     burn: String
   }
-  type TreasuryInfo {
+  type Treasury {
     approvals: [TreasuryProposal!]!
     proposals: [TreasuryProposal!]!
   }
   type Query {
     treasurySummary: TreasurySummary!
-    treasuryInfo: TreasuryInfo!
+    treasury: Treasury!
   }
 `;

@@ -6,12 +6,13 @@ import { u32 } from '@polkadot/types';
 import type { Option } from '@polkadot/types';
 import { notEmpty } from '../../utils/notEmpty';
 import type { ITuple } from '@polkadot/types/types';
+import type {Event} from '../../generated/resolvers-types'
 
-export async function eventsResolver(
-  _parent: Record<string, never>,
-  _args: Record<string, never>,
+export async function events(
+  _: Record<string, never>,
+  __: Record<string, never>,
   context: Context,
-) {
+): Promise<Event[]> {
   const { api } = context;
   const bestNumber = await api.derive.chain.bestNumber();
   const { blockTime } = getBlockTime(api);

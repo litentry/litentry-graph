@@ -1,5 +1,5 @@
-import { RegistrationJudgement } from '../../generated/resolvers-types';
-import { Context } from '../../types';
+import type { RegistrationJudgement, Account } from '../../generated/resolvers-types';
+import type { Context } from '../../types';
 
 export const account = async (
   parent: { address?: string },
