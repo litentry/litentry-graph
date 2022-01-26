@@ -6,8 +6,8 @@ import { getBlockTime } from '../../utils/blockTime';
 import {BN_ONE} from '@polkadot/util';
 
 export const democracySummary = async (
-  _: { address?: string },
-  __: { address?: string },
+  _: Record<string, never>,
+  __: Record<string, never>,
   context: Context,
 ): Promise<DemocracySummary> => {
   const { api } = context;
@@ -29,8 +29,8 @@ export const democracySummary = async (
 };
 
 export const democracy = async (
-  _: { address?: string },
-  __: { address?: string },
+  _: Record<string, never>,
+  __: Record<string, never>,
   context: Context,
 ): Promise<Democracy> => {
   const { api } = context;
