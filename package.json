@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "start": "cd api-gateway && yarn start",
-    "postinstall": "cd api-gateway && yarn build && cd ../"
+    "build": "yarn workspaces run build",
+    "postinstall": "yarn build"
   },
   "workspaces": [
     "api-gateway",
