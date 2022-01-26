@@ -7,8 +7,8 @@
     "start:dev": "nodemon --exec \"yarn build && yarn start\""
   },
   "workspaces": [
-    "api-gateway",
-    "subschemas/*"
+    "subschemas/*",
+    "api-gateway"
   ],
   "resolutions": {
     "@polkadot/api": "^6.10.3",

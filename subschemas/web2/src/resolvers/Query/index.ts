@@ -1,5 +1,5 @@
-import { exampleQuery } from './example';
+import { Mee6PlayerQuery } from './discord';
 
 export const Query = {
-  exampleQuery,
+  Mee6PlayerQuery,
 };

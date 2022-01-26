@@ -1,5 +1,2 @@
-import example from './example';
-
-export default [
-  example,
-];
+import discord from './discord';
+export default [discord];
