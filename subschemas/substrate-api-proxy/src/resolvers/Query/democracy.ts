@@ -39,9 +39,11 @@ export const democracy = async (
   const proposals = activeProposals
     .map((proposal) => {
       const imageProposal = proposal.image?.proposal;
-
       if (imageProposal) {
+        const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
         return {
+          meta,
+          index: proposal.index.toString(),
           proposer: { address: String(proposal.proposer) },
           hash: String(imageProposal.hash),
           ...getCallParams(imageProposal),

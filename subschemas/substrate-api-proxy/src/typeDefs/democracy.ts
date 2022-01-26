@@ -20,6 +20,8 @@ export default /* GraphQL */ `
   }
 
   type Proposal {
+    index: String!
+    meta: String!
     method: String!
     section: String!
     args: [ProposalArg!]!

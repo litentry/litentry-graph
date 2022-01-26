@@ -193,6 +193,8 @@ export type Proposal = {
   __typename?: 'Proposal';
   args: Array<ProposalArg>;
   hash: Scalars['String'];
+  index: Scalars['String'];
+  meta: Scalars['String'];
   method: Scalars['String'];
   proposer: Proposer;
   section: Scalars['String'];
@@ -657,6 +659,8 @@ export type PalletProposalResolvers<ContextType = any, ParentType extends Resolv
 export type ProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal']> = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
