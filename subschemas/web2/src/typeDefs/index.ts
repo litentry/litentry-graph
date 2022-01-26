@@ -1,2 +1,4 @@
 import discord from './discord';
-export default [discord];
+import discourse from './discourse';
+
+export default [discord, discourse];
