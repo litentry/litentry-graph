@@ -1,15 +1,11 @@
 {
-  "name": "substrate-api-proxy",
+  "name": "@litentry/ipfs-subschema",
   "version": "0.0.1",
-  "description": "GraphQL API as proxy for substrate networks",
+  "description": "GraphQL subschema to resolve IPFS queries",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "git@github.com:litentry/web3-indexer.git",
-  "contributors": [
-    "Ben Mason <ben@wattmason.co.uk>",
-    "Francisco Silva <franjs.francisco@gmail.com>"
-  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
     "codegen": "graphql-codegen --config codegen.yml",
@@ -18,8 +14,6 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
-    "@polkadot/api": "^6.10.3",
-    "bignumber.js": "^9.0.2",
     "graphql": "^16.0.1"
   },
   "devDependencies": {

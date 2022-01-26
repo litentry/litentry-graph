@@ -1,9 +1,17 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
-import { RenameTypes, wrapSchema } from '@graphql-tools/wrap';
+import {
+  RenameTypes,
+  wrapSchema,
+  RenameInterfaceFields,
+  RenameInputObjectFields,
+  RenameRootFields,
+} from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as proxySchema } from 'substrate-api-proxy';
+import { schema as web2Schema } from '@litentry/web2-subschema';
+import { schema as ipfsSchema } from '@litentry/ipfs-subschema';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
@@ -27,9 +35,28 @@ async function makeGatewaySchema() {
     schema: proxySchema,
     transforms: [new RenameTypes((name) => `proxy_${name}`)],
   });
+  const wrappedIpfsSchema = wrapSchema({
+    schema: ipfsSchema,
+    transforms: [
+      new RenameTypes((name) => `ipfs_${name}`),
+      new RenameRootFields((operation, name) => `ipfs_${name}`),
+    ],
+  });
+  const wrappedWeb2Schema = wrapSchema({
+    schema: web2Schema,
+    transforms: [
+      new RenameTypes((name) => `web2_${name}`),
+      new RenameRootFields((operation, name) => `web2_${name}`),
+    ],
+  });
 
   return stitchSchemas({
-    subschemas: [wrappedProxySchema, ...remoteSchemas],
+    subschemas: [
+      wrappedProxySchema,
+      wrappedIpfsSchema,
+      wrappedWeb2Schema,
+      ...remoteSchemas,
+    ],
   });
 }
 
