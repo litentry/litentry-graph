@@ -1,13 +1,7 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
-import {
-  RenameTypes,
-  wrapSchema,
-  RenameInterfaceFields,
-  RenameInputObjectFields,
-  RenameRootFields,
-} from '@graphql-tools/wrap';
+import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as proxySchema } from 'substrate-api-proxy';
 import { schema as web2Schema } from '@litentry/web2-subschema';
