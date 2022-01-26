@@ -1,5 +1,5 @@
 import { Context } from '../../types';
-import { getCallParams } from '../../utils/call';
+import { getCallParams, formatCallMeta } from '../../utils/call';
 import { notEmpty } from '../../utils/notEmpty';
 import type {DemocracySummary, Democracy} from '../../generated/resolvers-types'
 import { getBlockTime } from '../../utils/blockTime';
