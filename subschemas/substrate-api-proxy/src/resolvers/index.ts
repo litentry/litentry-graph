@@ -1,7 +1,8 @@
 import { Resolvers } from '../generated/resolvers-types';
+import { Context } from '../types';
 import { Query } from './Query';
 
-export const resolvers: Resolvers = {
+export const resolvers: Resolvers<Context> = {
   Query,
   CouncilMember: {
     account: Query.account,
@@ -10,6 +11,9 @@ export const resolvers: Resolvers = {
     account: Query.account,
   },
   Proposer: {
+    account: Query.account,
+  },
+  Registrar: {
     account: Query.account,
   },
 };
