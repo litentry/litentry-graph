@@ -1,11 +1,11 @@
-import type { ServerContext } from '../../types';
+import type { Context } from '../../types';
 import { BN, bnToBn } from '@polkadot/util';
 import type { BlockNumber } from '@polkadot/types/interfaces';
 
 export async function council(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: ServerContext,
+  { api }: Context,
 ) {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),

@@ -1,11 +1,11 @@
-import { ServerContext } from '../../types';
+import { Context } from '../../types';
 import { getCallParams } from '../../utils/call';
 import { notEmpty } from '../../utils/notEmpty';
 
 export const democracySummary = async (
   parent: { address?: string },
   args: { address?: string },
-  context: ServerContext,
+  context: Context,
 ) => {
   const { api } = context;
   const [referendumIds, activeProposals, publicPropCount, referendumTotal] =
@@ -28,7 +28,7 @@ export const democracySummary = async (
 export const democracy = async (
   parent: { address?: string },
   args: { address?: string },
-  context: ServerContext,
+  context: Context,
 ) => {
   const { api } = context;
   const [activeProposals] = await Promise.all([

@@ -1,10 +1,10 @@
 import { RegistrationJudgement } from '../../generated/resolvers-types';
-import { ServerContext } from '../../types';
+import { Context } from '../../types';
 
 export const account = async (
   parent: { address?: string },
   args: { address?: string },
-  context: ServerContext,
+  context: Context,
 ) => {
   const { api } = context;
   const address = parent?.address || args?.address;

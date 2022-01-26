@@ -1,26 +1,30 @@
-
-import {BN} from '@polkadot/util';
-import type {BountyStatus} from '@polkadot/types/interfaces';
-import type { ServerContext } from '../../types';
+import { BN } from '@polkadot/util';
+import type { BountyStatus } from '@polkadot/types/interfaces';
+import type { Context } from '../../types';
 
 type BountiesSummary = {
-  activeBounties: number
-  bountyCount: string
-  pastBounties: string
-  totalValue: string
-  treasurySpendPeriod: string
-}
+  activeBounties: number;
+  bountyCount: string;
+  pastBounties: string;
+  totalValue: string;
+  treasurySpendPeriod: string;
+};
 
 export async function bountiesSummary(
   _: Record<string, string>,
   __: Record<string, string>,
-  { api }: ServerContext
+  { api }: Context,
 ): Promise<BountiesSummary> {
   const deriveBounties = await api.derive.bounties.bounties();
-  const bountyCount = await (api.query.bounties || api.query.treasury).bountyCount();
+  const bountyCount = await (
+    api.query.bounties || api.query.treasury
+  ).bountyCount();
   const activeBounties = deriveBounties.length;
   const pastBounties = bountyCount.subn(activeBounties);
-  const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
+  const totalValue = (deriveBounties || []).reduce(
+    (total, { bounty: { value } }) => total.iadd(value),
+    new BN(0),
+  );
 
   return {
     bountyCount: bountyCount.toString(),
@@ -31,8 +35,13 @@ export async function bountiesSummary(
   };
 }
 
-
-type StatusName = 'Active' | 'Approved' | 'CuratorProposed' | 'Funded' | 'PendingPayout' | 'Proposed';
+type StatusName =
+  | 'Active'
+  | 'Approved'
+  | 'CuratorProposed'
+  | 'Funded'
+  | 'PendingPayout'
+  | 'Proposed';
 
 type BountyStatusInfo = {
   beneficiary?: string;
@@ -40,7 +49,7 @@ type BountyStatusInfo = {
   curator?: string;
   unlockAt?: string;
   updateDue?: string;
-}
+};
 
 type Bounty = {
   index: string;
@@ -56,10 +65,10 @@ type Bounty = {
 export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
-  { api }: ServerContext
+  { api }: Context,
 ): Promise<Bounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
-  return deriveBounties.map(({bounty, description, index}) => ({
+  return deriveBounties.map(({ bounty, description, index }) => ({
     index: index.toString(),
     proposer: bounty.proposer.toString(),
     value: bounty.value.toString(),
@@ -68,16 +77,16 @@ export async function bounties(
     bond: bounty.bond.toString(),
     bountyStatus: getBountyStatus(bounty.status),
     description,
-  }))
+  }));
 }
 
 export async function bounty(
   _: Record<string, string>,
   { index }: { index: string },
-  serverContext: ServerContext,
+  serverContext: Context,
 ): Promise<Bounty> {
-  const bountiesList = await bounties({}, {}, serverContext)
-  return bountiesList.find((bounty) => bounty.index === index) as Bounty
+  const bountiesList = await bounties({}, {}, serverContext);
+  return bountiesList.find((bounty) => bounty.index === index) as Bounty;
 }
 
 const getBountyStatus = (status: BountyStatus): BountyStatusInfo => {
