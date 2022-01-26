@@ -120,6 +120,7 @@ export type CouncilMotion = {
 export type Democracy = {
   __typename?: 'Democracy';
   proposals: Array<Maybe<Proposal>>;
+  referendums: Array<Referendum>;
 };
 
 export type DemocracySummary = {
@@ -262,6 +263,17 @@ export type QueryBountyArgs = {
 
 export type QueryTipArgs = {
   id: Scalars['String'];
+};
+
+export type Referendum = {
+  __typename?: 'Referendum';
+  args: Array<ProposalArg>;
+  endPeriod: Array<Scalars['String']>;
+  hash: Scalars['String'];
+  index: Scalars['String'];
+  meta: Scalars['String'];
+  method: Scalars['String'];
+  section: Scalars['String'];
 };
 
 export type Registrar = {
@@ -431,6 +443,7 @@ export type ResolversTypes = {
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<Proposer>;
   Query: ResolverTypeWrapper<{}>;
+  Referendum: ResolverTypeWrapper<Referendum>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -473,6 +486,7 @@ export type ResolversParentTypes = {
   ProposalVotes: ProposalVotes;
   Proposer: Proposer;
   Query: {};
+  Referendum: Referendum;
   Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
@@ -586,6 +600,7 @@ export type CouncilMotionResolvers<ContextType = any, ParentType extends Resolve
 
 export type DemocracyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Democracy'] = ResolversParentTypes['Democracy']> = {
   proposals?: Resolver<Array<Maybe<ResolversTypes['Proposal']>>, ParentType, ContextType>;
+  referendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -709,6 +724,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
 };
 
+export type ReferendumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Referendum'] = ResolversParentTypes['Referendum']> = {
+  args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
+  endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RegistrarResolvers<ContextType = any, ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar']> = {
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -802,6 +828,7 @@ export type Resolvers<ContextType = any> = {
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
   Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Referendum?: ReferendumResolvers<ContextType>;
   Registrar?: RegistrarResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;

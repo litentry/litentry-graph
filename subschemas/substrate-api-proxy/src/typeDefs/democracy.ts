@@ -29,8 +29,19 @@ export default /* GraphQL */ `
     proposer: Proposer!
   }
 
+  type Referendum {
+    index: String!
+    meta: String!
+    method: String!
+    section: String!
+    args: [ProposalArg!]!
+    hash: String!
+    endPeriod: [String!]!
+  }
+
   type Democracy {
     proposals: [Proposal]!
+    referendums: [Referendum!]!
   }
 
   type Query {
