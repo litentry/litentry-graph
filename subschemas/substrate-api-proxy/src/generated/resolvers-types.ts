@@ -267,7 +267,7 @@ export type Registrar = {
   account?: Maybe<Account>;
   address?: Maybe<Scalars['String']>;
   fee?: Maybe<Scalars['String']>;
-  formatedFee?: Maybe<Scalars['String']>;
+  formattedFee?: Maybe<Scalars['String']>;
   /** id: Registrar index */
   id: Scalars['String'];
 };
@@ -709,7 +709,7 @@ export type RegistrarResolvers<ContextType = any, ParentType extends ResolversPa
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   fee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  formatedFee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  formattedFee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

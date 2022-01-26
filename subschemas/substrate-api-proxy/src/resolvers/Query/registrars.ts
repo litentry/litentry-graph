@@ -6,7 +6,7 @@ export type PartialRegistrar = {
   id: string;
   address: string | undefined;
   fee: string | undefined;
-  formatedFee: string | undefined;
+  formattedFee: string | undefined;
 };
 
 export async function registrars(
@@ -22,7 +22,7 @@ export async function registrars(
       id: index.toString(),
       address: r?.account.toString(),
       fee: r?.fee.toString(),
-      formatedFee: format(api, r?.fee || BN_ZERO),
+      formattedFee: format(api, r?.fee || BN_ZERO),
     }));
 
   return registrars;

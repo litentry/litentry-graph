@@ -5,7 +5,7 @@ export default /* GraphQL */ `
     address: String
     account: Account
     fee: String
-    formatedFee: String
+    formattedFee: String
   }
 
   type Query {
