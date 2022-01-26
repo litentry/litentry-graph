@@ -75,6 +75,7 @@ async function run() {
     })
   );
   app.listen(config.apiPort);
+  console.log(`Graphql runs on *:${config.apiPort}`);
 }
 
 run().catch(console.dir);
