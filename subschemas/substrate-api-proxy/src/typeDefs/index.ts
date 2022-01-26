@@ -8,6 +8,7 @@ import events from './events';
 import democracy from './democracy';
 import treasury from './treasury';
 import registrars from './registrars';
+import moduleElection from './moduleElection';
 
 export default [
   chainInfo,
@@ -20,4 +21,5 @@ export default [
   democracy,
   treasury,
   registrars,
+  moduleElection,
 ];
