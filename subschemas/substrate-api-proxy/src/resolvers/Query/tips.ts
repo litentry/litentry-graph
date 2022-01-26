@@ -10,13 +10,13 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
-import type { ServerContext } from '../../types';
+import type { Context } from '../../types';
 import type {Tip} from '../../generated/resolvers-types'
 
 export async function tips(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: ServerContext,
+  { api }: Context,
 ): Promise<Tip[]> {
   const hashes = await api.query.tips.tips
     .keys()
@@ -45,7 +45,7 @@ export async function tips(
 export async function tip(
   _: Record<string, never>,
   { id }: { id: string },
-  { api }: ServerContext,
+  { api }: Context,
 ): Promise<Tip> {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();

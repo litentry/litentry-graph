@@ -1,4 +1,4 @@
-import { ServerContext } from '../../types';
+import { Context } from '../../types';
 import { getCallParams } from '../../utils/call';
 import { notEmpty } from '../../utils/notEmpty';
 import type {DemocracySummary, Democracy} from '../../generated/resolvers-types'
@@ -6,7 +6,7 @@ import type {DemocracySummary, Democracy} from '../../generated/resolvers-types'
 export const democracySummary = async (
   _: { address?: string },
   __: { address?: string },
-  context: ServerContext,
+  context: Context,
 ): Promise<DemocracySummary> => {
   const { api } = context;
   const [referendumIds, activeProposals, publicPropCount, referendumTotal] =
@@ -29,7 +29,7 @@ export const democracySummary = async (
 export const democracy = async (
   _: { address?: string },
   __: { address?: string },
-  context: ServerContext,
+  context: Context,
 ): Promise<Democracy> => {
   const { api } = context;
   const [activeProposals] = await Promise.all([

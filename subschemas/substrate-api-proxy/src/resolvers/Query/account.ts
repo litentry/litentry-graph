@@ -1,11 +1,11 @@
 import type { RegistrationJudgement, Account } from '../../generated/resolvers-types';
-import type { ServerContext } from '../../types';
+import type { Context } from '../../types';
 
 export const account = async (
   parent: { address?: string },
   args: { address?: string },
-  context: ServerContext,
-): Promise<Account> => {
+  context: Context,
+) => {
   const { api } = context;
   const address = parent?.address || args?.address;
 

@@ -7,6 +7,7 @@ import bounties from './bounties';
 import events from './events';
 import democracy from './democracy';
 import treasury from './treasury';
+import registrars from './registrars';
 
 export default [
   chainInfo,
@@ -18,4 +19,5 @@ export default [
   bounties,
   democracy,
   treasury,
+  registrars,
 ];

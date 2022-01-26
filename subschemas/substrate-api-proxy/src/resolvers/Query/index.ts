@@ -8,6 +8,7 @@ import { events } from './events';
 import { democracySummary, democracy } from './democracy';
 import { treasurySummary, treasury } from './treasury';
 import { councilMotions } from './councilMotions';
+import { registrars } from './registrars';
 
 export const Query = {
   balance,
@@ -25,4 +26,5 @@ export const Query = {
   democracy,
   treasurySummary,
   treasury,
+  registrars,
 };

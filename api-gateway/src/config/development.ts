@@ -1,7 +1,7 @@
 import Config from './Config';
 
 const config: Config = {
-  apiPort: 5000,
+  apiPort: 3377,
   remoteSchemaConfig: [
     {
       name: 'eth',
