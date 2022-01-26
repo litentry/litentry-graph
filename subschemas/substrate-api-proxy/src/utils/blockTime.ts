@@ -1,14 +1,14 @@
 import { BlockNumber } from '@polkadot/types/interfaces';
 import { BN, BN_ONE, extractTime } from '@polkadot/util';
-import { ServerContext } from '../types';
+import { Context } from '../types';
 
 type Result = { blockTime: number; timeStringParts: string[] };
 
 const DEFAULT_TIME = new BN(6000);
 
 export function getBlockTime(
-  api: ServerContext['api'],
-  blockNumber: BlockNumber | BN = BN_ONE
+  api: Context['api'],
+  blockNumber: BlockNumber | BN = BN_ONE,
 ): Result {
   const blockTime =
     api.consts.babe?.expectedBlockTime ||
@@ -17,7 +17,7 @@ export function getBlockTime(
     DEFAULT_TIME;
 
   const { days, hours, minutes, seconds } = extractTime(
-    Math.abs(blockTime.mul(blockNumber).toNumber())
+    Math.abs(blockTime.mul(blockNumber).toNumber()),
   );
 
   const timeStr = [

@@ -1,9 +1,9 @@
-import type { ServerContext } from '../../types';
+import type { Context } from '../../types';
 
 export default async function chainInfo(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: ServerContext,
+  { api }: Context,
 ) {
   const [chain, nodeName, nodeVersion] = await Promise.all([
     api.rpc.system.chain(),

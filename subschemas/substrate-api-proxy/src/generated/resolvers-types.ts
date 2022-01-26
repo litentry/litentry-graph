@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { PartialCouncilCandidate, PartialCouncilMember } from '../resolvers/Query/council';
+import { PartialRegistrar } from '../resolvers/Query/registrars';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -233,6 +234,7 @@ export type Query = {
   democracy: Democracy;
   democracySummary: DemocracySummary;
   events: Array<Event>;
+  registrars?: Maybe<Array<Registrar>>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasuryInfo: TreasuryInfo;
@@ -257,6 +259,16 @@ export type QueryBountyArgs = {
 
 
 export type QueryTipArgs = {
+  id: Scalars['String'];
+};
+
+export type Registrar = {
+  __typename?: 'Registrar';
+  account?: Maybe<Account>;
+  address?: Maybe<Scalars['String']>;
+  fee?: Maybe<Scalars['String']>;
+  formattedFee?: Maybe<Scalars['String']>;
+  /** id: Registrar index */
   id: Scalars['String'];
 };
 
@@ -417,6 +429,7 @@ export type ResolversTypes = {
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<Proposer>;
   Query: ResolverTypeWrapper<{}>;
+  Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
@@ -458,6 +471,7 @@ export type ResolversParentTypes = {
   ProposalVotes: ProposalVotes;
   Proposer: Proposer;
   Query: {};
+  Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
   TermProgress: TermProgress;
@@ -684,10 +698,20 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   democracy?: Resolver<ResolversTypes['Democracy'], ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
+  registrars?: Resolver<Maybe<Array<ResolversTypes['Registrar']>>, ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasuryInfo?: Resolver<ResolversTypes['TreasuryInfo'], ParentType, ContextType>;
   treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
+};
+
+export type RegistrarResolvers<ContextType = any, ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar']> = {
+  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  fee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  formattedFee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RegistrationJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegistrationJudgement'] = ResolversParentTypes['RegistrationJudgement']> = {
@@ -774,6 +798,7 @@ export type Resolvers<ContextType = any> = {
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
   Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Registrar?: RegistrarResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;

@@ -1,5 +1,5 @@
 import type { ApiPromise } from '@polkadot/api';
 
-export type ServerContext = {
+export type Context = {
   api: ApiPromise;
 };

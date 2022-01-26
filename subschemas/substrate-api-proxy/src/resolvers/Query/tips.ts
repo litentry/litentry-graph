@@ -10,14 +10,14 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
-import type { ServerContext } from '../../types';
+import type { Context } from '../../types';
 
 type Tip = [string, PalletTipsOpenTip];
 
 export async function tips(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: ServerContext,
+  { api }: Context,
 ): Promise<
   {
     id: string;
@@ -55,7 +55,7 @@ export async function tips(
 export async function tip(
   _: Record<string, never>,
   { id }: { id: string },
-  { api }: ServerContext,
+  { api }: Context,
 ) {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();
