@@ -9,6 +9,7 @@ import { democracySummary, democracy } from './democracy';
 import { treasurySummary, treasury } from './treasury';
 import { councilMotions } from './councilMotions';
 import { registrars } from './registrars';
+import moduleElection from './moduleElection'
 
 export const Query = {
   balance,
@@ -27,4 +28,5 @@ export const Query = {
   treasurySummary,
   treasury,
   registrars,
+  moduleElection,
 };
