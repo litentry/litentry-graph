@@ -29,7 +29,7 @@ async function makeGatewaySchema() {
   const wrappedProxySchema = wrapSchema({
     schema: proxySchema,
     transforms: [
-      new RenameTypes((name) => `proxy${capitalize(name)}`),
+      new RenameTypes((name) => `Proxy${capitalize(name)}`),
       new RenameRootFields((_, name) => `proxy${capitalize(name)}`),
     ],
   });
