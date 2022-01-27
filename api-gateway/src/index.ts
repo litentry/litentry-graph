@@ -8,6 +8,7 @@ import { schema as web2Schema } from '@litentry/web2-subschema';
 import { schema as ipfsSchema } from '@litentry/ipfs-subschema';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
+import { capitalize } from './utils';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 
 async function makeGatewaySchema() {
@@ -27,20 +28,23 @@ async function makeGatewaySchema() {
 
   const wrappedProxySchema = wrapSchema({
     schema: proxySchema,
-    transforms: [new RenameTypes((name) => `proxy_${name}`)],
+    transforms: [
+      new RenameTypes((name) => `proxy${capitalize(name)}`),
+      new RenameRootFields((_, name) => `proxy${capitalize(name)}`),
+    ],
   });
   const wrappedIpfsSchema = wrapSchema({
     schema: ipfsSchema,
     transforms: [
       new RenameTypes((name) => `ipfs_${name}`),
-      new RenameRootFields((operation, name) => `ipfs_${name}`),
+      new RenameRootFields((_, name) => `ipfs_${name}`),
     ],
   });
   const wrappedWeb2Schema = wrapSchema({
     schema: web2Schema,
     transforms: [
       new RenameTypes((name) => `web2_${name}`),
-      new RenameRootFields((operation, name) => `web2_${name}`),
+      new RenameRootFields((_, name) => `web2_${name}`),
     ],
   });
 
