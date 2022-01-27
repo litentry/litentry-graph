@@ -45,6 +45,6 @@ type Badge {
 }
 
 type Query {
-  UserBadgeQuery(username: String!): Badge
+  DiscourseUserBadgeQuery(username: String!): Badge
 }
 `;

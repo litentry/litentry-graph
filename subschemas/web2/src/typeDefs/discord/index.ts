@@ -12,6 +12,6 @@ export default /* GraphQL */ `
   }
 
   type Query {
-    Mee6PlayerQuery(guild_id: String!, username: String!): Mee6Player
+    DiscordMee6PlayerQuery(guild_id: String!, username: String!): Mee6Player
   }
 `;

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-export const Mee6PlayerQuery = async (
+export const DiscordMee6PlayerQuery = async (
   parent: {},
   args: { username: string; guild_id: string },
 ) => {

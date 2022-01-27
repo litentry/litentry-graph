@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-export const UserBadgeQuery = async (
+export const DiscourseUserBadgeQuery = async (
   parent: {},
   args: { username: string },
 ) => {

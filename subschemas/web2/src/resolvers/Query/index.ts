@@ -1,7 +1,8 @@
-import { Mee6PlayerQuery } from './discord';
-import { UserBadgeQuery } from './discourse';
-
+import { DiscordMee6PlayerQuery } from './discord';
+import { DiscourseUserBadgeQuery } from './discourse';
+import { TwitterUserQuery } from './twitter';
 export const Query = {
-  Mee6PlayerQuery,
-  UserBadgeQuery,
+  DiscordMee6PlayerQuery,
+  DiscourseUserBadgeQuery,
+  TwitterUserQuery,
 };
