@@ -48,7 +48,7 @@ export async function democracyProposals (
     .map((proposal) => {
       const imageProposal = proposal.image?.proposal;
       if (imageProposal) {
-        const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
+        const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
         return {
           meta,
           balance: proposal.balance?.toString(),
@@ -61,6 +61,31 @@ export async function democracyProposals (
       }
     })
     .filter(notEmpty);
+}
+
+export async function democracyProposal(
+  _: Record<string, never>,
+  { index }: { index: string },
+  { api }: Context,
+): Promise<ProposalInfo | null> {
+  const activeProposals = await api.derive.democracy.proposals();
+  const proposal = activeProposals.find((proposal) => proposal.index.toString() === index);
+
+  if(proposal && proposal.image?.proposal) {
+    const imageProposal = proposal.image.proposal;
+    const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
+    return {
+      meta,
+      balance: proposal.balance?.toString(),
+      seconds: proposal.seconds.map((account) => ({address: account.toString()})),
+      index: proposal.index.toString(),
+      proposer: { address: String(proposal.proposer) },
+      hash: String(imageProposal.hash),
+      ...getCallParams(imageProposal),
+    };
+  }
+
+  return null;
 }
 
 export async function democracyReferendums (
@@ -76,7 +101,7 @@ export async function democracyReferendums (
 
   return activeReferendums
     .map((referendum) => {
-      const imageProposal = referendum.image?.proposal
+      const imageProposal = referendum.image?.proposal;
       if(imageProposal) {
 
         const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
@@ -101,4 +126,43 @@ export async function democracyReferendums (
       }
     })
     .filter(notEmpty);
+}
+
+export async function democracyReferendum(
+  _: Record<string, never>,
+  { index }: { index: string },
+  { api }: Context,
+): Promise<Referendum | null> {
+  const [activeReferendums, bestNumber] = await Promise.all([
+    api.derive.democracy.referendums(),
+    api.derive.chain.bestNumber(),
+  ])
+  const referendum = activeReferendums.find((referendum) => referendum.index.toString() === index);
+
+  if(referendum && referendum.image?.proposal) {
+    const imageProposal = referendum.image.proposal;
+
+    const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
+    const {timeStringParts: endPeriod} = getBlockTime(api, remainBlock);
+
+    const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
+    const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
+
+    const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
+
+    return {
+      meta,
+      endPeriod,
+      activatePeriod,
+      votedAye: referendum.votedAye.toString(),
+      votedNay: referendum.votedNay.toString(),
+      voteCountAye: referendum.voteCountAye.toString(),
+      voteCountNay: referendum.voteCountNay.toString(),
+      index: referendum.index.toString(),
+      hash: String(imageProposal.hash),
+      ...getCallParams(imageProposal),
+    }
+  }
+
+  return null;
 }

@@ -55,5 +55,7 @@ export default /* GraphQL */ `
     democracySummary: DemocracySummary!
     democracyProposals: [Proposal!]!
     democracyReferendums: [Referendum!]!
+    democracyProposal(index: String!): Proposal
+    democracyReferendum(index: String!): Referendum
   }
 `;

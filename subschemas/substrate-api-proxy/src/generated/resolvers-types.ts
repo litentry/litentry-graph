@@ -243,7 +243,9 @@ export type Query = {
   chainInfo: ChainInfo;
   council: Council;
   councilMotions: Array<CouncilMotion>;
+  democracyProposal?: Maybe<Proposal>;
   democracyProposals: Array<Proposal>;
+  democracyReferendum?: Maybe<Referendum>;
   democracyReferendums: Array<Referendum>;
   democracySummary: DemocracySummary;
   events: Array<Event>;
@@ -268,6 +270,16 @@ export type QueryBalanceArgs = {
 
 
 export type QueryBountyArgs = {
+  index: Scalars['String'];
+};
+
+
+export type QueryDemocracyProposalArgs = {
+  index: Scalars['String'];
+};
+
+
+export type QueryDemocracyReferendumArgs = {
   index: Scalars['String'];
 };
 
@@ -740,7 +752,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
+  democracyProposal?: Resolver<Maybe<ResolversTypes['Proposal']>, ParentType, ContextType, RequireFields<QueryDemocracyProposalArgs, 'index'>>;
   democracyProposals?: Resolver<Array<ResolversTypes['Proposal']>, ParentType, ContextType>;
+  democracyReferendum?: Resolver<Maybe<ResolversTypes['Referendum']>, ParentType, ContextType, RequireFields<QueryDemocracyReferendumArgs, 'index'>>;
   democracyReferendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;

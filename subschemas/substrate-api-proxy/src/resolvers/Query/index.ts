@@ -5,7 +5,7 @@ import { council } from './council';
 import { tips, tip } from './tips';
 import { bountiesSummary, bounties, bounty } from './bounties';
 import { events } from './events';
-import { democracySummary, democracyProposals, democracyReferendums } from './democracy';
+import { democracySummary, democracyProposals, democracyProposal, democracyReferendums, democracyReferendum } from './democracy';
 import { treasurySummary, treasury } from './treasury';
 import { councilMotions } from './councilMotions';
 import { registrars } from './registrars';
@@ -25,7 +25,9 @@ export const Query = {
   events,
   democracySummary,
   democracyProposals,
+  democracyProposal,
   democracyReferendums,
+  democracyReferendum,
   treasurySummary,
   treasury,
   registrars,
