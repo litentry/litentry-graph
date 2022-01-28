@@ -10,7 +10,8 @@ generates:
       mappers:
         CouncilCandidate: ../resolvers/Query/council#PartialCouncilCandidate
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
-        Registrar: ../resolvers/Query/registrars#PartialRegistrar 
+        Registrar: ../resolvers/Query/registrars#PartialRegistrar
+        ProposalSecond: ../resolvers/Query/democracy#PartialProposalSecond
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

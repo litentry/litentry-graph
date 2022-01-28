@@ -5,11 +5,19 @@ import type {DemocracySummary, Proposal, Referendum} from '../../generated/resol
 import { getBlockTime } from '../../utils/blockTime';
 import {BN_ONE} from '@polkadot/util';
 
-export const democracySummary = async (
+interface ProposalInfo extends Omit<Proposal, 'seconds'> {
+  seconds: PartialProposalSecond[]
+}
+
+export type PartialProposalSecond = {
+  address: string;
+};
+
+export async function democracySummary (
   _: Record<string, never>,
   __: Record<string, never>,
   context: Context,
-): Promise<DemocracySummary> => {
+): Promise<DemocracySummary> {
   const { api } = context;
   const [referendumIds, activeProposals, publicPropCount, referendumTotal] =
     await Promise.all([
@@ -28,11 +36,11 @@ export const democracySummary = async (
   };
 };
 
-export const democracyProposals = async (
+export async function democracyProposals (
   _: Record<string, never>,
   __: Record<string, never>,
   context: Context,
-): Promise<Proposal[]> => {
+): Promise<ProposalInfo[]> {
   const {api} = context;
   const activeProposals = await api.derive.democracy.proposals();
 
@@ -43,6 +51,8 @@ export const democracyProposals = async (
         const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
         return {
           meta,
+          balance: proposal.balance?.toString(),
+          seconds: proposal.seconds.map((account) => ({address: account.toString()})),
           index: proposal.index.toString(),
           proposer: { address: String(proposal.proposer) },
           hash: String(imageProposal.hash),
@@ -53,11 +63,11 @@ export const democracyProposals = async (
     .filter(notEmpty);
 }
 
-export const democracyReferendums = async (
+export async function democracyReferendums (
   _: Record<string, never>,
   __: Record<string, never>,
   context: Context,
-): Promise<Referendum[]> => {
+): Promise<Referendum[]> {
   const {api} = context;
   const [activeReferendums, bestNumber] = await Promise.all([
     api.derive.democracy.referendums(),

@@ -16,4 +16,7 @@ export const resolvers: Resolvers<Context> = {
   Registrar: {
     account: Query.account,
   },
+  ProposalSecond: {
+    account: Query.account,
+  }
 };

@@ -19,8 +19,15 @@ export default /* GraphQL */ `
     account: Account
   }
 
+  type ProposalSecond {
+    address: String!
+    account: Account!
+  }
+
   type Proposal {
     index: String!
+    balance: String
+    seconds: [ProposalSecond!]!
     meta: String!
     method: String!
     section: String!
