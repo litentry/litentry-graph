@@ -39,13 +39,9 @@ export default /* GraphQL */ `
     endPeriod: [String!]!
   }
 
-  type Democracy {
-    proposals: [Proposal]!
-    referendums: [Referendum!]!
-  }
-
   type Query {
     democracySummary: DemocracySummary!
-    democracy: Democracy!
+    democracyProposals: [Proposal!]!
+    democracyReferendums: [Referendum!]!
   }
 `;
