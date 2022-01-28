@@ -59,10 +59,26 @@ export async function bounties(
 export async function bounty(
   _: Record<string, string>,
   { index }: { index: string },
-  serverContext: Context,
+  { api }: Context,
 ): Promise<Bounty | null> {
-  const bountiesList = await bounties({}, {}, serverContext);
-  return bountiesList.find((bounty) => bounty.index === index) ?? null;
+  const deriveBounties = await api.derive.bounties.bounties();
+  const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index)
+
+  if(bountyData) {
+    const { bounty, description, index } = bountyData
+    return {
+      index: index.toString(),
+      proposer: bounty.proposer.toString(),
+      value: bounty.value.toString(),
+      fee: bounty.fee.toString(),
+      curatorDeposit: bounty.curatorDeposit.toString(),
+      bond: bounty.bond.toString(),
+      bountyStatus: getBountyStatus(bounty.status),
+      description,
+    }
+  }
+
+  return null
 }
 
 const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
