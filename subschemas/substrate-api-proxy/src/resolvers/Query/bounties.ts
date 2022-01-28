@@ -60,9 +60,9 @@ export async function bounty(
   _: Record<string, string>,
   { index }: { index: string },
   serverContext: Context,
-): Promise<Bounty> {
+): Promise<Bounty | null> {
   const bountiesList = await bounties({}, {}, serverContext);
-  return bountiesList.find((bounty) => bounty.index === index) as Bounty;
+  return bountiesList.find((bounty) => bounty.index === index) ?? null;
 }
 
 const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
