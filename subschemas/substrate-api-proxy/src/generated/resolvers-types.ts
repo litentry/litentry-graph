@@ -125,11 +125,11 @@ export type Democracy = {
 
 export type DemocracySummary = {
   __typename?: 'DemocracySummary';
-  activeProposalsCount: Scalars['Int'];
+  activeProposals: Scalars['Int'];
+  activeReferendums: Scalars['Int'];
   launchPeriod: Scalars['String'];
-  publicPropCount: Scalars['Int'];
-  referenda: Scalars['Int'];
-  referendumTotal: Scalars['Int'];
+  proposals: Scalars['String'];
+  referendums: Scalars['String'];
 };
 
 export type DeriveAccountRegistration = {
@@ -614,11 +614,11 @@ export type DemocracyResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type DemocracySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['DemocracySummary'] = ResolversParentTypes['DemocracySummary']> = {
-  activeProposalsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeReferendums?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   launchPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  publicPropCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  referenda?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  referendumTotal?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  proposals?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  referendums?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

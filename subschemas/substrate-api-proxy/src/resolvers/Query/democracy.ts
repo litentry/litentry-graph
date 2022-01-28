@@ -20,10 +20,10 @@ export const democracySummary = async (
     ]);
 
   return {
-    activeProposalsCount: activeProposals.length,
-    publicPropCount: publicPropCount.toNumber(),
-    referendumTotal: referendumTotal.toNumber(),
-    referenda: referendumIds.length,
+    activeProposals: activeProposals.length,
+    proposals: publicPropCount.toString(),
+    referendums: referendumTotal.toString(),
+    activeReferendums: referendumIds.length,
     launchPeriod: String(api.consts.democracy.launchPeriod),
   };
 };
