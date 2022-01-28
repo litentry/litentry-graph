@@ -78,12 +78,22 @@ export async function democracyReferendums (
     .map((referendum) => {
       const imageProposal = referendum.image?.proposal
       if(imageProposal) {
+
         const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
-        const {timeStringParts} = getBlockTime(api, remainBlock);
+        const {timeStringParts: endPeriod} = getBlockTime(api, remainBlock);
+
+        const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
+        const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
+
         const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
         return {
           meta,
-          endPeriod: timeStringParts,
+          endPeriod,
+          activatePeriod,
+          votedAye: referendum.votedAye.toString(),
+          votedNay: referendum.votedNay.toString(),
+          voteCountAye: referendum.voteCountAye.toString(),
+          voteCountNay: referendum.voteCountNay.toString(),
           index: referendum.index.toString(),
           hash: String(imageProposal.hash),
           ...getCallParams(imageProposal),

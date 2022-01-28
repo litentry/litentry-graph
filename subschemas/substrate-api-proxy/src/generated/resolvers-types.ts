@@ -278,6 +278,7 @@ export type QueryTipArgs = {
 
 export type Referendum = {
   __typename?: 'Referendum';
+  activatePeriod: Array<Scalars['String']>;
   args: Array<ProposalArg>;
   endPeriod: Array<Scalars['String']>;
   hash: Scalars['String'];
@@ -285,6 +286,10 @@ export type Referendum = {
   meta: Scalars['String'];
   method: Scalars['String'];
   section: Scalars['String'];
+  voteCountAye: Scalars['String'];
+  voteCountNay: Scalars['String'];
+  votedAye: Scalars['String'];
+  votedNay: Scalars['String'];
 };
 
 export type Registrar = {
@@ -748,6 +753,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type ReferendumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Referendum'] = ResolversParentTypes['Referendum']> = {
+  activatePeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -755,6 +761,10 @@ export type ReferendumResolvers<ContextType = any, ParentType extends ResolversP
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  voteCountAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  voteCountNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

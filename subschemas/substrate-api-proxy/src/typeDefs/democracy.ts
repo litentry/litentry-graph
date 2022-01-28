@@ -44,6 +44,11 @@ export default /* GraphQL */ `
     args: [ProposalArg!]!
     hash: String!
     endPeriod: [String!]!
+    activatePeriod: [String!]!
+    votedAye: String!
+    votedNay: String!
+    voteCountAye: String!
+    voteCountNay: String!
   }
 
   type Query {
