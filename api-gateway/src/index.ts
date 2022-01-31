@@ -1,4 +1,5 @@
 import express from 'express';
+import { AddressInfo } from 'net'
 import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
@@ -78,7 +79,10 @@ async function run() {
       };
     })
   );
-  app.listen(config.apiPort);
+  const listener = app.listen(config.apiPort, () => {
+    const {port} = listener.address() as AddressInfo;
+    console.log(`listening on port: ${port}`);
+  });
 }
 
 run().catch(console.dir);

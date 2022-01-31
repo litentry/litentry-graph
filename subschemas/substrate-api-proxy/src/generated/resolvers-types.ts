@@ -1,6 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { PartialCouncilCandidate, PartialCouncilMember } from '../resolvers/Query/council';
 import { PartialRegistrar } from '../resolvers/Query/registrars';
+import { PartialProposalSecond } from '../resolvers/Query/democracy';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -117,19 +118,13 @@ export type CouncilMotion = {
   votes?: Maybe<MotionVotes>;
 };
 
-export type Democracy = {
-  __typename?: 'Democracy';
-  proposals: Array<Maybe<Proposal>>;
-  referendums: Array<Referendum>;
-};
-
 export type DemocracySummary = {
   __typename?: 'DemocracySummary';
-  activeProposalsCount: Scalars['Int'];
+  activeProposals: Scalars['Int'];
+  activeReferendums: Scalars['Int'];
   launchPeriod: Scalars['String'];
-  publicPropCount: Scalars['Int'];
-  referenda: Scalars['Int'];
-  referendumTotal: Scalars['Int'];
+  proposals: Scalars['String'];
+  referendums: Scalars['String'];
 };
 
 export type DeriveAccountRegistration = {
@@ -199,11 +194,13 @@ export type PalletProposal = {
 export type Proposal = {
   __typename?: 'Proposal';
   args: Array<ProposalArg>;
+  balance?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   index: Scalars['String'];
   meta: Scalars['String'];
   method: Scalars['String'];
   proposer: Proposer;
+  seconds: Array<ProposalSecond>;
   section: Scalars['String'];
 };
 
@@ -213,6 +210,12 @@ export type ProposalArg = {
   subCalls?: Maybe<Array<Maybe<Proposal>>>;
   type?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
+};
+
+export type ProposalSecond = {
+  __typename?: 'ProposalSecond';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type ProposalVotes = {
@@ -240,7 +243,10 @@ export type Query = {
   chainInfo: ChainInfo;
   council: Council;
   councilMotions: Array<CouncilMotion>;
-  democracy: Democracy;
+  democracyProposal?: Maybe<Proposal>;
+  democracyProposals: Array<Proposal>;
+  democracyReferendum?: Maybe<Referendum>;
+  democracyReferendums: Array<Referendum>;
   democracySummary: DemocracySummary;
   events: Array<Event>;
   moduleElection: ModuleElection;
@@ -268,12 +274,23 @@ export type QueryBountyArgs = {
 };
 
 
+export type QueryDemocracyProposalArgs = {
+  index: Scalars['String'];
+};
+
+
+export type QueryDemocracyReferendumArgs = {
+  index: Scalars['String'];
+};
+
+
 export type QueryTipArgs = {
   id: Scalars['String'];
 };
 
 export type Referendum = {
   __typename?: 'Referendum';
+  activatePeriod: Array<Scalars['String']>;
   args: Array<ProposalArg>;
   endPeriod: Array<Scalars['String']>;
   hash: Scalars['String'];
@@ -281,6 +298,10 @@ export type Referendum = {
   meta: Scalars['String'];
   method: Scalars['String'];
   section: Scalars['String'];
+  voteCountAye: Scalars['String'];
+  voteCountNay: Scalars['String'];
+  votedAye: Scalars['String'];
+  votedNay: Scalars['String'];
 };
 
 export type Registrar = {
@@ -433,8 +454,7 @@ export type ResolversTypes = {
   Council: ResolverTypeWrapper<Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversTypes['CouncilCandidate']>, members: Array<ResolversTypes['CouncilMember']>, primeMember?: Maybe<ResolversTypes['CouncilMember']>, runnersUp: Array<ResolversTypes['CouncilMember']> }>;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
-  CouncilMotion: ResolverTypeWrapper<CouncilMotion>;
-  Democracy: ResolverTypeWrapper<Democracy>;
+  CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & { proposal: ResolversTypes['MotionProposal'] }>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
   Event: ResolverTypeWrapper<Event>;
@@ -443,15 +463,16 @@ export type ResolversTypes = {
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
-  MotionProposal: ResolverTypeWrapper<MotionProposal>;
+  MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & { args: Array<ResolversTypes['ProposalArg']> }>;
   MotionVotes: ResolverTypeWrapper<MotionVotes>;
   PalletProposal: ResolverTypeWrapper<PalletProposal>;
-  Proposal: ResolverTypeWrapper<Proposal>;
-  ProposalArg: ResolverTypeWrapper<ProposalArg>;
+  Proposal: ResolverTypeWrapper<Omit<Proposal, 'args' | 'seconds'> & { args: Array<ResolversTypes['ProposalArg']>, seconds: Array<ResolversTypes['ProposalSecond']> }>;
+  ProposalArg: ResolverTypeWrapper<Omit<ProposalArg, 'subCalls'> & { subCalls?: Maybe<Array<Maybe<ResolversTypes['Proposal']>>> }>;
+  ProposalSecond: ResolverTypeWrapper<PartialProposalSecond>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<Proposer>;
   Query: ResolverTypeWrapper<{}>;
-  Referendum: ResolverTypeWrapper<Referendum>;
+  Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & { args: Array<ResolversTypes['ProposalArg']> }>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -477,8 +498,7 @@ export type ResolversParentTypes = {
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversParentTypes['CouncilCandidate']>, members: Array<ResolversParentTypes['CouncilMember']>, primeMember?: Maybe<ResolversParentTypes['CouncilMember']>, runnersUp: Array<ResolversParentTypes['CouncilMember']> };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
-  CouncilMotion: CouncilMotion;
-  Democracy: Democracy;
+  CouncilMotion: Omit<CouncilMotion, 'proposal'> & { proposal: ResolversParentTypes['MotionProposal'] };
   DemocracySummary: DemocracySummary;
   DeriveAccountRegistration: DeriveAccountRegistration;
   Event: Event;
@@ -487,15 +507,16 @@ export type ResolversParentTypes = {
   IdentityJudgement: IdentityJudgement;
   Int: Scalars['Int'];
   ModuleElection: ModuleElection;
-  MotionProposal: MotionProposal;
+  MotionProposal: Omit<MotionProposal, 'args'> & { args: Array<ResolversParentTypes['ProposalArg']> };
   MotionVotes: MotionVotes;
   PalletProposal: PalletProposal;
-  Proposal: Proposal;
-  ProposalArg: ProposalArg;
+  Proposal: Omit<Proposal, 'args' | 'seconds'> & { args: Array<ResolversParentTypes['ProposalArg']>, seconds: Array<ResolversParentTypes['ProposalSecond']> };
+  ProposalArg: Omit<ProposalArg, 'subCalls'> & { subCalls?: Maybe<Array<Maybe<ResolversParentTypes['Proposal']>>> };
+  ProposalSecond: PartialProposalSecond;
   ProposalVotes: ProposalVotes;
   Proposer: Proposer;
   Query: {};
-  Referendum: Referendum;
+  Referendum: Omit<Referendum, 'args'> & { args: Array<ResolversParentTypes['ProposalArg']> };
   Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
@@ -607,18 +628,12 @@ export type CouncilMotionResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DemocracyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Democracy'] = ResolversParentTypes['Democracy']> = {
-  proposals?: Resolver<Array<Maybe<ResolversTypes['Proposal']>>, ParentType, ContextType>;
-  referendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type DemocracySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['DemocracySummary'] = ResolversParentTypes['DemocracySummary']> = {
-  activeProposalsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeReferendums?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   launchPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  publicPropCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  referenda?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  referendumTotal?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  proposals?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  referendums?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -688,11 +703,13 @@ export type PalletProposalResolvers<ContextType = any, ParentType extends Resolv
 
 export type ProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal']> = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
+  balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
+  seconds?: Resolver<Array<ResolversTypes['ProposalSecond']>, ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -702,6 +719,12 @@ export type ProposalArgResolvers<ContextType = any, ParentType extends Resolvers
   subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['Proposal']>>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   value?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProposalSecondResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProposalSecond'] = ResolversParentTypes['ProposalSecond']> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -729,7 +752,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
-  democracy?: Resolver<ResolversTypes['Democracy'], ParentType, ContextType>;
+  democracyProposal?: Resolver<Maybe<ResolversTypes['Proposal']>, ParentType, ContextType, RequireFields<QueryDemocracyProposalArgs, 'index'>>;
+  democracyProposals?: Resolver<Array<ResolversTypes['Proposal']>, ParentType, ContextType>;
+  democracyReferendum?: Resolver<Maybe<ResolversTypes['Referendum']>, ParentType, ContextType, RequireFields<QueryDemocracyReferendumArgs, 'index'>>;
+  democracyReferendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
@@ -741,6 +767,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type ReferendumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Referendum'] = ResolversParentTypes['Referendum']> = {
+  activatePeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -748,6 +775,10 @@ export type ReferendumResolvers<ContextType = any, ParentType extends ResolversP
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  voteCountAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  voteCountNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -831,7 +862,6 @@ export type Resolvers<ContextType = any> = {
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   CouncilMotion?: CouncilMotionResolvers<ContextType>;
-  Democracy?: DemocracyResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
@@ -842,6 +872,7 @@ export type Resolvers<ContextType = any> = {
   PalletProposal?: PalletProposalResolvers<ContextType>;
   Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
+  ProposalSecond?: ProposalSecondResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
   Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
