@@ -9,7 +9,8 @@ import { democracySummary, democracy } from './democracy';
 import { treasurySummary, treasury } from './treasury';
 import { councilMotions } from './councilMotions';
 import { registrars } from './registrars';
-import moduleElection from './moduleElection'
+import moduleElection from './moduleElection';
+import { parachainsInfo } from './parachains';
 
 export const Query = {
   balance,
@@ -29,4 +30,5 @@ export const Query = {
   treasury,
   registrars,
   moduleElection,
+  parachainsInfo,
 };
