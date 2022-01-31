@@ -24,6 +24,12 @@ export type Account = {
   registration: DeriveAccountRegistration;
 };
 
+export type AccountInfo = {
+  __typename?: 'AccountInfo';
+  account: Account;
+  address: Scalars['String'];
+};
+
 export type Balance = {
   __typename?: 'Balance';
   consumers: Scalars['Int'];
@@ -165,6 +171,20 @@ export type IdentityJudgement = {
   isUnknown?: Maybe<Scalars['Boolean']>;
 };
 
+export type Lease = {
+  __typename?: 'Lease';
+  blockTime?: Maybe<Scalars['String']>;
+  period?: Maybe<Scalars['String']>;
+};
+
+export type LeasePeriod = {
+  __typename?: 'LeasePeriod';
+  currentLease: Scalars['String'];
+  progressPercent: Scalars['Int'];
+  remainder: Scalars['String'];
+  totalPeriod: Scalars['String'];
+};
+
 export type ModuleElection = {
   __typename?: 'ModuleElection';
   hasElections: Scalars['Boolean'];
@@ -194,6 +214,27 @@ export type PalletProposal = {
   bond: Scalars['String'];
   proposer: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type Parachain = {
+  __typename?: 'Parachain';
+  homepage?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lastBackedBlock: Scalars['String'];
+  lastIncludedBlock: Scalars['String'];
+  lease?: Maybe<Lease>;
+  lifecycle: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  nonVoters?: Maybe<Array<AccountInfo>>;
+  validators?: Maybe<ValidatorsGroup>;
+};
+
+export type ParachainsInfo = {
+  __typename?: 'ParachainsInfo';
+  leasePeriod: LeasePeriod;
+  parachainsCount: Scalars['Int'];
+  parathreadsCount: Scalars['Int'];
+  proposalsCount: Scalars['Int'];
 };
 
 export type Proposal = {
@@ -244,6 +285,9 @@ export type Query = {
   democracySummary: DemocracySummary;
   events: Array<Event>;
   moduleElection: ModuleElection;
+  parachain?: Maybe<Parachain>;
+  parachains?: Maybe<Array<Parachain>>;
+  parachainsInfo: ParachainsInfo;
   registrars?: Maybe<Array<Registrar>>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
@@ -265,6 +309,11 @@ export type QueryBalanceArgs = {
 
 export type QueryBountyArgs = {
   index: Scalars['String'];
+};
+
+
+export type QueryParachainArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -352,6 +401,12 @@ export type TreasurySummary = {
   treasuryBalance: TreasuryBalance;
 };
 
+export type ValidatorsGroup = {
+  __typename?: 'ValidatorsGroup';
+  groupIndex?: Maybe<Scalars['String']>;
+  validators?: Maybe<Array<AccountInfo>>;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -422,6 +477,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
+  AccountInfo: ResolverTypeWrapper<AccountInfo>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -442,10 +498,14 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Lease: ResolverTypeWrapper<Lease>;
+  LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
   MotionProposal: ResolverTypeWrapper<MotionProposal>;
   MotionVotes: ResolverTypeWrapper<MotionVotes>;
   PalletProposal: ResolverTypeWrapper<PalletProposal>;
+  Parachain: ResolverTypeWrapper<Parachain>;
+  ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   Proposal: ResolverTypeWrapper<Proposal>;
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
@@ -461,11 +521,13 @@ export type ResolversTypes = {
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
   TreasuryProposal: ResolverTypeWrapper<TreasuryProposal>;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
+  ValidatorsGroup: ResolverTypeWrapper<ValidatorsGroup>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Account: Account;
+  AccountInfo: AccountInfo;
   Balance: Balance;
   BalanceData: BalanceData;
   Boolean: Scalars['Boolean'];
@@ -486,10 +548,14 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   IdentityJudgement: IdentityJudgement;
   Int: Scalars['Int'];
+  Lease: Lease;
+  LeasePeriod: LeasePeriod;
   ModuleElection: ModuleElection;
   MotionProposal: MotionProposal;
   MotionVotes: MotionVotes;
   PalletProposal: PalletProposal;
+  Parachain: Parachain;
+  ParachainsInfo: ParachainsInfo;
   Proposal: Proposal;
   ProposalArg: ProposalArg;
   ProposalVotes: ProposalVotes;
@@ -505,12 +571,19 @@ export type ResolversParentTypes = {
   TreasuryBalance: TreasuryBalance;
   TreasuryProposal: TreasuryProposal;
   TreasurySummary: TreasurySummary;
+  ValidatorsGroup: ValidatorsGroup;
 };
 
 export type AccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AccountInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo']> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -655,6 +728,20 @@ export type IdentityJudgementResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type LeaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Lease'] = ResolversParentTypes['Lease']> = {
+  blockTime?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  period?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LeasePeriodResolvers<ContextType = any, ParentType extends ResolversParentTypes['LeasePeriod'] = ResolversParentTypes['LeasePeriod']> = {
+  currentLease?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  remainder?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ModuleElectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection']> = {
   hasElections?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   module?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -683,6 +770,27 @@ export type PalletProposalResolvers<ContextType = any, ParentType extends Resolv
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ParachainResolvers<ContextType = any, ParentType extends ResolversParentTypes['Parachain'] = ResolversParentTypes['Parachain']> = {
+  homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastBackedBlock?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastIncludedBlock?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
+  lifecycle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  nonVoters?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
+  validators?: Resolver<Maybe<ResolversTypes['ValidatorsGroup']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ParachainsInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ParachainsInfo'] = ResolversParentTypes['ParachainsInfo']> = {
+  leasePeriod?: Resolver<ResolversTypes['LeasePeriod'], ParentType, ContextType>;
+  parachainsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  parathreadsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  proposalsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -733,6 +841,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
+  parachain?: Resolver<Maybe<ResolversTypes['Parachain']>, ParentType, ContextType, RequireFields<QueryParachainArgs, 'id'>>;
+  parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
+  parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
   registrars?: Resolver<Maybe<Array<ResolversTypes['Registrar']>>, ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
@@ -818,8 +929,15 @@ export type TreasurySummaryResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ValidatorsGroupResolvers<ContextType = any, ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup']> = {
+  groupIndex?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  validators?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
+  AccountInfo?: AccountInfoResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
@@ -836,10 +954,14 @@ export type Resolvers<ContextType = any> = {
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
+  Lease?: LeaseResolvers<ContextType>;
+  LeasePeriod?: LeasePeriodResolvers<ContextType>;
   ModuleElection?: ModuleElectionResolvers<ContextType>;
   MotionProposal?: MotionProposalResolvers<ContextType>;
   MotionVotes?: MotionVotesResolvers<ContextType>;
   PalletProposal?: PalletProposalResolvers<ContextType>;
+  Parachain?: ParachainResolvers<ContextType>;
+  ParachainsInfo?: ParachainsInfoResolvers<ContextType>;
   Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
@@ -854,5 +976,6 @@ export type Resolvers<ContextType = any> = {
   TreasuryBalance?: TreasuryBalanceResolvers<ContextType>;
   TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
+  ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
 };
 
