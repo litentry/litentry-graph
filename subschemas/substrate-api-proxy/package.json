@@ -15,7 +15,8 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "typecheck": "yarn tsc --noEmit",
     "postinstall": "yarn run build",
-    "test": "jest"
+    "test": "jest",
+    "watch": "tsc --watch"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
