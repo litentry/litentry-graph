@@ -1,8 +1,14 @@
 import type { Context } from '../../types';
-import {u8aConcat, BN_MILLION} from '@polkadot/util';
-import {AccountId} from '@polkadot/types/interfaces';
-import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types'
-import type {TreasurySummary, Treasury} from '../../generated/resolvers-types'
+import { u8aConcat, BN_MILLION } from '@polkadot/util';
+import { AccountId } from '@polkadot/types/interfaces';
+import {
+  DeriveTreasuryProposal,
+  DeriveCollectiveProposal,
+} from '@polkadot/api-derive/types';
+import type {
+  TreasurySummary,
+  Treasury,
+} from '../../generated/resolvers-types';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
@@ -75,16 +81,15 @@ function processProposals(proposals: DeriveTreasuryProposal[]) {
   }));
 }
 
-
 export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
-  { api }: Context
-  ): Promise<Treasury> {
-    const proposals = await api.derive.treasury.proposals();
+  { api }: Context,
+): Promise<Treasury> {
+  const proposals = await api.derive.treasury.proposals();
 
-    return {
-      approvals: processProposals(proposals.approvals),
-      proposals: processProposals(proposals.proposals),
-    }
+  return {
+    approvals: processProposals(proposals.approvals),
+    proposals: processProposals(proposals.proposals),
+  };
 }

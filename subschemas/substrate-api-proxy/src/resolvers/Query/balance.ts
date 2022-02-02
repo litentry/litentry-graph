@@ -2,7 +2,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AccountInfo } from '@polkadot/types/interfaces/system';
 import BN from 'bignumber.js';
 import type { Context } from '../../types';
-import type {Balance} from '../../generated/resolvers-types'
+import type { Balance } from '../../generated/resolvers-types';
 
 export default async function balance(
   _: Record<string, never>,

@@ -11,7 +11,7 @@ import type {
 import type { ApiPromise } from '@polkadot/api';
 import { hexToString } from '@polkadot/util';
 import type { Context } from '../../types';
-import type {Tip} from '../../generated/resolvers-types'
+import type { Tip } from '../../generated/resolvers-types';
 
 export async function tips(
   _: Record<string, never>,

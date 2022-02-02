@@ -1,5 +1,5 @@
 import type { Context } from '../../types';
-import type {ChainInfo} from '../../generated/resolvers-types'
+import type { ChainInfo } from '../../generated/resolvers-types';
 
 export default async function chainInfo(
   _: Record<string, never>,

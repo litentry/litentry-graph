@@ -1,4 +1,4 @@
-import type { RegistrationJudgement, Account } from '../../generated/resolvers-types';
+import type { RegistrationJudgement } from '../../generated/resolvers-types';
 import type { Context } from '../../types';
 
 export const account = async (

@@ -5,7 +5,6 @@ export default async function moduleElection(
   __: Record<string, never>,
   { api }: Context,
 ) {
-
   const moduleElections = api.tx.phragmenElection
     ? 'phragmenElection'
     : api.tx.electionsPhragmen

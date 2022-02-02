@@ -1,13 +1,17 @@
 import type { Context } from '../../types';
 import { BN, bnToBn } from '@polkadot/util';
 import type { BlockNumber } from '@polkadot/types/interfaces';
-import type {Council} from '../../generated/resolvers-types'
+import type { Council } from '../../generated/resolvers-types';
 
-interface CouncilInfo extends Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'> {
-  members: PartialCouncilMember[]
-  runnersUp: PartialCouncilMember[]
-  candidates: PartialCouncilCandidate[]
-  primeMember: PartialCouncilMember | null
+interface CouncilInfo
+  extends Omit<
+    Council,
+    'members' | 'runnersUp' | 'candidates' | 'primeMember'
+  > {
+  members: PartialCouncilMember[];
+  runnersUp: PartialCouncilMember[];
+  candidates: PartialCouncilCandidate[];
+  primeMember: PartialCouncilMember | null;
 }
 
 export async function council(

@@ -1,8 +1,11 @@
-
-import {BN} from '@polkadot/util';
-import type {BountyStatus} from '@polkadot/types/interfaces';
+import { BN } from '@polkadot/util';
+import type { BountyStatus } from '@polkadot/types/interfaces';
 import type { Context } from '../../types';
-import type {BountiesSummary, Bounty, BountyStatus as BountiesStatusInfo} from '../../generated/resolvers-types'
+import type {
+  BountiesSummary,
+  Bounty,
+  BountyStatus as BountiesStatusInfo,
+} from '../../generated/resolvers-types';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -37,7 +40,6 @@ type StatusName =
   | 'PendingPayout'
   | 'Proposed';
 
-
 export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
@@ -62,10 +64,12 @@ export async function bounty(
   { api }: Context,
 ): Promise<Bounty | null> {
   const deriveBounties = await api.derive.bounties.bounties();
-  const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index)
+  const bountyData = deriveBounties.find(
+    (bounty) => bounty.index.toString() === index,
+  );
 
-  if(bountyData) {
-    const { bounty, description, index } = bountyData
+  if (bountyData) {
+    const { bounty, description, index } = bountyData;
     return {
       index: index.toString(),
       proposer: bounty.proposer.toString(),
@@ -75,14 +79,13 @@ export async function bounty(
       bond: bounty.bond.toString(),
       bountyStatus: getBountyStatus(bounty.status),
       description,
-    }
+    };
   }
 
-  return null
+  return null;
 }
 
 const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
-
   let result = {};
 
   if (status.isCuratorProposed) {
