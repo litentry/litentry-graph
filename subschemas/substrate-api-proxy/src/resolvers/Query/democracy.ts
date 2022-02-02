@@ -1,9 +1,12 @@
 import { Context } from '../../types';
 import { getCallParams, formatCallMeta } from '../../utils/call';
 import { notEmpty } from '../../utils/notEmpty';
-import type {DemocracySummary, Democracy} from '../../generated/resolvers-types'
-import { getBlockTime } from '../../utils/blockTime';
-import {BN_ONE} from '@polkadot/util';
+import type {
+  DemocracySummary,
+  Democracy,
+} from '../../generated/resolvers-types';
+import { getBlockTime } from '../../services/relayChainService';
+import { BN_ONE } from '@polkadot/util';
 
 export const democracySummary = async (
   _: Record<string, never>,
@@ -42,18 +45,22 @@ export const democracy = async (
 
   const referendums = activeReferendums
     .map((referendum) => {
-      const imageProposal = referendum.image?.proposal
-      if(imageProposal) {
-        const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
-        const {timeStringParts} = getBlockTime(api, remainBlock);
-        const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
+      const imageProposal = referendum.image?.proposal;
+      if (imageProposal) {
+        const remainBlock = bestNumber
+          ? referendum.status.end.sub(bestNumber).isub(BN_ONE)
+          : undefined;
+        const { timeStringParts } = getBlockTime(api, remainBlock);
+        const meta = formatCallMeta(
+          imageProposal.registry.findMetaCall(imageProposal.callIndex).meta,
+        );
         return {
           meta,
           endPeriod: timeStringParts,
           index: referendum.index.toString(),
           hash: String(imageProposal.hash),
           ...getCallParams(imageProposal),
-        }
+        };
       }
     })
     .filter(notEmpty);
@@ -62,7 +69,9 @@ export const democracy = async (
     .map((proposal) => {
       const imageProposal = proposal.image?.proposal;
       if (imageProposal) {
-        const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta)
+        const meta = formatCallMeta(
+          imageProposal.registry.findMetaCall(imageProposal.callIndex).meta,
+        );
         return {
           meta,
           index: proposal.index.toString(),

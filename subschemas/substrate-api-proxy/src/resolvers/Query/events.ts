@@ -1,12 +1,12 @@
 import { Context } from '../../types';
-import { getBlockTime } from '../../utils/blockTime';
+import { getBlockTime } from '../../services/relayChainService';
 import { BN, BN_ONE, formatNumber } from '@polkadot/util';
 import { BlockNumber, LeasePeriodOf } from '@polkadot/types/interfaces';
 import { u32 } from '@polkadot/types';
 import type { Option } from '@polkadot/types';
 import { notEmpty } from '../../utils/notEmpty';
 import type { ITuple } from '@polkadot/types/types';
-import type {Event} from '../../generated/resolvers-types'
+import type { Event } from '../../generated/resolvers-types';
 
 export async function events(
   _: Record<string, never>,
