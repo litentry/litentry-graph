@@ -1,9 +1,16 @@
-import type { BlockNumber } from '@polkadot/types/interfaces';
+import type { BlockNumber, ParaId } from '@polkadot/types/interfaces';
+import type { PolkadotRuntimeParachainsParasParaLifecycle } from '@polkadot/types/lookup';
+import type { Option, StorageKey } from '@polkadot/types';
 import type { LeasePeriod } from '../generated/resolvers-types';
+import type { Context } from '../types';
 
-import { Context } from '../types';
 import { BN_ZERO, formatNumber, BN_ONE, BN_HUNDRED } from '@polkadot/util';
 import { getBlockTime } from '../services/relayChainService';
+
+type ParaIdEntries = [
+  StorageKey<[ParaId]>,
+  Option<PolkadotRuntimeParachainsParasParaLifecycle>,
+][];
 
 export async function getLeasePeriod(
   api: Context['api'],
@@ -29,4 +36,36 @@ export async function getLeasePeriod(
     progressPercent,
     remainder,
   };
+}
+
+export async function getUpcomingParaIds(api: Context['api']) {
+  const paraIdEntries = (await api.query.paras?.paraLifecycles?.entries()) as
+    | ParaIdEntries
+    | undefined;
+
+  return extractUpcomingParaIds(paraIdEntries);
+}
+
+function extractUpcomingParaIds(entries: ParaIdEntries = []): ParaId[] {
+  return entries
+    .map(
+      ([
+        {
+          args: [paraId],
+        },
+        optValue,
+      ]): ParaId | null => {
+        const value = optValue.unwrapOr(null);
+
+        return value &&
+          (value.isParathread ||
+            value.isUpgradingParathread ||
+            value.isOffboardingParathread ||
+            value.isOnboarding)
+          ? paraId
+          : null;
+      },
+    )
+    .filter((paraId): paraId is ParaId => !!paraId)
+    .sort((a, b) => a.cmp(b));
 }
