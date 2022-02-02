@@ -24,3 +24,19 @@ export async function parachainsInfo(
     leasePeriod,
   };
 }
+
+export function parachains(
+  _: Record<string, never>,
+  __: Record<string, never>,
+  { api }: Context,
+) {
+  throw new Error('Not implemented yet');
+}
+
+export function parachain(
+  _: Record<string, never>,
+  { id: string }: { id: string },
+  { api }: Context,
+) {
+  throw new Error('Not implemented yet');
+}
