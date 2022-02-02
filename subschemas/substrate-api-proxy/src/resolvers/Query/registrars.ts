@@ -1,6 +1,6 @@
 import { BN_ZERO } from '@polkadot/util';
 import { Context } from '../../types';
-import { format } from '../../utils/balance';
+import { formatBalance } from '../../services/substrateChainService';
 
 export type PartialRegistrar = {
   id: string;
@@ -22,7 +22,7 @@ export async function registrars(
       id: index.toString(),
       address: r?.account.toString(),
       fee: r?.fee.toString(),
-      formattedFee: format(api, r?.fee || BN_ZERO),
+      formattedFee: formatBalance(api, r?.fee || BN_ZERO),
     }));
 
   return registrars;

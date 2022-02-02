@@ -9,6 +9,7 @@ import democracy from './democracy';
 import treasury from './treasury';
 import registrars from './registrars';
 import moduleElection from './moduleElection';
+import parachains from './parachains';
 
 export default [
   chainInfo,
@@ -22,4 +23,5 @@ export default [
   treasury,
   registrars,
   moduleElection,
+  parachains,
 ];

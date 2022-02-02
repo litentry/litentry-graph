@@ -1,7 +1,8 @@
 import type BN from 'bn.js';
+
 import { Compact } from '@polkadot/types';
 import { Registry } from '@polkadot/types/types';
-import { formatBalance } from '@polkadot/util';
+import { formatBalance as format } from '@polkadot/util';
 import { Context } from '../types';
 
 type Balance = Compact<any> | BN | string | number;
@@ -9,20 +10,20 @@ type Balance = Compact<any> | BN | string | number;
 // for million, 2 * 3-grouping + comma
 const M_LENGTH = 6 + 1;
 
-export function format(
+export function formatBalance(
   api: Context['api'],
   value: Balance,
   isShort?: boolean,
 ): string {
   const { decimals, token } = getFormat(api.registry);
-  const [prefix = '', postfix = ''] = formatBalance(value, {
+  const [prefix = '', postfix = ''] = format(value, {
     decimals,
     forceUnit: '-',
     withSi: false,
   }).split('.');
 
   if (prefix.length > M_LENGTH) {
-    const [major, rest] = formatBalance(value, {
+    const [major, rest] = format(value, {
       decimals,
       withUnit: false,
     }).split('.');

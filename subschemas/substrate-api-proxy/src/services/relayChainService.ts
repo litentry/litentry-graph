@@ -2,7 +2,11 @@ import { BlockNumber } from '@polkadot/types/interfaces';
 import { BN, BN_ONE, extractTime } from '@polkadot/util';
 import { Context } from '../types';
 
-type Result = { blockTime: number; timeStringParts: string[] };
+type Result = {
+  blockTime: number;
+  timeStringParts: string[];
+  formattedTime: string;
+};
 
 const DEFAULT_TIME = new BN(6000);
 
@@ -27,5 +31,9 @@ export function getBlockTime(
     seconds ? (seconds > 1 ? `${seconds} s` : '1 s') : null,
   ].filter((value): value is string => !!value);
 
-  return { blockTime: blockTime.toNumber(), timeStringParts: timeStr };
+  return {
+    blockTime: blockTime.toNumber(),
+    timeStringParts: timeStr,
+    formattedTime: timeStr.filter(Boolean).slice(0, 2).join(' '),
+  };
 }

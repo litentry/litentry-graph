@@ -10,14 +10,15 @@
     "subschemas/*"
   ],
   "resolutions": {
-    "@polkadot/api": "^6.10.3",
-    "@polkadot/api-contract": "^6.10.3",
-    "@polkadot/rpc-provider": "^6.10.3",
-    "@polkadot/types": "^6.10.3",
-    "@polkadot/types-known": "^6.10.3",
-    "@polkadot/types-support": "^6.10.3",
-    "@polkadot/util": "^8.0.4",
-    "@polkadot/util-crypto": "^8.0.4",
-    "@polkadot/wasm-crypto": "^4.4.1"
+    "@polkadot/api": "^7.6.1",
+    "@polkadot/api-contract": "^7.6.1",
+    "@polkadot/rpc-provider": "^7.6.1",
+    "@polkadot/types": "^7.6.1",
+    "@polkadot/types-augment": "^7.6.1",
+    "@polkadot/types-known": "^7.6.1",
+    "@polkadot/types-support": "^7.6.1",
+    "@polkadot/util": "^8.3.3",
+    "@polkadot/util-crypto": "^8.3.3",
+    "@polkadot/wasm-crypto": "^4.5.1"
   }
 }
