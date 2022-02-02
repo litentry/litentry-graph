@@ -10,7 +10,7 @@ import treasury from './treasury';
 import registrars from './registrars';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
-import crowdLoan from './crowdLoan';
+import crowdLoan from './crowdloan';
 
 export default [
   chainInfo,
