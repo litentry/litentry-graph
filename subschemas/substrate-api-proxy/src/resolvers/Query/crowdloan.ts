@@ -72,7 +72,6 @@ export async function activeCrowdloans(
   const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
-  const currentLease = new BN(leasePeriod.currentLease);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
 
   const funds = activeFunds.map(async (fund) => {
