@@ -10,13 +10,13 @@ const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
 type Campaign = {
   info: FundInfo;
-  isCapped?: Boolean;
-  isEnded?: Boolean;
-  isWinner?: Boolean;
-  isSpecial: Boolean;
+  isCapped?: boolean;
+  isEnded?: boolean;
+  isWinner?: boolean;
+  isSpecial: boolean;
   accountId: String;
   firstSlot: BN;
-  isCrowdloan: Boolean;
+  isCrowdloan: boolean;
   key: string;
   lastSlot: BN;
   paraId: ParaId;
