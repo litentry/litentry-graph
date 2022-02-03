@@ -26,7 +26,10 @@ export default /* GraphQL */ `
     firstPeriod: String!
     lastPeriod: String!
     raised: String!
+    formattedRaised: String!
     cap: String!
+    formattedCap: String!
+    contributorsCount: String!
   }
 
   type Query {

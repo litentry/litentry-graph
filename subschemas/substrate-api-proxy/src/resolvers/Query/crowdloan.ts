@@ -5,7 +5,8 @@ import {getFunds, extractActiveFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {BN, BN_ZERO} from '@polkadot/util';
 import {formatBalance} from '../../services/substrateChainService';
-import { getBlockTime } from '../../services/relayChainService';
+import {getBlockTime} from '../../services/relayChainService';
+import {formatNumber} from '@polkadot/util';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -50,36 +51,35 @@ export async function crowdloanSummary(
   };
 }
 
-interface CrowdloanInfo extends Omit<Crowdloan, 'depositor'>{
+interface CrowdloanInfo extends Omit<Crowdloan, 'depositor'> {
   depositor: PartialDepositor;
 }
 
 export type PartialDepositor = {
-  address: string
-}
+  address: string;
+};
 
 export async function activeCrowdloans(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<CrowdloanInfo[]> {
   const [paraIdKeys, bestNumber] = await Promise.all([
     api.query.crowdloan?.funds?.keys<[ParaId]>(),
     api.derive.chain.bestNumber(),
   ]);
 
-  const paraIds = paraIdKeys.map(({ args: [paraId] }) => paraId);
+  const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
   const currentLease = new BN(leasePeriod.currentLease);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
 
-  return activeFunds.map((fund) => {
-    const { info, isCapped, isEnded, isWinner, firstSlot } = fund;
-    const { end, firstPeriod, lastPeriod, cap, raised, depositor } = info;
+  const funds = activeFunds.map(async (fund) => {
+    const {info, isCapped, isEnded, isWinner, firstSlot, paraId} = fund;
+    const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : new BN(6000);
-    const isOngoing =
-      !(isCapped || isEnded || isWinner) && currentLease.lte(firstSlot);
+    const isOngoing = !(isCapped || isEnded || isWinner) && currentLease.lte(firstSlot);
     const status = fund.isWinner
       ? 'Winner'
       : blocksLeft
@@ -91,6 +91,8 @@ export async function activeCrowdloans(
       : 'Ended';
     const ending = getBlockTime(api, blocksLeft);
 
+    const contribution = await api.derive.crowdloan.contributions(paraId);
+
     return {
       key: fund.key,
       depositor: {address: depositor.toString()},
@@ -99,7 +101,12 @@ export async function activeCrowdloans(
       firstPeriod: firstPeriod.toString(),
       lastPeriod: lastPeriod.toString(),
       raised: raised.toString(),
+      formattedRaised: formatBalance(api, raised),
       cap: cap.toString(),
+      formattedCap: formatBalance(api, cap),
+      contributorsCount: formatNumber(contribution.contributorsHex.length),
     };
   });
+
+  return await Promise.all(funds);
 }

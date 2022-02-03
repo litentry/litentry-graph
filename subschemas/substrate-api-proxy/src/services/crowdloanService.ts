@@ -47,10 +47,8 @@ const optFundMulti = {
       .filter((v): v is [ParaId, FundInfo] => !!v[1])
       .map(([paraId, info]): Campaign => {
         const key = paraId.toString();
-        const isLitentryParachain =
-          network.toLowerCase() === 'polkadot' && key === '2013';
-        const isLitmusParachain =
-          network.toLowerCase() === 'kusama' && key === '2106';
+        const isLitentryParachain = network.toLowerCase() === 'polkadot' && key === '2013';
+        const isLitmusParachain = network.toLowerCase() === 'kusama' && key === '2106';
         return {
           accountId: encodeAddress(createAddress(paraId)),
           firstSlot: info.firstPeriod,
