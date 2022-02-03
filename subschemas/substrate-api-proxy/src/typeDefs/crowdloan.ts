@@ -35,5 +35,6 @@ export default /* GraphQL */ `
   type Query {
     crowdloanSummary: CrowdloanSummary!
     activeCrowdloans: [Crowdloan!]!
+    endedCrowdloans: [Crowdloan!]!
   }
 `;

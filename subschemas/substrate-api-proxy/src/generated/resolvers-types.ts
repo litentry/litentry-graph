@@ -328,6 +328,7 @@ export type Query = {
   democracyReferendum?: Maybe<Referendum>;
   democracyReferendums: Array<Referendum>;
   democracySummary: DemocracySummary;
+  endedCrowdloans: Array<Crowdloan>;
   events: Array<Event>;
   moduleElection: ModuleElection;
   parachain?: Maybe<Parachain>;
@@ -948,6 +949,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   democracyReferendum?: Resolver<Maybe<ResolversTypes['Referendum']>, ParentType, ContextType, RequireFields<QueryDemocracyReferendumArgs, 'index'>>;
   democracyReferendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
+  endedCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
   parachain?: Resolver<Maybe<ResolversTypes['Parachain']>, ParentType, ContextType, RequireFields<QueryParachainArgs, 'id'>>;
