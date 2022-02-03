@@ -76,19 +76,10 @@ export async function activeCrowdloans(
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
 
   const funds = activeFunds.map(async (fund) => {
-    const {info, isCapped, isEnded, isWinner, firstSlot, paraId} = fund;
+    const {info, isWinner, paraId} = fund;
     const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : new BN(6000);
-    const isOngoing = !(isCapped || isEnded || isWinner) && currentLease.lte(firstSlot);
-    const status = fund.isWinner
-      ? 'Winner'
-      : blocksLeft
-      ? fund.isCapped
-        ? 'Capped'
-        : isOngoing
-        ? 'Active'
-        : 'Past'
-      : 'Ended';
+    const status = isWinner ? 'Winner' : 'Active';
     const ending = getBlockTime(api, blocksLeft);
 
     const contribution = await api.derive.crowdloan.contributions(paraId);
