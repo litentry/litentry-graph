@@ -3,7 +3,7 @@ import type { Context } from '../../types';
 
 import BN from 'bn.js';
 import { BN_THOUSAND } from '@polkadot/util';
-import { getBlockTime } from '../../services/relayChainService';
+import { getBlockTime } from '../../services/substrateChainService';
 
 const CONVICTIONS: number[] = [1, 2, 4, 8, 16, 32];
 const SEC_DAY = 60 * 60 * 24;

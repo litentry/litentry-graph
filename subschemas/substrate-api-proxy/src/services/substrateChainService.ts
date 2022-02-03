@@ -1,14 +1,54 @@
 import type BN from 'bn.js';
 
 import {Compact} from '@polkadot/types';
+import {BlockNumber} from '@polkadot/types/interfaces';
 import {Registry} from '@polkadot/types/types';
-import {formatBalance as format} from '@polkadot/util';
+import {formatBalance as format, BN as Bn, BN_ONE, extractTime} from '@polkadot/util';
 import {Context} from '../types';
 
 type Balance = Compact<any> | BN | string | number;
 
+type BlockTimeResult = {
+  blockTime: number;
+  timeStringParts: string[];
+  formattedTime: string;
+};
+
 // for million, 2 * 3-grouping + comma
 const M_LENGTH = 6 + 1;
+
+const DEFAULT_TIME = new Bn(6000);
+
+export function getBlockTime(api: Context['api'], blockNumber: BlockNumber | BN = BN_ONE): BlockTimeResult {
+  if (!blockNumber) {
+    return {
+      blockTime: DEFAULT_TIME.toNumber(),
+      timeStringParts: [],
+      formattedTime: '',
+    };
+  }
+
+  const blockTime =
+    api.consts.babe?.expectedBlockTime ||
+    api.consts.difficulty?.targetBlockTime ||
+    api.consts.timestamp?.minimumPeriod.muln(2) ||
+    DEFAULT_TIME;
+
+  const {days, hours, minutes, seconds} = extractTime(Math.abs(blockTime.mul(blockNumber).toNumber()));
+
+  const timeStr = [
+    days ? (days > 1 ? `${days} days` : '1 day') : null,
+    hours ? (hours > 1 ? `${hours} hrs` : '1 hr') : null,
+    minutes ? (minutes > 1 ? `${minutes} mins` : '1 min') : null,
+    seconds ? (seconds > 1 ? `${seconds} s` : '1 s') : null,
+  ].filter((value): value is string => !!value);
+
+  return {
+    blockTime: blockTime.toNumber(),
+    timeStringParts: timeStr,
+    formattedTime: timeStr.filter(Boolean).slice(0, 2).join(' '),
+  };
+}
 
 export function formatBalance(api: Context['api'], value: Balance, isShort?: boolean): string {
   const {decimals, token} = getFormat(api.registry);
