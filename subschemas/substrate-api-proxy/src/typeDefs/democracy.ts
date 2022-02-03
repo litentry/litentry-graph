@@ -16,7 +16,7 @@ export default /* GraphQL */ `
 
   type Proposer {
     address: String!
-    account: Account
+    account: Account!
   }
 
   type ProposalSecond {
