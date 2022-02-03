@@ -1,9 +1,9 @@
-import { isAscii, isHex, isU8a, u8aToHex, u8aToString } from '@polkadot/util';
-import { IExtrinsic, IMethod } from '@polkadot/types/types';
+import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
+import {IExtrinsic, IMethod} from '@polkadot/types/types';
 import {FunctionMetadataLatest} from '@polkadot/types/interfaces';
 
 export function getCallParams(c: IExtrinsic | IMethod) {
-  const { method, section } = c?.registry.findMetaCall(c.callIndex) ?? {};
+  const {method, section} = c?.registry.findMetaCall(c.callIndex) ?? {};
 
   return {
     method,

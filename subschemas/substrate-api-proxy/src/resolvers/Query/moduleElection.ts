@@ -1,11 +1,6 @@
-import type { Context } from '../../types';
+import type {Context} from '../../types';
 
-export default async function moduleElection(
-  _: Record<string, never>,
-  __: Record<string, never>,
-  { api }: Context,
-) {
-
+export default async function moduleElection(_: Record<string, never>, __: Record<string, never>, {api}: Context) {
   const moduleElections = api.tx.phragmenElection
     ? 'phragmenElection'
     : api.tx.electionsPhragmen

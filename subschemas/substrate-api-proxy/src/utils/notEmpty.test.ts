@@ -1,4 +1,4 @@
-import { notEmpty } from './notEmpty';
+import {notEmpty} from './notEmpty';
 
 describe('notEmpty util', () => {
   test.each([
@@ -8,7 +8,7 @@ describe('notEmpty util', () => {
     [1, true],
     ['test', true],
     [[1, 2, 3], true],
-    [{ test: 'test' }, true],
+    [{test: 'test'}, true],
   ])('notEmpty(%p)', async (value: any, expected: boolean) => {
     expect(Boolean(value)).toBe(expected);
   });

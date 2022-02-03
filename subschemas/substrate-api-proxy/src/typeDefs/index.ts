@@ -10,6 +10,7 @@ import treasury from './treasury';
 import registrars from './registrars';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
+import crowdLoan from './crowdloan';
 
 export default [
   chainInfo,
@@ -24,4 +25,5 @@ export default [
   registrars,
   moduleElection,
   parachains,
+  crowdLoan,
 ];

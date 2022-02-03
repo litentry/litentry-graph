@@ -1,6 +1,6 @@
-import { Resolvers } from '../generated/resolvers-types';
-import { Context } from '../types';
-import { Query } from './Query';
+import {Resolvers} from '../generated/resolvers-types';
+import {Context} from '../types';
+import {Query} from './Query';
 
 export const resolvers: Resolvers<Context> = {
   Query,
@@ -18,5 +18,5 @@ export const resolvers: Resolvers<Context> = {
   },
   ProposalSecond: {
     account: Query.account,
-  }
+  },
 };

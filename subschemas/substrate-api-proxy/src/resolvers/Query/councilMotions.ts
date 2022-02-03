@@ -1,11 +1,11 @@
-import type { Context } from '../../types';
-import { CouncilMotion } from '../../generated/resolvers-types';
-import { getCallParams } from '../../utils/call';
+import type {Context} from '../../types';
+import {CouncilMotion} from '../../generated/resolvers-types';
+import {getCallParams} from '../../utils/call';
 
 export async function councilMotions(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<CouncilMotion[]> {
   const motions = await api.derive.council.proposals();
 

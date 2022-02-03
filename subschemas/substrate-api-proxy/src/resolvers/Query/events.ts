@@ -1,23 +1,19 @@
-import { Context } from '../../types';
-import { getBlockTime } from '../../services/relayChainService';
-import { BN, BN_ONE, formatNumber } from '@polkadot/util';
-import { BlockNumber, LeasePeriodOf } from '@polkadot/types/interfaces';
-import { u32 } from '@polkadot/types';
-import type { Option } from '@polkadot/types';
-import { notEmpty } from '../../utils/notEmpty';
-import type { ITuple } from '@polkadot/types/types';
-import type { Event } from '../../generated/resolvers-types';
+import {Context} from '../../types';
+import {getBlockTime} from '../../services/relayChainService';
+import {BN, BN_ONE, formatNumber} from '@polkadot/util';
+import {BlockNumber, LeasePeriodOf} from '@polkadot/types/interfaces';
+import {u32} from '@polkadot/types';
+import type {Option} from '@polkadot/types';
+import {notEmpty} from '../../utils/notEmpty';
+import type {ITuple} from '@polkadot/types/types';
+import type {Event} from '../../generated/resolvers-types';
 
-export async function events(
-  _: Record<string, never>,
-  __: Record<string, never>,
-  context: Context,
-): Promise<Event[]> {
-  const { api } = context;
+export async function events(_: Record<string, never>, __: Record<string, never>, context: Context): Promise<Event[]> {
+  const {api} = context;
   const bestNumber = await api.derive.chain.bestNumber();
-  const { blockTime } = getBlockTime(api);
+  const {blockTime} = getBlockTime(api);
 
-  const getterContext = { api, bestNumber, blockTime };
+  const getterContext = {api, bestNumber, blockTime};
 
   const constEvents = [
     getCouncilElection(getterContext),
@@ -39,14 +35,11 @@ export async function events(
     ])
   ).flat();
 
-  return [...constEvents, ...promiseEvents]
-    .filter(notEmpty)
-    .sort(sortByDate)
-    .map(dateToIsoString);
+  return [...constEvents, ...promiseEvents].filter(notEmpty).sort(sortByDate).map(dateToIsoString);
 }
 
 function dateToIsoString(event: EVENT) {
-  return { ...event, date: event.date.toISOString() };
+  return {...event, date: event.date.toISOString()};
 }
 
 function sortByDate(a: EVENT, b: EVENT): number {
@@ -66,15 +59,9 @@ type CouncilElectionContext = {
   blockTime: number;
 };
 
-function getCouncilElection(
-  context: CouncilElectionContext,
-): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
-  const duration = (
-    api.consts.elections ||
-    api.consts.phragmenElection ||
-    api.consts.electionsPhragmen
-  )?.termDuration;
+function getCouncilElection(context: CouncilElectionContext): EVENT | undefined {
+  const {api, bestNumber, blockTime} = context;
+  const duration = (api.consts.elections || api.consts.phragmenElection || api.consts.electionsPhragmen)?.termDuration;
 
   if (duration === undefined) {
     return;
@@ -90,10 +77,8 @@ function getCouncilElection(
   };
 }
 
-function getDemocracyLaunch(
-  context: CouncilElectionContext,
-): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
+function getDemocracyLaunch(context: CouncilElectionContext): EVENT | undefined {
+  const {api, bestNumber, blockTime} = context;
   const duration = api.consts.democracy?.launchPeriod;
 
   if (duration === undefined) {
@@ -111,7 +96,7 @@ function getDemocracyLaunch(
 }
 
 function getParachainLease(context: CouncilElectionContext): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
+  const {api, bestNumber, blockTime} = context;
   const duration = api.consts.parachain?.leasePeriod as BlockNumber | undefined;
 
   if (duration === undefined) {
@@ -130,10 +115,8 @@ function getParachainLease(context: CouncilElectionContext): EVENT | undefined {
   };
 }
 
-function getSocietyChallenge(
-  context: CouncilElectionContext,
-): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
+function getSocietyChallenge(context: CouncilElectionContext): EVENT | undefined {
+  const {api, bestNumber, blockTime} = context;
   const duration = api.consts.society?.challengePeriod;
 
   if (duration === undefined) {
@@ -151,7 +134,7 @@ function getSocietyChallenge(
 }
 
 function getSocietyRotate(context: CouncilElectionContext): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
+  const {api, bestNumber, blockTime} = context;
   const duration = api.consts.society?.rotationPeriod;
 
   if (duration === undefined) {
@@ -169,7 +152,7 @@ function getSocietyRotate(context: CouncilElectionContext): EVENT | undefined {
 }
 
 function getTreasurySpend(context: CouncilElectionContext): EVENT | undefined {
-  const { api, bestNumber, blockTime } = context;
+  const {api, bestNumber, blockTime} = context;
   const duration = api.consts.treasury?.spendPeriod;
 
   if (duration === undefined) {
@@ -186,17 +169,15 @@ function getTreasurySpend(context: CouncilElectionContext): EVENT | undefined {
   };
 }
 
-async function getDemocracyDispatches(
-  context: CouncilElectionContext,
-): Promise<EVENT[]> {
-  const { api, bestNumber, blockTime } = context;
+async function getDemocracyDispatches(context: CouncilElectionContext): Promise<EVENT[]> {
+  const {api, bestNumber, blockTime} = context;
   const dispatches = await api.derive.democracy?.dispatchQueue();
 
   if (dispatches === undefined) {
     return [];
   }
 
-  return dispatches.map(({ at, index }) => {
+  return dispatches.map(({at, index}) => {
     const blocks = at.sub(bestNumber);
 
     return {
@@ -208,10 +189,8 @@ async function getDemocracyDispatches(
   });
 }
 
-async function getCouncilMotions(
-  context: CouncilElectionContext,
-): Promise<EVENT[]> {
-  const { api, bestNumber, blockTime } = context;
+async function getCouncilMotions(context: CouncilElectionContext): Promise<EVENT[]> {
+  const {api, bestNumber, blockTime} = context;
   const motions = await api.derive.council.proposals();
 
   if (motions === undefined) {
@@ -219,7 +198,7 @@ async function getCouncilMotions(
   }
 
   return motions
-    .map(({ hash, votes }) => {
+    .map(({hash, votes}) => {
       if (!votes) {
         return undefined;
       }
@@ -239,17 +218,15 @@ async function getCouncilMotions(
     .filter(notEmpty);
 }
 
-async function getReferendums(
-  context: CouncilElectionContext,
-): Promise<EVENT[]> {
-  const { api, bestNumber, blockTime } = context;
+async function getReferendums(context: CouncilElectionContext): Promise<EVENT[]> {
+  const {api, bestNumber, blockTime} = context;
   const referendums = await api.derive.democracy?.referendums();
 
   if (referendums === undefined) {
     return [];
   }
 
-  return referendums.flatMap(({ index, status }) => {
+  return referendums.flatMap(({index, status}) => {
     const enactBlocks = status.end.add(status.delay).isub(bestNumber);
     const voteBlocks = status.end.sub(bestNumber).isub(BN_ONE);
 
@@ -303,17 +280,13 @@ function getLeaseRanges(api: Context['api']) {
   return RANGES_DEFAULT;
 }
 
-async function getAuctionInfo(
-  context: CouncilElectionContext,
-): Promise<EVENT | undefined> {
-  const { api, bestNumber, blockTime } = context;
+async function getAuctionInfo(context: CouncilElectionContext): Promise<EVENT | undefined> {
+  const {api, bestNumber, blockTime} = context;
 
   const leaseRanges = getLeaseRanges(api);
   const rangeMax = new BN(leaseRanges[leaseRanges.length - 1][1]);
 
-  const auctionInfo = (await api.query.auctions.auctionInfo()) as Option<
-    ITuple<[LeasePeriodOf, BlockNumber]>
-  >;
+  const auctionInfo = (await api.query.auctions.auctionInfo()) as Option<ITuple<[LeasePeriodOf, BlockNumber]>>;
 
   if (auctionInfo === undefined) {
     return;
@@ -322,9 +295,7 @@ async function getAuctionInfo(
   const [leasePeriod, endBlock] = auctionInfo.unwrap();
   const blocks = endBlock.sub(bestNumber);
 
-  const id = `${leasePeriod.toString()} - ${leasePeriod
-    .add(rangeMax)
-    .toString()}`;
+  const id = `${leasePeriod.toString()} - ${leasePeriod.add(rangeMax).toString()}`;
 
   return {
     id: `parachainAuction_${id}`,
@@ -334,10 +305,8 @@ async function getAuctionInfo(
   };
 }
 
-async function getSchedule(
-  context: CouncilElectionContext,
-): Promise<EVENT[] | undefined> {
-  const { api, bestNumber, blockTime } = context;
+async function getSchedule(context: CouncilElectionContext): Promise<EVENT[] | undefined> {
+  const {api, bestNumber, blockTime} = context;
   const scheduled = await api.query.scheduler?.agenda?.entries();
 
   if (scheduled === undefined) {
@@ -345,31 +314,23 @@ async function getSchedule(
   }
 
   return scheduled
-    .filter(([, vecSchedOpt]) =>
-      vecSchedOpt.some((schedOpt) => schedOpt.isSome),
-    )
+    .filter(([, vecSchedOpt]) => vecSchedOpt.some((schedOpt) => schedOpt.isSome))
     .reduce<EVENT[]>((items, [key, vecSchedOpt]) => {
       const blockNumber = key.args[0];
 
       return vecSchedOpt
         .filter((schedOpt) => schedOpt.isSome)
         .map((schedOpt) => schedOpt.unwrap())
-        .reduce((items, { maybeId }) => {
+        .reduce((items, {maybeId}) => {
           const idOrNull = maybeId.unwrapOr(null);
           const blocks = blockNumber.sub(bestNumber);
-          const id = idOrNull
-            ? idOrNull.isAscii
-              ? idOrNull.toUtf8()
-              : idOrNull.toHex()
-            : null;
+          const id = idOrNull ? (idOrNull.isAscii ? idOrNull.toUtf8() : idOrNull.toHex()) : null;
 
           items.push({
             id: `scheduler_${id}`,
             blockNumber: blockNumber.toString(),
             date: newDate(blocks, blockTime),
-            title: id
-              ? `Execute named scheduled task ${id}`
-              : 'Execute anonymous scheduled task',
+            title: id ? `Execute named scheduled task ${id}` : 'Execute anonymous scheduled task',
           });
 
           return items;
@@ -377,10 +338,8 @@ async function getSchedule(
     }, []);
 }
 
-async function getStackingInfo(
-  context: CouncilElectionContext,
-): Promise<EVENT[]> {
-  const { api, bestNumber, blockTime } = context;
+async function getStackingInfo(context: CouncilElectionContext): Promise<EVENT[]> {
+  const {api, bestNumber, blockTime} = context;
   const slashDeferDuration = api.consts.staking?.slashDeferDuration;
   const [sessionInfo, slashes] = await Promise.all([
     api.derive.session.progress(),
@@ -416,17 +375,13 @@ async function getStackingInfo(
       id: 'stakingEpoch',
       date: newDate(blocksSes, blockTime),
       blockNumber: bestNumber.add(blocksSes).toString(),
-      title: `Start of a new staking session ${formatNumber(
-        sessionInfo.currentIndex.add(BN_ONE),
-      )}`,
+      title: `Start of a new staking session ${formatNumber(sessionInfo.currentIndex.add(BN_ONE))}`,
     },
     {
       id: 'stakingEra',
       blockNumber: bestNumber.add(blocksEra).toString(),
       date: newDate(blocksEra, blockTime),
-      title: `Start of a new staking era ${formatNumber(
-        sessionInfo.activeEra.add(BN_ONE),
-      )}`,
+      title: `Start of a new staking era ${formatNumber(sessionInfo.activeEra.add(BN_ONE))}`,
     },
     ...slashEras,
   ];

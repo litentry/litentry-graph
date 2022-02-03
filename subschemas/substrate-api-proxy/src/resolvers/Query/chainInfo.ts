@@ -1,10 +1,10 @@
-import type { Context } from '../../types';
-import type {ChainInfo} from '../../generated/resolvers-types'
+import type {Context} from '../../types';
+import type {ChainInfo} from '../../generated/resolvers-types';
 
 export default async function chainInfo(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<ChainInfo> {
   const [chain, nodeName, nodeVersion] = await Promise.all([
     api.rpc.system.chain(),

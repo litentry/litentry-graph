@@ -1,13 +1,13 @@
-import type { ApiPromise } from '@polkadot/api';
-import type { AccountInfo } from '@polkadot/types/interfaces/system';
+import type {ApiPromise} from '@polkadot/api';
+import type {AccountInfo} from '@polkadot/types/interfaces/system';
 import BN from 'bignumber.js';
-import type { Context } from '../../types';
-import type {Balance} from '../../generated/resolvers-types'
+import type {Context} from '../../types';
+import type {Balance} from '../../generated/resolvers-types';
 
 export default async function balance(
   _: Record<string, never>,
-  { address, blockNumber }: { address: string; blockNumber?: number | null },
-  { api }: Context,
+  {address, blockNumber}: {address: string; blockNumber?: number | null},
+  {api}: Context,
 ): Promise<Balance> {
   let raw: AccountInfo;
 

@@ -1,19 +1,21 @@
-import type { Context } from '../../types';
-import { BN, bnToBn } from '@polkadot/util';
-import type { BlockNumber } from '@polkadot/types/interfaces';
-import type {Council} from '../../generated/resolvers-types'
+import type {Context} from '../../types';
+import {BN, bnToBn} from '@polkadot/util';
+import type {BlockNumber} from '@polkadot/types/interfaces';
+import type {Council} from '../../generated/resolvers-types';
 
-interface CouncilInfo extends Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'> {
-  members: PartialCouncilMember[]
-  runnersUp: PartialCouncilMember[]
-  candidates: PartialCouncilCandidate[]
-  primeMember: PartialCouncilMember | null
+type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
+
+interface CouncilInfo extends PartialCouncil {
+  members: PartialCouncilMember[];
+  runnersUp: PartialCouncilMember[];
+  candidates: PartialCouncilCandidate[];
+  primeMember: PartialCouncilMember | null;
 }
 
 export async function council(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<CouncilInfo> {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),
@@ -22,59 +24,45 @@ export async function council(
     api.derive.chain.bestNumber(),
   ]);
 
-  const votesByCandidates = votes.reduce<Record<string, string[]>>(
-    (result, [voter, { votes }]) => {
-      votes.forEach((candidate) => {
-        const address = candidate.toString();
+  const votesByCandidates = votes.reduce<Record<string, string[]>>((result, [voter, {votes}]) => {
+    votes.forEach((candidate) => {
+      const address = candidate.toString();
 
-        if (!result[address]) {
-          result[address] = [];
-        }
+      if (!result[address]) {
+        result[address] = [];
+      }
 
-        result[address]?.push(voter.toString());
-      });
+      result[address]?.push(voter.toString());
+    });
 
-      return result;
-    },
-    {},
-  );
+    return result;
+  }, {});
 
-  const members = electionsInfo.members.map<PartialCouncilMember>(
-    ([accountId, balance]) => ({
-      address: String(accountId),
-      backing: balance.toString(),
-      voters: votesByCandidates[String(accountId)] || [],
-    }),
-  );
+  const members = electionsInfo.members.map<PartialCouncilMember>(([accountId, balance]) => ({
+    address: String(accountId),
+    backing: balance.toString(),
+    voters: votesByCandidates[String(accountId)] || [],
+  }));
 
-  const runnersUp = electionsInfo.runnersUp.map<PartialCouncilMember>(
-    ([accountId, balance]) => ({
-      address: String(accountId),
-      backing: balance.toString(),
-      voters: votesByCandidates[String(accountId)] || [],
-    }),
-  );
+  const runnersUp = electionsInfo.runnersUp.map<PartialCouncilMember>(([accountId, balance]) => ({
+    address: String(accountId),
+    backing: balance.toString(),
+    voters: votesByCandidates[String(accountId)] || [],
+  }));
 
-  const candidates = electionsInfo.candidates.map<PartialCouncilCandidate>(
-    (accountId) => ({
-      address: String(accountId),
-    }),
-  );
+  const candidates = electionsInfo.candidates.map<PartialCouncilCandidate>((accountId) => ({
+    address: String(accountId),
+  }));
 
   const primeMember: PartialCouncilMember | null = prime
     ? {
         address: String(prime),
-        backing: electionsInfo.members
-          .find(([accountId]) => accountId.eq(prime))?.[1]
-          ?.toString(),
+        backing: electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1]?.toString(),
         voters: [],
       }
     : null;
 
-  const { termLeft, percentage } = getTermLeft(
-    bnToBn(electionsInfo.termDuration || 0),
-    bestNumber,
-  );
+  const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
   const termProgress = {
     termDuration: electionsInfo.termDuration?.toString(),
     termLeft: termLeft.toString(),

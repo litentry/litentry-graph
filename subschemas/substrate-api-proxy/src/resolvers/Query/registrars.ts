@@ -1,6 +1,6 @@
-import { BN_ZERO } from '@polkadot/util';
-import { Context } from '../../types';
-import { formatBalance } from '../../services/substrateChainService';
+import {BN_ZERO} from '@polkadot/util';
+import {Context} from '../../types';
+import {formatBalance} from '../../services/substrateChainService';
 
 export type PartialRegistrar = {
   id: string;
@@ -12,7 +12,7 @@ export type PartialRegistrar = {
 export async function registrars(
   _: Record<string, never>,
   __: Record<string, never>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<PartialRegistrar[]> {
   const registrarsInfo = await api.query.identity.registrars();
   const registrars = registrarsInfo
