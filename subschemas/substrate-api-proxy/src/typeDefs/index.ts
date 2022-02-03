@@ -11,6 +11,7 @@ import registrars from './registrars';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
 import crowdLoan from './crowdloan';
+import convictions from './convictions';
 
 export default [
   chainInfo,
@@ -26,4 +27,5 @@ export default [
   moduleElection,
   parachains,
   crowdLoan,
+  convictions,
 ];
