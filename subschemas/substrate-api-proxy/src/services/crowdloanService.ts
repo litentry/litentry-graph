@@ -51,7 +51,11 @@ export async function getFunds(
     >[][],
   ]);
   const funds = rawFunds
-    ? optFundMulti.transform(paraIds, rawFunds, api.runtimeChain.toString().toLowerCase())
+    ? optFundMulti.transform(
+        paraIds,
+        rawFunds,
+        api.runtimeChain.toString(),
+      )
     : [];
   const leases = optLeaseMulti.transform(paraIds, rawLeases ?? []);
   const minContribution = api?.consts.crowdloan
@@ -73,8 +77,8 @@ const optFundMulti = {
       .filter((v): v is [ParaId, FundInfo] => !!v[1])
       .map(([paraId, info]): Campaign => {
         const key = paraId.toString();
-        const isLitentryParachain = network === 'polkadot' && key === '2013';
-        const isLitmusParachain = network === 'kusama' && key === '2106';
+        const isLitentryParachain = network.toLowerCase() === 'polkadot' && key === '2013';
+        const isLitmusParachain = network.toLowerCase() === 'kusama' && key === '2106';
         return {
           accountId: encodeAddress(createAddress(paraId)),
           firstSlot: info.firstPeriod,
@@ -180,25 +184,28 @@ function hasLease(paraId: ParaId, leased: ParaId[]): boolean {
   return leased.some((l) => l.eq(paraId));
 }
 
-export function extractLists(
-  value: Campaign[],
+export function extractActiveFunds(
+  funds: Campaign[],
   leasePeriod: LeasePeriod,
-): {
-  active: Campaign[];
-  ended: Campaign[];
-  allIds: ParaId[];
-} {
+): Campaign[] {
   const currentPeriod = new BN(leasePeriod.currentLease);
+  return funds.filter(
+    ({ firstSlot, isCapped, isEnded, isWinner }) =>
+      !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot),
+  );
+}
 
-  return {
-    active: value.filter(
-      ({ firstSlot, isCapped, isEnded, isWinner }) =>
-        !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot),
-    ),
-    ended: value.filter(
-      ({ firstSlot, isCapped, isEnded, isWinner }) =>
-        isCapped || isEnded || isWinner || currentPeriod.gt(firstSlot),
-    ),
-    allIds: value.map(({ paraId }) => paraId),
-  };
+export function extractEndedFunds(
+  funds: Campaign[],
+  leasePeriod: LeasePeriod,
+): Campaign[] {
+  const currentPeriod = new BN(leasePeriod.currentLease);
+  return funds.filter(
+    ({ firstSlot, isCapped, isEnded, isWinner }) =>
+      isCapped || isEnded || isWinner || currentPeriod.gt(firstSlot),
+  );
+}
+
+export function extractParaIds(funds: Campaign[]): ParaId[] {
+  return funds.map(({ paraId }) => paraId);
 }

@@ -1,7 +1,7 @@
 import type { Context } from '../../types';
 import type { CrowdloanSummary } from '../../generated/resolvers-types';
 import type { ParaId } from '@polkadot/types/interfaces';
-import { getFunds, extractLists } from '../../services/crowdloanService';
+import { getFunds, extractActiveFunds } from '../../services/crowdloanService';
 import { getLeasePeriod } from '../../services/parachainsService';
 import { BN, BN_ZERO } from '@polkadot/util';
 
@@ -19,8 +19,8 @@ export async function crowdloanSummary(
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
 
-  const { active } = extractLists(data.funds, leasePeriod);
-  const [activeRaised, activeCap] = active.reduce(
+  const activeFunds = extractActiveFunds(data.funds, leasePeriod);
+  const [activeRaised, activeCap] = activeFunds.reduce(
     ([par, pac], current) => {
       return [
         par.iadd(
