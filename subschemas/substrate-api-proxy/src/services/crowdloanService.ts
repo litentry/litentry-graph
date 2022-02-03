@@ -1,16 +1,10 @@
-import type { LeasePeriod } from '../generated/resolvers-types';
-import { ApiPromise } from '@polkadot/api';
-import type { Option } from '@polkadot/types';
-import type { ITuple } from '@polkadot/types/types';
-import { BN, stringToU8a, u8aConcat } from '@polkadot/util';
-import { encodeAddress } from '@polkadot/util-crypto';
-import type {
-  ParaId,
-  BlockNumber,
-  FundInfo,
-  AccountId,
-  BalanceOf,
-} from '@polkadot/types/interfaces';
+import type {LeasePeriod} from '../generated/resolvers-types';
+import {ApiPromise} from '@polkadot/api';
+import type {Option} from '@polkadot/types';
+import type {ITuple} from '@polkadot/types/types';
+import {BN, stringToU8a, u8aConcat} from '@polkadot/util';
+import {encodeAddress} from '@polkadot/util-crypto';
+import type {ParaId, BlockNumber, FundInfo, AccountId, BalanceOf} from '@polkadot/types/interfaces';
 
 const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
@@ -39,41 +33,21 @@ interface Campaigns {
   totalRaised: BN;
 }
 
-export async function getFunds(
-  paraIds: ParaId[],
-  bestNumber: BlockNumber,
-  api: ApiPromise,
-): Promise<Campaigns> {
+export async function getFunds(paraIds: ParaId[], bestNumber: BlockNumber, api: ApiPromise): Promise<Campaigns> {
   const [rawFunds, rawLeases] = await Promise.all([
     api.query.crowdloan?.funds?.multi<Option<FundInfo>>(paraIds),
-    api.query.slots?.leases?.multi(paraIds) as unknown as Option<
-      ITuple<[AccountId, BalanceOf]>
-    >[][],
+    api.query.slots?.leases?.multi(paraIds) as unknown as Option<ITuple<[AccountId, BalanceOf]>>[][],
   ]);
-  const funds = rawFunds
-    ? optFundMulti.transform(
-        paraIds,
-        rawFunds,
-        api.runtimeChain.toString(),
-      )
-    : [];
+  const funds = rawFunds ? optFundMulti.transform(paraIds, rawFunds, api.runtimeChain.toString()) : [];
   const leases = optLeaseMulti.transform(paraIds, rawLeases ?? []);
-  const minContribution = api?.consts.crowdloan
-    ?.minContribution as unknown as BN;
+  const minContribution = api?.consts.crowdloan?.minContribution as unknown as BN;
   return createResult(bestNumber, minContribution, funds, leases);
 }
 
 const optFundMulti = {
-  transform: (
-    paraIds: ParaId[],
-    optFunds: Option<FundInfo>[],
-    network: string,
-  ): Campaign[] =>
+  transform: (paraIds: ParaId[], optFunds: Option<FundInfo>[], network: string): Campaign[] =>
     paraIds
-      .map((paraId, i): [ParaId, FundInfo | null] => [
-        paraId,
-        optFunds?.[i]?.unwrapOr(null) ?? null,
-      ])
+      .map((paraId, i): [ParaId, FundInfo | null] => [paraId, optFunds?.[i]?.unwrapOr(null) ?? null])
       .filter((v): v is [ParaId, FundInfo] => !!v[1])
       .map(([paraId, info]): Campaign => {
         const key = paraId.toString();
@@ -106,36 +80,25 @@ const optFundMulti = {
 };
 
 const optLeaseMulti = {
-  transform: (
-    paraIds: ParaId[],
-    leases: Option<ITuple<[AccountId, BalanceOf]>>[][],
-  ): ParaId[] =>
+  transform: (paraIds: ParaId[], leases: Option<ITuple<[AccountId, BalanceOf]>>[][]): ParaId[] =>
     paraIds.filter(
       (paraId, i) =>
         (leases[i] ?? [])
           .map((o) => o.unwrapOr(null))
           .filter((v): v is ITuple<[AccountId, BalanceOf]> => !!v)
-          .filter(([accountId]) => isCrowdloanAccount(paraId, accountId))
-          .length !== 0,
+          .filter(([accountId]) => isCrowdloanAccount(paraId, accountId)).length !== 0,
     ),
 };
 
 // compare the current campaigns against the previous, manually adding ending and calculating the new totals
-function createResult(
-  bestNumber: BlockNumber,
-  minContribution: BN,
-  funds: Campaign[],
-  leased: ParaId[],
-): Campaigns {
+function createResult(bestNumber: BlockNumber, minContribution: BN, funds: Campaign[], leased: ParaId[]): Campaigns {
   const [totalRaised, totalCap] = funds.reduce(
-    ([tr, tc], { info: { cap, raised } }) => [tr.iadd(raised), tc.iadd(cap)],
+    ([tr, tc], {info: {cap, raised}}) => [tr.iadd(raised), tc.iadd(cap)],
     [new BN(0), new BN(0)],
   );
 
   return {
-    funds: funds
-      .map((c) => updateFund(bestNumber, minContribution, c, leased))
-      .sort(sortCampaigns),
+    funds: funds.map((c) => updateFund(bestNumber, minContribution, c, leased)).sort(sortCampaigns),
     totalCap,
     totalRaised,
   };
@@ -167,12 +130,7 @@ function sortCampaigns(a: Campaign, b: Campaign): number {
 }
 
 // map into a campaign
-function updateFund(
-  bestNumber: BN,
-  minContribution: BN,
-  data: Campaign,
-  leased: ParaId[],
-): Campaign {
+function updateFund(bestNumber: BN, minContribution: BN, data: Campaign, leased: ParaId[]): Campaign {
   data.isCapped = data.info.cap.sub(data.info.raised).lt(minContribution);
   data.isEnded = bestNumber.gt(data.info.end);
   data.isWinner = hasLease(data.paraId, leased);
@@ -184,28 +142,20 @@ function hasLease(paraId: ParaId, leased: ParaId[]): boolean {
   return leased.some((l) => l.eq(paraId));
 }
 
-export function extractActiveFunds(
-  funds: Campaign[],
-  leasePeriod: LeasePeriod,
-): Campaign[] {
+export function extractActiveFunds(funds: Campaign[], leasePeriod: LeasePeriod): Campaign[] {
   const currentPeriod = new BN(leasePeriod.currentLease);
   return funds.filter(
-    ({ firstSlot, isCapped, isEnded, isWinner }) =>
-      !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot),
+    ({firstSlot, isCapped, isEnded, isWinner}) => !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot),
   );
 }
 
-export function extractEndedFunds(
-  funds: Campaign[],
-  leasePeriod: LeasePeriod,
-): Campaign[] {
+export function extractEndedFunds(funds: Campaign[], leasePeriod: LeasePeriod): Campaign[] {
   const currentPeriod = new BN(leasePeriod.currentLease);
   return funds.filter(
-    ({ firstSlot, isCapped, isEnded, isWinner }) =>
-      isCapped || isEnded || isWinner || currentPeriod.gt(firstSlot),
+    ({firstSlot, isCapped, isEnded, isWinner}) => isCapped || isEnded || isWinner || currentPeriod.gt(firstSlot),
   );
 }
 
 export function extractParaIds(funds: Campaign[]): ParaId[] {
-  return funds.map(({ paraId }) => paraId);
+  return funds.map(({paraId}) => paraId);
 }

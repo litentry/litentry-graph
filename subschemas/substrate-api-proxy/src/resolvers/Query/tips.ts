@@ -1,6 +1,6 @@
-import type { Option, Bytes } from '@polkadot/types';
-import type { PalletTipsOpenTip } from '@polkadot/types/lookup';
-import { BN_ZERO } from '@polkadot/util';
+import type {Option, Bytes} from '@polkadot/types';
+import type {PalletTipsOpenTip} from '@polkadot/types/lookup';
+import {BN_ZERO} from '@polkadot/util';
 import type {
   Hash,
   AccountId,
@@ -8,19 +8,13 @@ import type {
   Balance,
   OpenTipTo225,
 } from '@polkadot/types/interfaces';
-import type { ApiPromise } from '@polkadot/api';
-import { hexToString } from '@polkadot/util';
-import type { Context } from '../../types';
-import type { Tip } from '../../generated/resolvers-types';
+import type {ApiPromise} from '@polkadot/api';
+import {hexToString} from '@polkadot/util';
+import type {Context} from '../../types';
+import type {Tip} from '../../generated/resolvers-types';
 
-export async function tips(
-  _: Record<string, never>,
-  __: Record<string, never>,
-  { api }: Context,
-): Promise<Tip[]> {
-  const hashes = await api.query.tips.tips
-    .keys()
-    .then((keys) => keys.map((key) => key.args[0].toHex()));
+export async function tips(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Tip[]> {
+  const hashes = await api.query.tips.tips.keys().then((keys) => keys.map((key) => key.args[0].toHex()));
 
   if (hashes.length) {
     const optionTips = await api.query.tips.tips.multi(hashes);
@@ -42,11 +36,7 @@ export async function tips(
   return [];
 }
 
-export async function tip(
-  _: Record<string, never>,
-  { id }: { id: string },
-  { api }: Context,
-): Promise<Tip> {
+export async function tip(_: Record<string, never>, {id}: {id: string}, {api}: Context): Promise<Tip> {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();
   const tipState = await extractTipState(tip);
@@ -90,9 +80,7 @@ async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
   };
 }
 
-function isCurrentTip(
-  tip: PalletTipsOpenTip | OpenTipTo225,
-): tip is PalletTipsOpenTip {
+function isCurrentTip(tip: PalletTipsOpenTip | OpenTipTo225): tip is PalletTipsOpenTip {
   return !!(tip as PalletTipsOpenTip)?.findersFee;
 }
 
@@ -107,14 +95,8 @@ function extractTips(
   const [hashes, optTips] = tipsWithHashes;
 
   return optTips
-    ?.map((opt, index): [string, PalletTipsOpenTip | null] => [
-      hashes[index] as string,
-      opt.unwrapOr(null),
-    ])
-    .filter(
-      (val): val is [string, PalletTipsOpenTip] =>
-        inHashes.includes(val[0]) && !!val[1],
-    )
+    ?.map((opt, index): [string, PalletTipsOpenTip | null] => [hashes[index] as string, opt.unwrapOr(null)])
+    .filter((val): val is [string, PalletTipsOpenTip] => inHashes.includes(val[0]) && !!val[1])
     .sort((a, b) =>
       a[1].closes.isNone
         ? b[1].closes.isNone
@@ -127,8 +109,7 @@ function extractTips(
 }
 
 const transformReason = {
-  transform: (optBytes: Option<Bytes>) =>
-    optBytes.isSome ? hexToString(optBytes.unwrap().toHex()) : null,
+  transform: (optBytes: Option<Bytes>) => (optBytes.isSome ? hexToString(optBytes.unwrap().toHex()) : null),
 };
 
 async function getTipReason(api: ApiPromise, reasonHash: Hash) {

@@ -1,29 +1,21 @@
-import type { Context } from '../../types';
-import { u8aConcat, BN_MILLION } from '@polkadot/util';
-import { AccountId } from '@polkadot/types/interfaces';
-import {
-  DeriveTreasuryProposal,
-  DeriveCollectiveProposal,
-} from '@polkadot/api-derive/types';
-import type {
-  TreasurySummary,
-  Treasury,
-} from '../../generated/resolvers-types';
+import type {Context} from '../../types';
+import {u8aConcat, BN_MILLION} from '@polkadot/util';
+import {AccountId} from '@polkadot/types/interfaces';
+import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
+import type {TreasurySummary, Treasury} from '../../generated/resolvers-types';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
 export async function treasurySummary(
   _: Record<string, string>,
   __: Record<string, string>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<TreasurySummary> {
   const proposals = await api.derive.treasury.proposals();
 
   const treasuryAccount = u8aConcat(
     'modl',
-    api.consts.treasury && api.consts.treasury.palletId
-      ? api.consts.treasury.palletId.toU8a(true)
-      : 'py/trsry',
+    api.consts.treasury && api.consts.treasury.palletId ? api.consts.treasury.palletId.toU8a(true) : 'py/trsry',
     EMPTY_U8A_32,
   ).subarray(0, 32) as AccountId;
 
@@ -31,9 +23,7 @@ export async function treasurySummary(
 
   const burn =
     treasuryBalance?.freeBalance.gtn(0) && !api.consts.treasury.burn.isZero()
-      ? api.consts.treasury.burn
-          .mul(treasuryBalance?.freeBalance)
-          .div(BN_MILLION)
+      ? api.consts.treasury.burn.mul(treasuryBalance?.freeBalance).div(BN_MILLION)
       : null;
 
   return {
@@ -84,7 +74,7 @@ function processProposals(proposals: DeriveTreasuryProposal[]) {
 export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
-  { api }: Context,
+  {api}: Context,
 ): Promise<Treasury> {
   const proposals = await api.derive.treasury.proposals();
 
