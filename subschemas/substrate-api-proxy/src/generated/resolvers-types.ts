@@ -129,6 +129,10 @@ export type CrowdloanSummary = {
   activeCap: Scalars['String'];
   activeProgress: Scalars['Float'];
   activeRaised: Scalars['String'];
+  formattedActiveCap: Scalars['String'];
+  formattedActiveRaised: Scalars['String'];
+  formattedTotalCap: Scalars['String'];
+  formattedTotalRaised: Scalars['String'];
   totalCap: Scalars['String'];
   totalFunds: Scalars['Int'];
   totalProgress: Scalars['Float'];
@@ -719,6 +723,10 @@ export type CrowdloanSummaryResolvers<ContextType = any, ParentType extends Reso
   activeCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   activeProgress?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   activeRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedActiveCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedActiveRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotalCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotalRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   totalCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   totalFunds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalProgress?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
