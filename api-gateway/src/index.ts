@@ -1,5 +1,5 @@
 import express from 'express';
-import { AddressInfo } from 'net'
+import { AddressInfo } from 'net';
 import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
@@ -37,15 +37,15 @@ async function makeGatewaySchema() {
   const wrappedIpfsSchema = wrapSchema({
     schema: ipfsSchema,
     transforms: [
-      new RenameTypes((name) => `ipfs_${name}`),
-      new RenameRootFields((_, name) => `ipfs_${name}`),
+      new RenameTypes((name) => `Ipfs${name}`),
+      new RenameRootFields((_, name) => `ipfs${name}`),
     ],
   });
   const wrappedWeb2Schema = wrapSchema({
     schema: web2Schema,
     transforms: [
-      new RenameTypes((name) => `web2_${name}`),
-      new RenameRootFields((_, name) => `web2_${name}`),
+      new RenameTypes((name) => `Web2${name}`),
+      new RenameRootFields((_, name) => `web2${name}`),
     ],
   });
 
@@ -80,7 +80,7 @@ async function run() {
     })
   );
   const listener = app.listen(config.apiPort, () => {
-    const {port} = listener.address() as AddressInfo;
+    const { port } = listener.address() as AddressInfo;
     console.log(`listening on port: ${port}`);
   });
 }

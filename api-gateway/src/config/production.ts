@@ -3,7 +3,7 @@ import Config from './Config';
 const config: Config = {
   apiPort: 5000,
   remoteSchemaConfig: [
-    { name: 'khala', url: 'https://subsquid-khala.litentry.io/graphql' },
+    { name: 'substrate', url: 'https://squid.litentry.io/graphql' },
     {
       name: 'eth',
       url: 'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph',
