@@ -13,7 +13,24 @@ export default /* GraphQL */ `
     totalFunds: Int!
   }
 
+  type Depositor {
+    address: String!
+    account: Account!
+  }
+
+  type Crowdloan {
+    key: String!
+    depositor: Depositor!
+    ending: [String!]!
+    status: String!
+    firstPeriod: String!
+    lastPeriod: String!
+    raised: String!
+    cap: String!
+  }
+
   type Query {
     crowdloanSummary: CrowdloanSummary!
+    activeCrowdloans: [Crowdloan!]!
   }
 `;

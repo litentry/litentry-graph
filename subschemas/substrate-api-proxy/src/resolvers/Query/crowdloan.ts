@@ -1,10 +1,11 @@
 import type {Context} from '../../types';
-import type {CrowdloanSummary} from '../../generated/resolvers-types';
+import type {CrowdloanSummary, Crowdloan} from '../../generated/resolvers-types';
 import type {ParaId} from '@polkadot/types/interfaces';
 import {getFunds, extractActiveFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {BN, BN_ZERO} from '@polkadot/util';
 import {formatBalance} from '../../services/substrateChainService';
+import { getBlockTime } from '../../services/relayChainService';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -47,4 +48,58 @@ export async function crowdloanSummary(
     totalProgress,
     totalFunds: data.funds.length,
   };
+}
+
+interface CrowdloanInfo extends Omit<Crowdloan, 'depositor'>{
+  depositor: PartialDepositor;
+}
+
+export type PartialDepositor = {
+  address: string
+}
+
+export async function activeCrowdloans(
+  _: Record<string, never>,
+  __: Record<string, never>,
+  { api }: Context,
+): Promise<CrowdloanInfo[]> {
+  const [paraIdKeys, bestNumber] = await Promise.all([
+    api.query.crowdloan?.funds?.keys<[ParaId]>(),
+    api.derive.chain.bestNumber(),
+  ]);
+
+  const paraIds = paraIdKeys.map(({ args: [paraId] }) => paraId);
+  const data = await getFunds(paraIds, bestNumber, api);
+  const leasePeriod = await getLeasePeriod(api);
+  const currentLease = new BN(leasePeriod.currentLease);
+  const activeFunds = extractActiveFunds(data.funds, leasePeriod);
+
+  return activeFunds.map((fund) => {
+    const { info, isCapped, isEnded, isWinner, firstSlot } = fund;
+    const { end, firstPeriod, lastPeriod, cap, raised, depositor } = info;
+    const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : new BN(6000);
+    const isOngoing =
+      !(isCapped || isEnded || isWinner) && currentLease.lte(firstSlot);
+    const status = fund.isWinner
+      ? 'Winner'
+      : blocksLeft
+      ? fund.isCapped
+        ? 'Capped'
+        : isOngoing
+        ? 'Active'
+        : 'Past'
+      : 'Ended';
+    const ending = getBlockTime(api, blocksLeft);
+
+    return {
+      key: fund.key,
+      depositor: {address: depositor.toString()},
+      status,
+      ending: ending.timeStringParts,
+      firstPeriod: firstPeriod.toString(),
+      lastPeriod: lastPeriod.toString(),
+      raised: raised.toString(),
+      cap: cap.toString(),
+    };
+  });
 }

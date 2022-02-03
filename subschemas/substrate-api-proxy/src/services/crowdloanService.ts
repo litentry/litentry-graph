@@ -8,24 +8,20 @@ import type {ParaId, BlockNumber, FundInfo, AccountId, BalanceOf} from '@polkado
 
 const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
-interface Campaign extends WinnerData {
+type Campaign = {
   info: FundInfo;
-  isCapped?: boolean;
-  isEnded?: boolean;
-  isWinner?: boolean;
-  // should be sorted on top
-  isSpecial?: boolean;
-}
-
-interface WinnerData {
-  accountId: string;
+  isCapped?: Boolean;
+  isEnded?: Boolean;
+  isWinner?: Boolean;
+  isSpecial: Boolean;
+  accountId: String;
   firstSlot: BN;
-  isCrowdloan: boolean;
+  isCrowdloan: Boolean;
   key: string;
   lastSlot: BN;
   paraId: ParaId;
   value: BN;
-}
+};
 
 interface Campaigns {
   funds: Campaign[];
@@ -51,8 +47,10 @@ const optFundMulti = {
       .filter((v): v is [ParaId, FundInfo] => !!v[1])
       .map(([paraId, info]): Campaign => {
         const key = paraId.toString();
-        const isLitentryParachain = network.toLowerCase() === 'polkadot' && key === '2013';
-        const isLitmusParachain = network.toLowerCase() === 'kusama' && key === '2106';
+        const isLitentryParachain =
+          network.toLowerCase() === 'polkadot' && key === '2013';
+        const isLitmusParachain =
+          network.toLowerCase() === 'kusama' && key === '2106';
         return {
           accountId: encodeAddress(createAddress(paraId)),
           firstSlot: info.firstPeriod,

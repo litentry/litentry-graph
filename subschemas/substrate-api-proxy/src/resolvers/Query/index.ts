@@ -17,7 +17,7 @@ import {councilMotions} from './councilMotions';
 import {registrars} from './registrars';
 import moduleElection from './moduleElection';
 import {parachainsInfo} from './parachains';
-import {crowdloanSummary} from './crowdloan';
+import {crowdloanSummary, activeCrowdloans} from './crowdloan';
 
 export const Query = {
   balance,
@@ -42,4 +42,5 @@ export const Query = {
   moduleElection,
   parachainsInfo,
   crowdloanSummary,
+  activeCrowdloans,
 };

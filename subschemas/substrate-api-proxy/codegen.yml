@@ -12,6 +12,7 @@ generates:
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
         ProposalSecond: ../resolvers/Query/democracy#PartialProposalSecond
+        Depositor: ../resolvers/Query/crowdloan#PartialDepositor
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
