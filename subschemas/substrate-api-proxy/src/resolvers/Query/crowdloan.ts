@@ -142,3 +142,45 @@ export async function endedCrowdloans(
 
   return await Promise.all(funds);
 }
+
+export async function crowdloan(
+  _: Record<string, never>,
+  {key}: {key: string},
+  {api}: Context,
+): Promise<CrowdloanInfo | null> {
+  const paraIdKeys = await api.query.crowdloan?.funds?.keys<[ParaId]>();
+  const paraIdKey = paraIdKeys.find(({args: [paraId]}) => paraId.toString() === key);
+
+  if (paraIdKey) {
+    const {
+      args: [paraId],
+    } = paraIdKey;
+    const bestNumber = await api.derive.chain.bestNumber();
+    const data = await getFunds([paraId], bestNumber, api);
+    const contribution = await api.derive.crowdloan.contributions(paraId.toString());
+
+    return data.funds.reduce((_, fund) => {
+      const {info, isWinner} = fund;
+      const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
+      const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
+      const status = isWinner ? 'Winner' : 'Ended';
+      const ending = getBlockTime(api, blocksLeft);
+
+      return {
+        key: fund.key,
+        depositor: {address: depositor.toString()},
+        status,
+        ending: ending.timeStringParts,
+        firstPeriod: firstPeriod.toString(),
+        lastPeriod: lastPeriod.toString(),
+        raised: raised.toString(),
+        formattedRaised: formatBalance(api, raised),
+        cap: cap.toString(),
+        formattedCap: formatBalance(api, cap),
+        contributorsCount: formatNumber(contribution.contributorsHex.length),
+      };
+    }, {} as CrowdloanInfo);
+  }
+
+  return null;
+}

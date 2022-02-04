@@ -36,5 +36,6 @@ export default /* GraphQL */ `
     crowdloanSummary: CrowdloanSummary!
     activeCrowdloans: [Crowdloan!]!
     endedCrowdloans: [Crowdloan!]!
+    crowdloan(key: String!): Crowdloan
   }
 `;
