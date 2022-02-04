@@ -8,24 +8,20 @@ import type {ParaId, BlockNumber, FundInfo, AccountId, BalanceOf} from '@polkado
 
 const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
-interface Campaign extends WinnerData {
+type Campaign = {
   info: FundInfo;
   isCapped?: boolean;
   isEnded?: boolean;
   isWinner?: boolean;
-  // should be sorted on top
-  isSpecial?: boolean;
-}
-
-interface WinnerData {
-  accountId: string;
+  isSpecial: boolean;
+  accountId: String;
   firstSlot: BN;
   isCrowdloan: boolean;
   key: string;
   lastSlot: BN;
   paraId: ParaId;
   value: BN;
-}
+};
 
 interface Campaigns {
   funds: Campaign[];
