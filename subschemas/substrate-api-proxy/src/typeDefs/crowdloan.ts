@@ -19,7 +19,7 @@ export default /* GraphQL */ `
   }
 
   type Crowdloan {
-    key: String!
+    paraId: String!
     depositor: Depositor!
     ending: [String!]!
     status: String!
@@ -36,6 +36,6 @@ export default /* GraphQL */ `
     crowdloanSummary: CrowdloanSummary!
     activeCrowdloans: [Crowdloan!]!
     endedCrowdloans: [Crowdloan!]!
-    crowdloan(key: String!): Crowdloan
+    crowdloan(paraId: String!): Crowdloan
   }
 `;

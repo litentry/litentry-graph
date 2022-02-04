@@ -1,17 +1,18 @@
 import account from './account';
 import balance from './balance';
+import bounties from './bounties';
 import chainInfo from './chainInfo';
 import council from './council';
-import tips from './tips';
-import bounties from './bounties';
-import events from './events';
+import crowdLoan from './crowdloan';
+import CrowdloanContribution from './CrowdloanContribution';
+import convictions from './convictions';
 import democracy from './democracy';
-import treasury from './treasury';
-import registrars from './registrars';
+import events from './events';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
-import crowdLoan from './crowdloan';
-import convictions from './convictions';
+import tips from './tips';
+import treasury from './treasury';
+import registrars from './registrars';
 
 export default [
   account,
@@ -20,12 +21,13 @@ export default [
   chainInfo,
   council,
   convictions,
+  convictions,
   crowdLoan,
+  CrowdloanContribution,
   democracy,
   events,
   moduleElection,
   parachains,
-  convictions,
   registrars,
   tips,
   treasury,

@@ -84,7 +84,7 @@ export async function activeCrowdloans(
     const contribution = await api.derive.crowdloan.contributions(paraId);
 
     return {
-      key: fund.key,
+      paraId: paraId.toString(),
       depositor: {address: depositor.toString()},
       status,
       ending: ending.timeStringParts,
@@ -126,7 +126,7 @@ export async function endedCrowdloans(
     const contribution = await api.derive.crowdloan.contributions(paraId);
 
     return {
-      key: fund.key,
+      paraId: paraId.toString(),
       depositor: {address: depositor.toString()},
       status,
       ending: ending.timeStringParts,
@@ -145,7 +145,7 @@ export async function endedCrowdloans(
 
 export async function crowdloan(
   _: Record<string, never>,
-  {key}: {key: string},
+  {paraId: key}: {paraId: string},
   {api}: Context,
 ): Promise<CrowdloanInfo | null> {
   const paraIdKeys = await api.query.crowdloan?.funds?.keys<[ParaId]>();
@@ -167,7 +167,7 @@ export async function crowdloan(
       const ending = getBlockTime(api, blocksLeft);
 
       return {
-        key: fund.key,
+        paraId: paraId.toString(),
         depositor: {address: depositor.toString()},
         status,
         ending: ending.timeStringParts,

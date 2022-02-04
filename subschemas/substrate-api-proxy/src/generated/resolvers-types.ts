@@ -140,10 +140,16 @@ export type Crowdloan = {
   firstPeriod: Scalars['String'];
   formattedCap: Scalars['String'];
   formattedRaised: Scalars['String'];
-  key: Scalars['String'];
   lastPeriod: Scalars['String'];
+  paraId: Scalars['String'];
   raised: Scalars['String'];
   status: Scalars['String'];
+};
+
+export type CrowdloanContribution = {
+  __typename?: 'CrowdloanContribution';
+  contributorsCount: Scalars['Int'];
+  paraId: Scalars['String'];
 };
 
 export type CrowdloanSummary = {
@@ -330,6 +336,7 @@ export type Query = {
   council: Council;
   councilMotions: Array<CouncilMotion>;
   crowdloan?: Maybe<Crowdloan>;
+  crowdloanContribution: CrowdloanContribution;
   crowdloanSummary: CrowdloanSummary;
   democracyProposal?: Maybe<Proposal>;
   democracyProposals: Array<Proposal>;
@@ -363,7 +370,11 @@ export type QueryBountyArgs = {
 };
 
 export type QueryCrowdloanArgs = {
-  key: Scalars['String'];
+  paraId: Scalars['String'];
+};
+
+export type QueryCrowdloanContributionArgs = {
+  paraId: Scalars['String'];
 };
 
 export type QueryDemocracyProposalArgs = {
@@ -568,6 +579,7 @@ export type ResolversTypes = {
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
   CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & {proposal: ResolversTypes['MotionProposal']}>;
   Crowdloan: ResolverTypeWrapper<Omit<Crowdloan, 'depositor'> & {depositor: ResolversTypes['Depositor']}>;
+  CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
@@ -635,6 +647,7 @@ export type ResolversParentTypes = {
   CouncilMember: PartialCouncilMember;
   CouncilMotion: Omit<CouncilMotion, 'proposal'> & {proposal: ResolversParentTypes['MotionProposal']};
   Crowdloan: Omit<Crowdloan, 'depositor'> & {depositor: ResolversParentTypes['Depositor']};
+  CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
@@ -840,10 +853,19 @@ export type CrowdloanResolvers<
   firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CrowdloanContributionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CrowdloanContribution'] = ResolversParentTypes['CrowdloanContribution'],
+> = {
+  contributorsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1098,7 +1120,13 @@ export type QueryResolvers<
     Maybe<ResolversTypes['Crowdloan']>,
     ParentType,
     ContextType,
-    RequireFields<QueryCrowdloanArgs, 'key'>
+    RequireFields<QueryCrowdloanArgs, 'paraId'>
+  >;
+  crowdloanContribution?: Resolver<
+    ResolversTypes['CrowdloanContribution'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloanContributionArgs, 'paraId'>
   >;
   crowdloanSummary?: Resolver<ResolversTypes['CrowdloanSummary'], ParentType, ContextType>;
   democracyProposal?: Resolver<
@@ -1269,6 +1297,7 @@ export type Resolvers<ContextType = any> = {
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   CouncilMotion?: CouncilMotionResolvers<ContextType>;
   Crowdloan?: CrowdloanResolvers<ContextType>;
+  CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   Depositor?: DepositorResolvers<ContextType>;
