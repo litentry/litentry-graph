@@ -12,37 +12,39 @@ import {
   democracyReferendums,
   democracyReferendum,
 } from './democracy';
+import {convictions} from './convictions';
+import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan} from './crowdloan';
 import {treasurySummary, treasury} from './treasury';
 import {councilMotions} from './councilMotions';
 import {registrars} from './registrars';
 import moduleElection from './moduleElection';
 import {parachainsInfo} from './parachains';
-import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan} from './crowdloan';
 
 export const Query = {
-  balance,
-  chainInfo,
-  tip,
-  tips,
-  council,
-  councilMotions,
   account,
+  balance,
   bountiesSummary,
   bounties,
   bounty,
-  events,
+  chainInfo,
+  council,
+  councilMotions,
+  convictions,
+  crowdloanSummary,
+  activeCrowdloans,
+  endedCrowdloans,
+  crowdloan,
   democracySummary,
   democracyProposals,
   democracyProposal,
   democracyReferendums,
   democracyReferendum,
-  treasurySummary,
-  treasury,
-  registrars,
+  events,
   moduleElection,
   parachainsInfo,
-  crowdloanSummary,
-  activeCrowdloans,
-  endedCrowdloans,
-  crowdloan,
+  registrars,
+  tip,
+  tips,
+  treasurySummary,
+  treasury,
 };

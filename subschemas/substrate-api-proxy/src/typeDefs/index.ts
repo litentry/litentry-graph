@@ -11,19 +11,22 @@ import registrars from './registrars';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
 import crowdLoan from './crowdloan';
+import convictions from './convictions';
 
 export default [
-  chainInfo,
-  tips,
-  council,
   account,
   balance,
-  events,
   bounties,
+  chainInfo,
+  council,
+  convictions,
+  crowdLoan,
   democracy,
-  treasury,
-  registrars,
+  events,
   moduleElection,
   parachains,
-  crowdLoan,
+  convictions,
+  registrars,
+  tips,
+  treasury,
 ];

@@ -93,6 +93,12 @@ export type CollectiveProposal = {
   votes: ProposalVotes;
 };
 
+export type Conviction = {
+  __typename?: 'Conviction';
+  text: Scalars['String'];
+  value: Scalars['Int'];
+};
+
 export type Council = {
   __typename?: 'Council';
   candidates: Array<CouncilCandidate>;
@@ -320,6 +326,7 @@ export type Query = {
   bountiesSummary: BountiesSummary;
   bounty?: Maybe<Bounty>;
   chainInfo: ChainInfo;
+  convictions?: Maybe<Array<Conviction>>;
   council: Council;
   councilMotions: Array<CouncilMotion>;
   crowdloan?: Maybe<Crowdloan>;
@@ -548,6 +555,7 @@ export type ResolversTypes = {
   BountyStatus: ResolverTypeWrapper<BountyStatus>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
+  Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
       candidates: Array<ResolversTypes['CouncilCandidate']>;
@@ -616,6 +624,7 @@ export type ResolversParentTypes = {
   BountyStatus: BountyStatus;
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
+  Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
     candidates: Array<ResolversParentTypes['CouncilCandidate']>;
     members: Array<ResolversParentTypes['CouncilMember']>;
@@ -764,6 +773,15 @@ export type CollectiveProposalResolvers<
   callIndex?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   votes?: Resolver<ResolversTypes['ProposalVotes'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ConvictionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Conviction'] = ResolversParentTypes['Conviction'],
+> = {
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1073,6 +1091,7 @@ export type QueryResolvers<
   bountiesSummary?: Resolver<ResolversTypes['BountiesSummary'], ParentType, ContextType>;
   bounty?: Resolver<Maybe<ResolversTypes['Bounty']>, ParentType, ContextType, RequireFields<QueryBountyArgs, 'index'>>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
+  convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
   crowdloan?: Resolver<
@@ -1244,6 +1263,7 @@ export type Resolvers<ContextType = any> = {
   BountyStatus?: BountyStatusResolvers<ContextType>;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
+  Conviction?: ConvictionResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
