@@ -2,11 +2,13 @@
   "private": true,
   "scripts": {
     "start": "cd api-gateway && yarn start",
+    "start-proxy": "cd api-proxy && yarn start",
     "build": "yarn workspaces run build",
     "postinstall": "yarn build"
   },
   "workspaces": [
     "api-gateway",
+    "api-proxy",
     "subschemas/*"
   ],
   "resolutions": {

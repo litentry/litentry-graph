@@ -1,0 +1,50 @@
+{
+  "name": "api-proxy",
+  "version": "0.0.1",
+  "description": "Litentry's GraphQL API Proxy",
+  "main": "dist/index.ts",
+  "repository": "git@github.com:litentry/web3-indexer.git",
+  "contributors": [
+    "Ben Mason <ben@wattmason.co.uk>",
+    "Tim Baker <tim.baker@stamford.digital>"
+  ],
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "start": "node dist/index.js",
+    "build": "rm -rf ./dist && tsc"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^8.3.1",
+    "@graphql-tools/stitch": "^8.4.3",
+    "@polkadot/api": "^7.6.1",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "cors": "^2.8.5",
+    "cross-fetch": "^3.1.4",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^16.0.1",
+    "graphql-type-json": "^0.3.2",
+    "substrate-api-proxy": "0.0.1",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "4.22.1",
+    "@typescript-eslint/parser": "4.22.1",
+    "eslint": "7.26.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.1.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src",
+      "../subschemas/substrate-api-proxy/dist"
+    ],
+    "ext": "ts,js,json",
+    "ignore": [
+      "node_modules/*"
+    ]
+  }
+}
