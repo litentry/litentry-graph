@@ -6,13 +6,18 @@ import {Context} from '../../types';
 import {getCallParams, formatCallMeta} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
 import {BN_ONE} from '@polkadot/util';
-import {getBlockTime} from '../../services/relayChainService';
+import {getBlockTime} from '../../services/substrateChainService';
 
-interface ProposalInfo extends Omit<Proposal, 'seconds'> {
+interface ProposalInfo extends Omit<Proposal, 'seconds' | 'proposer'> {
   seconds: PartialProposalSecond[];
+  proposer: PartialProposer;
 }
 
 export type PartialProposalSecond = {
+  address: string;
+};
+
+export type PartialProposer = {
   address: string;
 };
 

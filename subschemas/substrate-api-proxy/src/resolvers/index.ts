@@ -19,4 +19,10 @@ export const resolvers: Resolvers<Context> = {
   ProposalSecond: {
     account: Query.account,
   },
+  Depositor: {
+    account: Query.account,
+  },
+  Contribution: {
+    contribution: Query.crowdloanContribution,
+  },
 };

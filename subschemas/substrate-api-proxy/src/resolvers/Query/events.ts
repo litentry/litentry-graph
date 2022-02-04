@@ -1,5 +1,5 @@
 import {Context} from '../../types';
-import {getBlockTime} from '../../services/relayChainService';
+import {getBlockTime} from '../../services/substrateChainService';
 import {BN, BN_ONE, formatNumber} from '@polkadot/util';
 import {BlockNumber, LeasePeriodOf} from '@polkadot/types/interfaces';
 import {u32} from '@polkadot/types';

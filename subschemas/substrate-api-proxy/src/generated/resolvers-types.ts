@@ -1,22 +1,15 @@
 import {GraphQLResolveInfo} from 'graphql';
 import {PartialCouncilCandidate, PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
-import {PartialProposalSecond} from '../resolvers/Query/democracy';
+import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democracy';
+import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends {[key: string]: unknown}> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = {
-  [X in Exclude<keyof T, K>]?: T[X];
-} & {[P in K]-?: NonNullable<T[P]>};
+export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -100,6 +93,18 @@ export type CollectiveProposal = {
   votes: ProposalVotes;
 };
 
+export type Contribution = {
+  __typename?: 'Contribution';
+  contribution: CrowdloanContribution;
+  paraId: Scalars['String'];
+};
+
+export type Conviction = {
+  __typename?: 'Conviction';
+  text: Scalars['String'];
+  value: Scalars['Int'];
+};
+
 export type Council = {
   __typename?: 'Council';
   candidates: Array<CouncilCandidate>;
@@ -132,6 +137,27 @@ export type CouncilMotion = {
   votes?: Maybe<MotionVotes>;
 };
 
+export type Crowdloan = {
+  __typename?: 'Crowdloan';
+  cap: Scalars['String'];
+  contribution: Contribution;
+  depositor: Depositor;
+  ending: Array<Scalars['String']>;
+  firstPeriod: Scalars['String'];
+  formattedCap: Scalars['String'];
+  formattedRaised: Scalars['String'];
+  lastPeriod: Scalars['String'];
+  paraId: Scalars['String'];
+  raised: Scalars['String'];
+  status: Scalars['String'];
+};
+
+export type CrowdloanContribution = {
+  __typename?: 'CrowdloanContribution';
+  contributorsCount: Scalars['String'];
+  paraId: Scalars['String'];
+};
+
 export type CrowdloanSummary = {
   __typename?: 'CrowdloanSummary';
   activeCap: Scalars['String'];
@@ -154,6 +180,12 @@ export type DemocracySummary = {
   launchPeriod: Scalars['String'];
   proposals: Scalars['String'];
   referendums: Scalars['String'];
+};
+
+export type Depositor = {
+  __typename?: 'Depositor';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type DeriveAccountRegistration = {
@@ -293,26 +325,31 @@ export type ProposalVotes = {
 
 export type Proposer = {
   __typename?: 'Proposer';
-  account?: Maybe<Account>;
+  account: Account;
   address: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
   account?: Maybe<Account>;
+  activeCrowdloans: Array<Crowdloan>;
   balance: Balance;
   bounties: Array<Bounty>;
   bountiesSummary: BountiesSummary;
   bounty?: Maybe<Bounty>;
   chainInfo: ChainInfo;
+  convictions?: Maybe<Array<Conviction>>;
   council: Council;
   councilMotions: Array<CouncilMotion>;
+  crowdloan?: Maybe<Crowdloan>;
+  crowdloanContribution: CrowdloanContribution;
   crowdloanSummary: CrowdloanSummary;
   democracyProposal?: Maybe<Proposal>;
   democracyProposals: Array<Proposal>;
   democracyReferendum?: Maybe<Referendum>;
   democracyReferendums: Array<Referendum>;
   democracySummary: DemocracySummary;
+  endedCrowdloans: Array<Crowdloan>;
   events: Array<Event>;
   moduleElection: ModuleElection;
   parachain?: Maybe<Parachain>;
@@ -336,6 +373,14 @@ export type QueryBalanceArgs = {
 
 export type QueryBountyArgs = {
   index: Scalars['String'];
+};
+
+export type QueryCrowdloanArgs = {
+  paraId: Scalars['String'];
+};
+
+export type QueryCrowdloanContributionArgs = {
+  paraId: Scalars['String'];
 };
 
 export type QueryDemocracyProposalArgs = {
@@ -527,6 +572,8 @@ export type ResolversTypes = {
   BountyStatus: ResolverTypeWrapper<BountyStatus>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
+  Contribution: ResolverTypeWrapper<PartialContribution>;
+  Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
       candidates: Array<ResolversTypes['CouncilCandidate']>;
@@ -537,13 +584,17 @@ export type ResolversTypes = {
   >;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
-  CouncilMotion: ResolverTypeWrapper<
-    Omit<CouncilMotion, 'proposal'> & {
-      proposal: ResolversTypes['MotionProposal'];
+  CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & {proposal: ResolversTypes['MotionProposal']}>;
+  Crowdloan: ResolverTypeWrapper<
+    Omit<Crowdloan, 'contribution' | 'depositor'> & {
+      contribution: ResolversTypes['Contribution'];
+      depositor: ResolversTypes['Depositor'];
     }
   >;
+  CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
+  Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
   Event: ResolverTypeWrapper<Event>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
@@ -553,29 +604,24 @@ export type ResolversTypes = {
   Lease: ResolverTypeWrapper<Lease>;
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
-  MotionProposal: ResolverTypeWrapper<
-    Omit<MotionProposal, 'args'> & {
-      args: Array<ResolversTypes['ProposalArg']>;
-    }
-  >;
+  MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   MotionVotes: ResolverTypeWrapper<MotionVotes>;
   PalletProposal: ResolverTypeWrapper<PalletProposal>;
   Parachain: ResolverTypeWrapper<Parachain>;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   Proposal: ResolverTypeWrapper<
-    Omit<Proposal, 'args' | 'seconds'> & {
+    Omit<Proposal, 'args' | 'proposer' | 'seconds'> & {
       args: Array<ResolversTypes['ProposalArg']>;
+      proposer: ResolversTypes['Proposer'];
       seconds: Array<ResolversTypes['ProposalSecond']>;
     }
   >;
   ProposalArg: ResolverTypeWrapper<
-    Omit<ProposalArg, 'subCalls'> & {
-      subCalls?: Maybe<Array<Maybe<ResolversTypes['Proposal']>>>;
-    }
+    Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['Proposal']>>>}
   >;
   ProposalSecond: ResolverTypeWrapper<PartialProposalSecond>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
-  Proposer: ResolverTypeWrapper<Proposer>;
+  Proposer: ResolverTypeWrapper<PartialProposer>;
   Query: ResolverTypeWrapper<{}>;
   Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
@@ -602,6 +648,8 @@ export type ResolversParentTypes = {
   BountyStatus: BountyStatus;
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
+  Contribution: PartialContribution;
+  Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
     candidates: Array<ResolversParentTypes['CouncilCandidate']>;
     members: Array<ResolversParentTypes['CouncilMember']>;
@@ -610,11 +658,15 @@ export type ResolversParentTypes = {
   };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
-  CouncilMotion: Omit<CouncilMotion, 'proposal'> & {
-    proposal: ResolversParentTypes['MotionProposal'];
+  CouncilMotion: Omit<CouncilMotion, 'proposal'> & {proposal: ResolversParentTypes['MotionProposal']};
+  Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
+    contribution: ResolversParentTypes['Contribution'];
+    depositor: ResolversParentTypes['Depositor'];
   };
+  CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
   DemocracySummary: DemocracySummary;
+  Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
   Event: Event;
   Float: Scalars['Float'];
@@ -624,27 +676,22 @@ export type ResolversParentTypes = {
   Lease: Lease;
   LeasePeriod: LeasePeriod;
   ModuleElection: ModuleElection;
-  MotionProposal: Omit<MotionProposal, 'args'> & {
-    args: Array<ResolversParentTypes['ProposalArg']>;
-  };
+  MotionProposal: Omit<MotionProposal, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   MotionVotes: MotionVotes;
   PalletProposal: PalletProposal;
   Parachain: Parachain;
   ParachainsInfo: ParachainsInfo;
-  Proposal: Omit<Proposal, 'args' | 'seconds'> & {
+  Proposal: Omit<Proposal, 'args' | 'proposer' | 'seconds'> & {
     args: Array<ResolversParentTypes['ProposalArg']>;
+    proposer: ResolversParentTypes['Proposer'];
     seconds: Array<ResolversParentTypes['ProposalSecond']>;
   };
-  ProposalArg: Omit<ProposalArg, 'subCalls'> & {
-    subCalls?: Maybe<Array<Maybe<ResolversParentTypes['Proposal']>>>;
-  };
+  ProposalArg: Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversParentTypes['Proposal']>>>};
   ProposalSecond: PartialProposalSecond;
   ProposalVotes: ProposalVotes;
-  Proposer: Proposer;
+  Proposer: PartialProposer;
   Query: {};
-  Referendum: Omit<Referendum, 'args'> & {
-    args: Array<ResolversParentTypes['ProposalArg']>;
-  };
+  Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
@@ -758,6 +805,24 @@ export type CollectiveProposalResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ContributionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Contribution'] = ResolversParentTypes['Contribution'],
+> = {
+  contribution?: Resolver<ResolversTypes['CrowdloanContribution'], ParentType, ContextType>;
+  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ConvictionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Conviction'] = ResolversParentTypes['Conviction'],
+> = {
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CouncilResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
@@ -802,6 +867,33 @@ export type CouncilMotionResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CrowdloanResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Crowdloan'] = ResolversParentTypes['Crowdloan'],
+> = {
+  cap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  contribution?: Resolver<ResolversTypes['Contribution'], ParentType, ContextType>;
+  depositor?: Resolver<ResolversTypes['Depositor'], ParentType, ContextType>;
+  ending?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lastPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CrowdloanContributionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CrowdloanContribution'] = ResolversParentTypes['CrowdloanContribution'],
+> = {
+  contributorsCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CrowdloanSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['CrowdloanSummary'] = ResolversParentTypes['CrowdloanSummary'],
@@ -829,6 +921,15 @@ export type DemocracySummaryResolvers<
   launchPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposals?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   referendums?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DepositorResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Depositor'] = ResolversParentTypes['Depositor'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1016,7 +1117,7 @@ export type ProposerResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Proposer'] = ResolversParentTypes['Proposer'],
 > = {
-  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1031,13 +1132,27 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryAccountArgs, 'address'>
   >;
+  activeCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['Balance'], ParentType, ContextType, RequireFields<QueryBalanceArgs, 'address'>>;
   bounties?: Resolver<Array<ResolversTypes['Bounty']>, ParentType, ContextType>;
   bountiesSummary?: Resolver<ResolversTypes['BountiesSummary'], ParentType, ContextType>;
   bounty?: Resolver<Maybe<ResolversTypes['Bounty']>, ParentType, ContextType, RequireFields<QueryBountyArgs, 'index'>>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
+  convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
+  crowdloan?: Resolver<
+    Maybe<ResolversTypes['Crowdloan']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloanArgs, 'paraId'>
+  >;
+  crowdloanContribution?: Resolver<
+    ResolversTypes['CrowdloanContribution'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloanContributionArgs, 'paraId'>
+  >;
   crowdloanSummary?: Resolver<ResolversTypes['CrowdloanSummary'], ParentType, ContextType>;
   democracyProposal?: Resolver<
     Maybe<ResolversTypes['Proposal']>,
@@ -1054,6 +1169,7 @@ export type QueryResolvers<
   >;
   democracyReferendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
+  endedCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
   parachain?: Resolver<
@@ -1200,12 +1316,17 @@ export type Resolvers<ContextType = any> = {
   BountyStatus?: BountyStatusResolvers<ContextType>;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
+  Contribution?: ContributionResolvers<ContextType>;
+  Conviction?: ConvictionResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   CouncilMotion?: CouncilMotionResolvers<ContextType>;
+  Crowdloan?: CrowdloanResolvers<ContextType>;
+  CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
+  Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
