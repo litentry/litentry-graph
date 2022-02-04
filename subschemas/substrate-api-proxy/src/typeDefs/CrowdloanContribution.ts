@@ -1,7 +1,7 @@
 export default /* GraphQL */ `
   type CrowdloanContribution {
     paraId: String!
-    contributorsCount: Int!
+    contributorsCount: String!
   }
   type Query {
     crowdloanContribution(paraId: String!): CrowdloanContribution!

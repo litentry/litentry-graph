@@ -51,12 +51,17 @@ export async function crowdloanSummary(
   };
 }
 
-interface CrowdloanInfo extends Omit<Crowdloan, 'depositor'> {
+interface CrowdloanInfo extends Omit<Crowdloan, 'depositor' | 'contribution'> {
   depositor: PartialDepositor;
+  contribution: PartialContribution;
 }
 
 export type PartialDepositor = {
   address: string;
+};
+
+export type PartialContribution = {
+  paraId: string;
 };
 
 export async function activeCrowdloans(
@@ -74,14 +79,12 @@ export async function activeCrowdloans(
   const leasePeriod = await getLeasePeriod(api);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
 
-  const funds = activeFunds.map(async (fund) => {
+  return activeFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
     const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
     const status = isWinner ? 'Winner' : 'Active';
     const ending = getBlockTime(api, blocksLeft);
-
-    const contribution = await api.derive.crowdloan.contributions(paraId);
 
     return {
       paraId: paraId.toString(),
@@ -94,11 +97,9 @@ export async function activeCrowdloans(
       formattedRaised: formatBalance(api, raised),
       cap: cap.toString(),
       formattedCap: formatBalance(api, cap),
-      contributorsCount: formatNumber(contribution.contributorsHex.length),
+      contribution: {paraId: paraId.toString()},
     };
   });
-
-  return await Promise.all(funds);
 }
 
 export async function endedCrowdloans(
@@ -116,14 +117,12 @@ export async function endedCrowdloans(
   const leasePeriod = await getLeasePeriod(api);
   const endedFunds = extractEndedFunds(data.funds, leasePeriod);
 
-  const funds = endedFunds.map(async (fund) => {
+  return endedFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
     const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
     const status = isWinner ? 'Winner' : 'Ended';
     const ending = getBlockTime(api, blocksLeft);
-
-    const contribution = await api.derive.crowdloan.contributions(paraId);
 
     return {
       paraId: paraId.toString(),
@@ -136,11 +135,9 @@ export async function endedCrowdloans(
       formattedRaised: formatBalance(api, raised),
       cap: cap.toString(),
       formattedCap: formatBalance(api, cap),
-      contributorsCount: formatNumber(contribution.contributorsHex.length),
+      contribution: {paraId: paraId.toString()},
     };
   });
-
-  return await Promise.all(funds);
 }
 
 export async function crowdloan(
@@ -157,7 +154,6 @@ export async function crowdloan(
     } = paraIdKey;
     const bestNumber = await api.derive.chain.bestNumber();
     const data = await getFunds([paraId], bestNumber, api);
-    const contribution = await api.derive.crowdloan.contributions(paraId.toString());
 
     return data.funds.reduce((_, fund) => {
       const {info, isWinner} = fund;
@@ -177,7 +173,7 @@ export async function crowdloan(
         formattedRaised: formatBalance(api, raised),
         cap: cap.toString(),
         formattedCap: formatBalance(api, cap),
-        contributorsCount: formatNumber(contribution.contributorsHex.length),
+        contribution: {paraId: paraId.toString()},
       };
     }, {} as CrowdloanInfo);
   }

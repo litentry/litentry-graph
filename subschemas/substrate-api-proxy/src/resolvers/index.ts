@@ -22,4 +22,7 @@ export const resolvers: Resolvers<Context> = {
   Depositor: {
     account: Query.account,
   },
+  Contribution: {
+    contribution: Query.crowdloanContribution,
+  },
 };

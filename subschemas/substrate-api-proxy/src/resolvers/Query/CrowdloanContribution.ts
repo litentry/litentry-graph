@@ -1,5 +1,6 @@
 import type {CrowdloanContribution} from '../../generated/resolvers-types';
 import type {Context} from '../../types';
+import {formatNumber} from '@polkadot/util';
 
 export async function crowdloanContribution(
   parent: {paraId?: string},
@@ -15,6 +16,6 @@ export async function crowdloanContribution(
 
   return {
     paraId,
-    contributorsCount: contribution.contributorsHex.length,
+    contributorsCount: formatNumber(contribution.contributorsHex.length),
   };
 }

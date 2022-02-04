@@ -14,6 +14,7 @@ generates:
         ProposalSecond: ../resolvers/Query/democracy#PartialProposalSecond
         Proposer: ../resolvers/Query/democracy#PartialProposer
         Depositor: ../resolvers/Query/crowdloan#PartialDepositor
+        Contribution: ../resolvers/Query/crowdloan#PartialContribution
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

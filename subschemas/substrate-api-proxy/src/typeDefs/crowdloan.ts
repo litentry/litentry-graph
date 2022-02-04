@@ -18,6 +18,11 @@ export default /* GraphQL */ `
     account: Account!
   }
 
+  type Contribution {
+    paraId: String!
+    contribution: CrowdloanContribution!
+  }
+
   type Crowdloan {
     paraId: String!
     depositor: Depositor!
@@ -29,7 +34,7 @@ export default /* GraphQL */ `
     formattedRaised: String!
     cap: String!
     formattedCap: String!
-    contributorsCount: String!
+    contribution: Contribution!
   }
 
   type Query {
