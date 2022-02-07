@@ -8,14 +8,6 @@ services:
     restart: unless-stopped
     environment:
       - 'STAGE=production'  
-      
-  api-proxy:
-    build: .
-    ports:
-      - 5001:5001
-    restart: unless-stopped
-    environment:
-      - 'STAGE=production'
 
   nginx:
     image: nginx:1.15-alpine
