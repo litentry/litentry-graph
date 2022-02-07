@@ -1,30 +1,14 @@
 import express from 'express';
 import { AddressInfo } from 'net'
 import { graphqlHTTP } from 'express-graphql';
-import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
-import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as proxySchema } from 'substrate-api-proxy';
-import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 
-async function makeGatewaySchema() {
-  const remoteSchemas = [];
-
-  for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
-    const executor = makeRemoteExecutor(config.remoteSchemaConfig[i].url);
-    const schema = await introspectSchema(executor);
-    remoteSchemas.push(
-      // without wrapSchema the schemas from The Graph's hosted service fail on null __typename
-      wrapSchema({
-        schema,
-        executor,
-      })
-    );
-  }
-
+async function run() {
+  const app = express();
   const wrappedProxySchema = wrapSchema({
     schema: proxySchema,
     transforms: [
@@ -32,18 +16,6 @@ async function makeGatewaySchema() {
       new RenameRootFields((_, name) => `proxy${capitalize(name)}`),
     ],
   });
-
-  return stitchSchemas({
-    subschemas: [
-      wrappedProxySchema,
-      ...remoteSchemas,
-    ],
-  });
-}
-
-async function run() {
-  const app = express();
-  const schema = await makeGatewaySchema();
   const getSubstrateApi = await initSubstrateApi();
 
   app.use(
@@ -55,7 +27,7 @@ async function run() {
       const api = getSubstrateApi(substrateNetwork);
 
       return {
-        schema,
+        schema: wrappedProxySchema,
         graphiql: { headerEditorEnabled: true },
         context: { api },
       };
