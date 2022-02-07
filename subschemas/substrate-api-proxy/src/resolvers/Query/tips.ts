@@ -1,13 +1,7 @@
 import type {Option, Bytes} from '@polkadot/types';
 import type {PalletTipsOpenTip} from '@polkadot/types/lookup';
 import {BN_ZERO} from '@polkadot/util';
-import type {
-  Hash,
-  AccountId,
-  // BlockNumber,
-  Balance,
-  OpenTipTo225,
-} from '@polkadot/types/interfaces';
+import type {Hash, AccountId, Balance, OpenTipTo225} from '@polkadot/types/interfaces';
 import type {ApiPromise} from '@polkadot/api';
 import {hexToString} from '@polkadot/util';
 import type {Context} from '../../types';
