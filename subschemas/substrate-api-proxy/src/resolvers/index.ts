@@ -25,4 +25,10 @@ export const resolvers: Resolvers<Context> = {
   Contribution: {
     contribution: Query.crowdloanContribution,
   },
+  Finder: {
+    account: Query.account,
+  },
+  Who: {
+    account: Query.account,
+  },
 };
