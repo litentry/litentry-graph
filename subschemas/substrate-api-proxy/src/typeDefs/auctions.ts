@@ -1,4 +1,9 @@
 export default /* GraphQL */ `
+  type AuctionsSummary {
+    auctionsInfo: AuctionsInfo!
+    latestAuction: Auction!
+  }
+
   type AuctionsInfo {
     numAuctions: Int!
     active: Boolean!
@@ -31,7 +36,6 @@ export default /* GraphQL */ `
   }
 
   extend type Query {
-    auctionsInfo: AuctionsInfo!
-    currentAuction: Auction!
+    auctionsSummary: AuctionsSummary!
   }
 `;
