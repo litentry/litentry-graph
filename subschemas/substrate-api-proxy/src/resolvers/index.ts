@@ -33,5 +33,5 @@ export const resolvers: Resolvers<Context> = {
   },
   Tipper: {
     account: Query.account,
-  }
+  },
 };

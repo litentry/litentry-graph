@@ -6,7 +6,7 @@ import type {ApiPromise} from '@polkadot/api';
 import {hexToString} from '@polkadot/util';
 import type {Context} from '../../types';
 import type {Tip} from '../../generated/resolvers-types';
-import { formatBalance } from '../../services/substrateChainService';
+import {formatBalance} from '../../services/substrateChainService';
 
 interface TipInfo extends Omit<Tip, 'finder' | 'who' | 'tippers'> {
   finder: PartialFinder | null;
@@ -26,15 +26,14 @@ export type PartialTipper = {
   address: string;
   balance: string;
   formattedBalance: string;
-}
-
+};
 
 function extractTippers(tip: PalletTipsOpenTip, api: ApiPromise): PartialTipper[] {
   return tip.tips.map(([tipper, balance]) => ({
     address: tipper.toString(),
     balance: balance.toString(),
     formattedBalance: formatBalance(api, balance),
-  }))
+  }));
 }
 
 export async function tips(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<TipInfo[]> {
