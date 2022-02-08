@@ -1,6 +1,6 @@
 deploy:
 	@git pull \
-		&& docker-compose -f docker-compose.prod.yml -p api-gateway_$$(git rev-parse --short HEAD) up api-gateway --build -d \
+		&& docker-compose -f docker-compose.prod.yml -p api-gateway_$$(git rev-parse --short HEAD) up --build -d api-gateway \
 		&& make go-live
 
 go-live:
