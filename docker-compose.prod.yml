@@ -1,13 +1,19 @@
 version: '3'
+networks:
+  web_network:
+    name: web_network
+    driver: bridge
 
 services:
   api-gateway:
     build: .
     ports:
-      - 5000:5000
+      - 5000
     restart: unless-stopped
     environment:
       - 'STAGE=production'
+    networks:
+      - web_network
 
   nginx:
     image: nginx:1.15-alpine
@@ -19,6 +25,8 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    networks:
+      - web_network
 
   certbot:
     image: certbot/certbot
