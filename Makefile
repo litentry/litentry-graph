@@ -5,7 +5,7 @@ deploy:
 
 go-live:
 	@make reload-nginx \
-		&& docker ps --filter "label=com.docker.compose.project" -q | xargs docker inspect --format='{{index .Config.Labels "com.docker.compose.project"}}'| sort | uniq | grep -v api-gateway_$$(git rev-parse --short HEAD) | xargs -I{} docker-compose -f docker-compose.prod.yml -p {} down \
+		&& docker ps --format '{{.ID}} {{.Image}}' | grep "api-gateway_" | grep -v api-gateway_$$(git rev-parse --short HEAD) | awk '{ print $1 }' | xargs -I{} echo 'docker stop {} && docker rm {}' | sh \
 		&& make reload-nginx
 
 reload-nginx:
