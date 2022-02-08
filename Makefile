@@ -7,6 +7,7 @@ go-live:
 	@make reload-nginx \
 		&& sleep 10s \
 		&& docker ps --format '{{.ID}} {{.Image}}' | grep "api-gateway_" | grep -v api-gateway_$$(git rev-parse --short HEAD) | awk '{ print $1 }' | xargs -I{} echo 'docker stop {} && docker rm {}' | sh \
+		&& sleep 3s \
 		&& make reload-nginx
 
 reload-nginx:
