@@ -6,7 +6,7 @@ deploy:
 go-live:
 	@make reload-nginx \
 		&& sleep 10s \
-		&& docker ps --format '{{.ID}},{{.Image}}' | grep "api-gateway_" | grep -v api-gateway_$$(git rev-parse --short HEAD) | awk -F, '{ print $1 }' | xargs -I@ docker stop @ \
+		&& docker ps --format '{{.ID}},{{.Image}}' | grep "api-gateway_" | grep -v api-gateway_$$(git rev-parse --short HEAD) | awk -F, '{ print $$1 }' | xargs -I@ docker stop @ \
 		&& make -s reload-nginx
 
 reload-nginx:
