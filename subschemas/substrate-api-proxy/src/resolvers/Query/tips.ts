@@ -6,10 +6,12 @@ import type {ApiPromise} from '@polkadot/api';
 import {hexToString} from '@polkadot/util';
 import type {Context} from '../../types';
 import type {Tip} from '../../generated/resolvers-types';
+import { formatBalance } from '../../services/substrateChainService';
 
-interface TipInfo extends Omit<Tip, 'finder' | 'who'> {
+interface TipInfo extends Omit<Tip, 'finder' | 'who' | 'tippers'> {
   finder: PartialFinder | null;
   who: PartialWho;
+  tippers: PartialTipper[];
 }
 
 export type PartialFinder = {
@@ -19,6 +21,21 @@ export type PartialFinder = {
 export type PartialWho = {
   address: string;
 };
+
+export type PartialTipper = {
+  address: string;
+  balance: string;
+  formattedBalance: string;
+}
+
+
+function extractTippers(tip: PalletTipsOpenTip, api: ApiPromise): PartialTipper[] {
+  return tip.tips.map(([tipper, balance]) => ({
+    address: tipper.toString(),
+    balance: balance.toString(),
+    formattedBalance: formatBalance(api, balance),
+  }))
+}
 
 export async function tips(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<TipInfo[]> {
   const hashes = await api.query.tips.tips.keys().then((keys) => keys.map((key) => key.args[0].toHex()));
@@ -35,6 +52,8 @@ export async function tips(_: Record<string, never>, __: Record<string, never>, 
         reason: await getTipReason(api, openTip[1].reason),
         closes: openTip[1].closes.unwrapOr(null)?.toString(),
         deposit: openTip[1].deposit.toString(),
+        tippersCount: openTip[1].tips.length,
+        tippers: extractTippers(openTip[1], api),
       })) || [];
 
     return Promise.all(tips);
@@ -46,7 +65,7 @@ export async function tips(_: Record<string, never>, __: Record<string, never>, 
 export async function tip(_: Record<string, never>, {id}: {id: string}, {api}: Context): Promise<TipInfo> {
   const tipOption = await api.query.tips.tips(id);
   const tip = tipOption.unwrap();
-  const tipState = await extractTipState(tip);
+  const tipState = extractTipState(tip, api);
 
   tip.createdAtHash;
 
@@ -54,11 +73,13 @@ export async function tip(_: Record<string, never>, {id}: {id: string}, {api}: C
     id,
     who: {address: tip.who.toString()},
     reason: await getTipReason(api, tip.reason),
+    tippersCount: tip.tips.length,
     ...tipState,
+    tippers: extractTippers(tip, api),
   };
 }
 
-async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
+function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225, api: ApiPromise) {
   const closes = tip.closes?.unwrapOr(null)?.toString();
   let finder: AccountId | null = null;
   let deposit: Balance | null = null;
@@ -86,6 +107,7 @@ async function extractTipState(tip: PalletTipsOpenTip | OpenTipTo225) {
     deposit: deposit?.toString(),
     finder: finder ? {address: finder.toString()} : null,
     median: median.toString(),
+    formattedMedian: formatBalance(api, median),
   };
 }
 

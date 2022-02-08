@@ -31,4 +31,7 @@ export const resolvers: Resolvers<Context> = {
   Who: {
     account: Query.account,
   },
+  Tipper: {
+    account: Query.account,
+  }
 };

@@ -17,6 +17,7 @@ generates:
         Contribution: ../resolvers/Query/crowdloan#PartialContribution
         Finder: ../resolvers/Query/tips#PartialFinder
         Who: ../resolvers/Query/tips#PartialWho
+        Tipper: ../resolvers/Query/tips#PartialTipper
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
