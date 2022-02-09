@@ -12,7 +12,7 @@ import config from './config';
 import { capitalize } from './utils';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 
-async function makeGatewaySchema() {
+async function makeAggregatedSchema() {
   const remoteSchemas = [];
 
   for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
@@ -61,7 +61,7 @@ async function makeGatewaySchema() {
 
 async function run() {
   const app = express();
-  const schema = await makeGatewaySchema();
+  const schema = await makeAggregatedSchema();
   const getSubstrateApi = await initSubstrateApi();
 
   app.use(
