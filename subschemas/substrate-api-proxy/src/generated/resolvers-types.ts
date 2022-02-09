@@ -3,6 +3,7 @@ import {PartialCouncilCandidate, PartialCouncilMember} from '../resolvers/Query/
 import {PartialRegistrar} from '../resolvers/Query/registrars';
 import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democracy';
 import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
+import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -208,6 +209,12 @@ export type Event = {
   date: Scalars['String'];
   id: Scalars['ID'];
   title: Scalars['String'];
+};
+
+export type Finder = {
+  __typename?: 'Finder';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type IdentityJudgement = {
@@ -442,12 +449,23 @@ export type Tip = {
   __typename?: 'Tip';
   closes?: Maybe<Scalars['String']>;
   deposit?: Maybe<Scalars['String']>;
-  finder?: Maybe<Scalars['String']>;
+  finder?: Maybe<Finder>;
+  formattedMedian?: Maybe<Scalars['String']>;
   /** id: Tip Hash */
   id: Scalars['String'];
   median?: Maybe<Scalars['String']>;
   reason: Scalars['String'];
-  who?: Maybe<Scalars['String']>;
+  tippers: Array<Tipper>;
+  tippersCount: Scalars['Int'];
+  who: Who;
+};
+
+export type Tipper = {
+  __typename?: 'Tipper';
+  account: Account;
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  formattedBalance: Scalars['String'];
 };
 
 export type Treasury = {
@@ -488,6 +506,12 @@ export type ValidatorsGroup = {
   __typename?: 'ValidatorsGroup';
   groupIndex?: Maybe<Scalars['String']>;
   validators?: Maybe<Array<AccountInfo>>;
+};
+
+export type Who = {
+  __typename?: 'Who';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -597,6 +621,7 @@ export type ResolversTypes = {
   Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
   Event: ResolverTypeWrapper<Event>;
+  Finder: ResolverTypeWrapper<PartialFinder>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
@@ -628,12 +653,20 @@ export type ResolversTypes = {
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
-  Tip: ResolverTypeWrapper<Tip>;
+  Tip: ResolverTypeWrapper<
+    Omit<Tip, 'finder' | 'tippers' | 'who'> & {
+      finder?: Maybe<ResolversTypes['Finder']>;
+      tippers: Array<ResolversTypes['Tipper']>;
+      who: ResolversTypes['Who'];
+    }
+  >;
+  Tipper: ResolverTypeWrapper<PartialTipper>;
   Treasury: ResolverTypeWrapper<Treasury>;
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
   TreasuryProposal: ResolverTypeWrapper<TreasuryProposal>;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
   ValidatorsGroup: ResolverTypeWrapper<ValidatorsGroup>;
+  Who: ResolverTypeWrapper<PartialWho>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -669,6 +702,7 @@ export type ResolversParentTypes = {
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
   Event: Event;
+  Finder: PartialFinder;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
   IdentityJudgement: IdentityJudgement;
@@ -696,12 +730,18 @@ export type ResolversParentTypes = {
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
   TermProgress: TermProgress;
-  Tip: Tip;
+  Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
+    finder?: Maybe<ResolversParentTypes['Finder']>;
+    tippers: Array<ResolversParentTypes['Tipper']>;
+    who: ResolversParentTypes['Who'];
+  };
+  Tipper: PartialTipper;
   Treasury: Treasury;
   TreasuryBalance: TreasuryBalance;
   TreasuryProposal: TreasuryProposal;
   TreasurySummary: TreasurySummary;
   ValidatorsGroup: ValidatorsGroup;
+  Who: PartialWho;
 };
 
 export type AccountResolvers<
@@ -958,6 +998,15 @@ export type EventResolvers<
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FinderResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Finder'] = ResolversParentTypes['Finder'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1243,11 +1292,25 @@ export type TipResolvers<
 > = {
   closes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  finder?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  finder?: Resolver<Maybe<ResolversTypes['Finder']>, ParentType, ContextType>;
+  formattedMedian?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   median?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  who?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tippers?: Resolver<Array<ResolversTypes['Tipper']>, ParentType, ContextType>;
+  tippersCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  who?: Resolver<ResolversTypes['Who'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TipperResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Tipper'] = ResolversParentTypes['Tipper'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  balance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1306,6 +1369,15 @@ export type ValidatorsGroupResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WhoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Who'] = ResolversParentTypes['Who'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   AccountInfo?: AccountInfoResolvers<ContextType>;
@@ -1329,6 +1401,7 @@ export type Resolvers<ContextType = any> = {
   Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
+  Finder?: FinderResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
   Lease?: LeaseResolvers<ContextType>;
   LeasePeriod?: LeasePeriodResolvers<ContextType>;
@@ -1349,9 +1422,11 @@ export type Resolvers<ContextType = any> = {
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
+  Tipper?: TipperResolvers<ContextType>;
   Treasury?: TreasuryResolvers<ContextType>;
   TreasuryBalance?: TreasuryBalanceResolvers<ContextType>;
   TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
   ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
+  Who?: WhoResolvers<ContextType>;
 };

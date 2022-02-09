@@ -4,9 +4,7 @@ import type {ParaId} from '@polkadot/types/interfaces';
 import {getFunds, extractActiveFunds, extractEndedFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {BN, BN_ZERO} from '@polkadot/util';
-import {formatBalance} from '../../services/substrateChainService';
-import {getBlockTime} from '../../services/relayChainService';
-import {formatNumber} from '@polkadot/util';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
