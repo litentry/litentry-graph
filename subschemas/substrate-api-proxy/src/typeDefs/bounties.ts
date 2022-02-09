@@ -8,10 +8,21 @@ export default /* GraphQL */ `
     timeLeft: [String!]!
     progressPercent: Int!
   }
+
+  type Curator {
+    address: String!
+    account: Account!
+  }
+
+  type Beneficiary {
+    address: String!
+    account: Account!
+  }
+
   type BountyStatus {
-    beneficiary: String
+    beneficiary: Beneficiary
     status: String
-    curator: String
+    curator: Curator
     unlockAt: String
     updateDue: String
   }

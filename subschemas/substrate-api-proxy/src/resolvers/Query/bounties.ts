@@ -1,7 +1,7 @@
 import {BN} from '@polkadot/util';
-import type {BountyStatus} from '@polkadot/types/interfaces';
+import type {BountyStatus as BountyStatusType} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import type {BountiesSummary, Bounty, BountyStatus as BountiesStatusInfo} from '../../generated/resolvers-types';
+import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {BN_ONE, BN_ZERO, BN_HUNDRED} from '@polkadot/util';
 
@@ -37,8 +37,9 @@ export async function bountiesSummary(
   };
 }
 
-interface BountyInfo extends Omit<Bounty, 'proposer'> {
+interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   proposer: {address: string}
+  bountyStatus: BountyStatusInfo
 }
 
 export async function bounties(
@@ -84,14 +85,27 @@ export async function bounty(
   return null;
 }
 
-const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
+interface BountyStatusInfo extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
+  curator?: PartialCurator
+  beneficiary?: PartialBeneficiary
+};
+
+export type PartialCurator = {
+  address: string
+}
+
+export type PartialBeneficiary = {
+  address: string
+}
+
+const getBountyStatus = (status: BountyStatusType): BountyStatusInfo => {
   let result = {};
 
   if (status.isCuratorProposed) {
     result = {
       ...result,
       status: 'CuratorProposed',
-      curator: status.asCuratorProposed.curator.toString(),
+      curator: {address: status.asCuratorProposed.curator.toString()},
     };
   }
 
@@ -99,7 +113,7 @@ const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
     result = {
       ...result,
       status: 'Active',
-      curator: status.asActive.curator.toString(),
+      curator: {address: status.asActive.curator.toString()},
       updateDue: status.asActive.updateDue.toString(),
     };
   }
@@ -107,9 +121,9 @@ const getBountyStatus = (status: BountyStatus): BountiesStatusInfo => {
   if (status.isPendingPayout) {
     result = {
       ...result,
-      beneficiary: status.asPendingPayout.beneficiary.toString(),
+      beneficiary: {address: status.asPendingPayout.beneficiary.toString()},
       status: 'PendingPayout',
-      curator: status.asPendingPayout.curator.toString(),
+      curator: {address: status.asPendingPayout.curator.toString()},
       unlockAt: status.asPendingPayout.unlockAt.toString(),
     };
   }

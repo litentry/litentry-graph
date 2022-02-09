@@ -34,4 +34,10 @@ export const resolvers: Resolvers<Context> = {
   Tipper: {
     account: Query.account,
   },
+  Curator: {
+    account: Query.account,
+  },
+  Beneficiary: {
+    account: Query.account,
+  }
 };

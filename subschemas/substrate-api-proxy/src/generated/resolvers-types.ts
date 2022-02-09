@@ -4,6 +4,7 @@ import { PartialRegistrar } from '../resolvers/Query/registrars';
 import { PartialProposalSecond, PartialProposer } from '../resolvers/Query/democracy';
 import { PartialDepositor, PartialContribution } from '../resolvers/Query/crowdloan';
 import { PartialFinder, PartialWho, PartialTipper } from '../resolvers/Query/tips';
+import { PartialCurator, PartialBeneficiary } from '../resolvers/Query/bounties';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -50,6 +51,12 @@ export type BalanceData = {
   reserved: Scalars['Float'];
 };
 
+export type Beneficiary = {
+  __typename?: 'Beneficiary';
+  account: Account;
+  address: Scalars['String'];
+};
+
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
   activeBounties: Scalars['String'];
@@ -75,8 +82,8 @@ export type Bounty = {
 
 export type BountyStatus = {
   __typename?: 'BountyStatus';
-  beneficiary?: Maybe<Scalars['String']>;
-  curator?: Maybe<Scalars['String']>;
+  beneficiary?: Maybe<Beneficiary>;
+  curator?: Maybe<Curator>;
   status?: Maybe<Scalars['String']>;
   unlockAt?: Maybe<Scalars['String']>;
   updateDue?: Maybe<Scalars['String']>;
@@ -174,6 +181,12 @@ export type CrowdloanSummary = {
   totalFunds: Scalars['Int'];
   totalProgress: Scalars['Float'];
   totalRaised: Scalars['String'];
+};
+
+export type Curator = {
+  __typename?: 'Curator';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type DemocracySummary = {
@@ -598,10 +611,11 @@ export type ResolversTypes = {
   AccountInfo: ResolverTypeWrapper<AccountInfo>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
+  Beneficiary: ResolverTypeWrapper<PartialBeneficiary>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
-  Bounty: ResolverTypeWrapper<Omit<Bounty, 'proposer'> & { proposer: ResolversTypes['Proposer'] }>;
-  BountyStatus: ResolverTypeWrapper<BountyStatus>;
+  Bounty: ResolverTypeWrapper<Omit<Bounty, 'bountyStatus' | 'proposer'> & { bountyStatus?: Maybe<ResolversTypes['BountyStatus']>, proposer: ResolversTypes['Proposer'] }>;
+  BountyStatus: ResolverTypeWrapper<Omit<BountyStatus, 'beneficiary' | 'curator'> & { beneficiary?: Maybe<ResolversTypes['Beneficiary']>, curator?: Maybe<ResolversTypes['Curator']> }>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Contribution: ResolverTypeWrapper<PartialContribution>;
@@ -613,6 +627,7 @@ export type ResolversTypes = {
   Crowdloan: ResolverTypeWrapper<Omit<Crowdloan, 'contribution' | 'depositor'> & { contribution: ResolversTypes['Contribution'], depositor: ResolversTypes['Depositor'] }>;
   CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
+  Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
@@ -657,10 +672,11 @@ export type ResolversParentTypes = {
   AccountInfo: AccountInfo;
   Balance: Balance;
   BalanceData: BalanceData;
+  Beneficiary: PartialBeneficiary;
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
-  Bounty: Omit<Bounty, 'proposer'> & { proposer: ResolversParentTypes['Proposer'] };
-  BountyStatus: BountyStatus;
+  Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & { bountyStatus?: Maybe<ResolversParentTypes['BountyStatus']>, proposer: ResolversParentTypes['Proposer'] };
+  BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & { beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>, curator?: Maybe<ResolversParentTypes['Curator']> };
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
   Contribution: PartialContribution;
@@ -672,6 +688,7 @@ export type ResolversParentTypes = {
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & { contribution: ResolversParentTypes['Contribution'], depositor: ResolversParentTypes['Depositor'] };
   CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
+  Curator: PartialCurator;
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
@@ -740,6 +757,12 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type BeneficiaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Beneficiary'] = ResolversParentTypes['Beneficiary']> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
   activeBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -764,8 +787,8 @@ export type BountyResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type BountyStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus']> = {
-  beneficiary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  curator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  beneficiary?: Resolver<Maybe<ResolversTypes['Beneficiary']>, ParentType, ContextType>;
+  curator?: Resolver<Maybe<ResolversTypes['Curator']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   unlockAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updateDue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -863,6 +886,12 @@ export type CrowdloanSummaryResolvers<ContextType = any, ParentType extends Reso
   totalFunds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalProgress?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   totalRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CuratorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Curator'] = ResolversParentTypes['Curator']> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1171,6 +1200,7 @@ export type Resolvers<ContextType = any> = {
   AccountInfo?: AccountInfoResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
+  Beneficiary?: BeneficiaryResolvers<ContextType>;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
@@ -1185,6 +1215,7 @@ export type Resolvers<ContextType = any> = {
   Crowdloan?: CrowdloanResolvers<ContextType>;
   CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
+  Curator?: CuratorResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
