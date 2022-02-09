@@ -4,7 +4,7 @@ deploy:
 		&& make -s go-live
 
 go-live:
-	@make reload-nginx \
+	@make -s reload-nginx \
 		&& sleep 10s \
 		&& docker ps --format '{{.ID}},{{.Image}}' | grep "graphql-server_" | grep -v graphql-server_$$(git rev-parse --short HEAD) | awk -F, '{ print $$1 }' | xargs -I@ docker stop @ \
 		&& make -s reload-nginx
