@@ -18,3 +18,6 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
+hooks:
+  afterAllFileWrite:
+    - prettier --write
