@@ -126,7 +126,7 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatu
       status: 'PendingPayout',
       curator: {address: status.asPendingPayout.curator.toString()},
       unlockAt: status.asPendingPayout.unlockAt.toString(),
-      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt),
+      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt).timeStringParts,
     };
   }
 
