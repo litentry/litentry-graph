@@ -17,7 +17,7 @@ Run `yarn && yarn start`
 ### Initial deployment
 
 - Clone repository
-- Run `./init-letsencrrypt.sh`
+- Run `./init-letsencrypt.sh`
 - Run `docker-compose -f docker-compose.prod.yml up -d`
 
 ### Subsequent deployments
