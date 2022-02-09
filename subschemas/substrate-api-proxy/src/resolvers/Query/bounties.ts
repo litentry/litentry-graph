@@ -2,28 +2,40 @@ import {BN} from '@polkadot/util';
 import type {BountyStatus} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
 import type {BountiesSummary, Bounty, BountyStatus as BountiesStatusInfo} from '../../generated/resolvers-types';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {BN_ONE, BN_ZERO, BN_HUNDRED} from '@polkadot/util';
 
 export async function bountiesSummary(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
 ): Promise<BountiesSummary> {
+  const bestNumber = await api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyCount = await (api.query.bounties || api.query.treasury).bountyCount();
   const activeBounties = deriveBounties.length;
   const pastBounties = bountyCount.subn(activeBounties);
   const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
 
+  const spendPeriod = api.consts.treasury.spendPeriod;
+  const progress = spendPeriod && bestNumber ? bestNumber.mod(spendPeriod).iadd(BN_ONE) : BN_ZERO;
+  const timeLeft = spendPeriod?.sub(progress);
+  const {timeStringParts} = getBlockTime(api, timeLeft);
+  const progressPercent = progress
+    .mul(BN_HUNDRED)
+    .div(spendPeriod ?? BN_ONE)
+    .toNumber();
+
   return {
     bountyCount: bountyCount.toString(),
-    activeBounties,
+    activeBounties: activeBounties.toString(),
     pastBounties: pastBounties.toString(),
     totalValue: totalValue.toString(),
-    treasurySpendPeriod: api.consts.treasury.spendPeriod.toString(),
+    formattedTotalValue: formatBalance(api, totalValue),
+    progressPercent,
+    timeLeft: timeStringParts,
   };
 }
-
-type StatusName = 'Active' | 'Approved' | 'CuratorProposed' | 'Funded' | 'PendingPayout' | 'Proposed';
 
 export async function bounties(
   _: Record<string, string>,

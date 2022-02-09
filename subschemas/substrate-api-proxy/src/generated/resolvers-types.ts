@@ -52,11 +52,13 @@ export type BalanceData = {
 
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
-  activeBounties: Scalars['Int'];
+  activeBounties: Scalars['String'];
   bountyCount: Scalars['String'];
+  formattedTotalValue: Scalars['String'];
   pastBounties: Scalars['String'];
+  progressPercent: Scalars['Int'];
+  timeLeft: Array<Scalars['String']>;
   totalValue: Scalars['String'];
-  treasurySpendPeriod: Scalars['String'];
 };
 
 export type Bounty = {
@@ -790,11 +792,13 @@ export type BountiesSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary'],
 > = {
-  activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pastBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeLeft?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   totalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  treasurySpendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

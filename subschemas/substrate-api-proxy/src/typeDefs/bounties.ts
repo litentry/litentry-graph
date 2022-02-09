@@ -1,10 +1,12 @@
 export default /* GraphQL */ `
   type BountiesSummary {
-    activeBounties: Int!
+    activeBounties: String!
     bountyCount: String!
     pastBounties: String!
     totalValue: String!
-    treasurySpendPeriod: String!
+    formattedTotalValue: String!
+    timeLeft: [String!]!
+    progressPercent: Int!
   }
   type BountyStatus {
     beneficiary: String
