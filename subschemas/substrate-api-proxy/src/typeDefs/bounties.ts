@@ -24,7 +24,9 @@ export default /* GraphQL */ `
     status: String
     curator: Curator
     unlockAt: String
+    unlockAtTime: [String!]
     updateDue: String
+    updateDueTime: [String!]
   }
 
   type Bounty {
@@ -32,9 +34,13 @@ export default /* GraphQL */ `
     description: String!
     proposer: Proposer!
     value: String!
+    formattedValue: String!
     fee: String!
+    formattedFee: String!
     curatorDeposit: String!
+    formattedCuratorDeposit: String!
     bond: String!
+    formattedBond: String!
     bountyStatus: BountyStatus
   }
   type Query {

@@ -4,6 +4,8 @@ import type {Context} from '../../types';
 import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {BN_ONE, BN_ZERO, BN_HUNDRED} from '@polkadot/util';
+import {DeriveBounty} from '@polkadot/api-derive/types'
+import { ApiPromise } from '@polkadot/api';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -42,22 +44,30 @@ interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   bountyStatus: BountyStatusInfo;
 }
 
+function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiPromise): BountyInfo {
+  return {
+    index: index.toString(),
+    proposer: {address: bounty.proposer.toString()},
+    value: bounty.value.toString(),
+    formattedValue: formatBalance(api, bounty.value),
+    fee: bounty.fee.toString(),
+    formattedFee: formatBalance(api, bounty.fee),
+    curatorDeposit: bounty.curatorDeposit.toString(),
+    formattedCuratorDeposit: formatBalance(api, bounty.curatorDeposit),
+    bond: bounty.bond.toString(),
+    formattedBond: formatBalance(api, bounty.bond),
+    bountyStatus: getBountyStatus(bounty.status, api),
+    description,
+  }
+}
+
 export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
 ): Promise<BountyInfo[]> {
   const deriveBounties = await api.derive.bounties.bounties();
-  return deriveBounties.map(({bounty, description, index}) => ({
-    index: index.toString(),
-    proposer: {address: bounty.proposer.toString()},
-    value: bounty.value.toString(),
-    fee: bounty.fee.toString(),
-    curatorDeposit: bounty.curatorDeposit.toString(),
-    bond: bounty.bond.toString(),
-    bountyStatus: getBountyStatus(bounty.status),
-    description,
-  }));
+  return deriveBounties.map((bounty) => extractBountyData(bounty, api));
 }
 
 export async function bounty(
@@ -69,17 +79,7 @@ export async function bounty(
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
 
   if (bountyData) {
-    const {bounty, description, index} = bountyData;
-    return {
-      index: index.toString(),
-      proposer: {address: bounty.proposer.toString()},
-      value: bounty.value.toString(),
-      fee: bounty.fee.toString(),
-      curatorDeposit: bounty.curatorDeposit.toString(),
-      bond: bounty.bond.toString(),
-      bountyStatus: getBountyStatus(bounty.status),
-      description,
-    };
+    return extractBountyData(bountyData, api)
   }
 
   return null;
@@ -98,7 +98,7 @@ export type PartialBeneficiary = {
   address: string;
 };
 
-const getBountyStatus = (status: BountyStatusType): BountyStatusInfo => {
+const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatusInfo => {
   let result = {};
 
   if (status.isCuratorProposed) {
@@ -115,6 +115,7 @@ const getBountyStatus = (status: BountyStatusType): BountyStatusInfo => {
       status: 'Active',
       curator: {address: status.asActive.curator.toString()},
       updateDue: status.asActive.updateDue.toString(),
+      updateDueTime: getBlockTime(api, status.asActive.updateDue).timeStringParts
     };
   }
 
@@ -125,6 +126,7 @@ const getBountyStatus = (status: BountyStatusType): BountyStatusInfo => {
       status: 'PendingPayout',
       curator: {address: status.asPendingPayout.curator.toString()},
       unlockAt: status.asPendingPayout.unlockAt.toString(),
+      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt)
     };
   }
 
