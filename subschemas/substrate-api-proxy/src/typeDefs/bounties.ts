@@ -15,10 +15,11 @@ export default /* GraphQL */ `
     unlockAt: String
     updateDue: String
   }
+
   type Bounty {
     index: String!
     description: String!
-    proposer: String!
+    proposer: Proposer!
     value: String!
     fee: String!
     curatorDeposit: String!

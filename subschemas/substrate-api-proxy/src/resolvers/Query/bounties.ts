@@ -37,15 +37,19 @@ export async function bountiesSummary(
   };
 }
 
+interface BountyInfo extends Omit<Bounty, 'proposer'> {
+  proposer: {address: string}
+}
+
 export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<Bounty[]> {
+): Promise<BountyInfo[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   return deriveBounties.map(({bounty, description, index}) => ({
     index: index.toString(),
-    proposer: bounty.proposer.toString(),
+    proposer: {address: bounty.proposer.toString()},
     value: bounty.value.toString(),
     fee: bounty.fee.toString(),
     curatorDeposit: bounty.curatorDeposit.toString(),
@@ -59,7 +63,7 @@ export async function bounty(
   _: Record<string, string>,
   {index}: {index: string},
   {api}: Context,
-): Promise<Bounty | null> {
+): Promise<BountyInfo | null> {
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
 
@@ -67,7 +71,7 @@ export async function bounty(
     const {bounty, description, index} = bountyData;
     return {
       index: index.toString(),
-      proposer: bounty.proposer.toString(),
+      proposer: {address: bounty.proposer.toString()},
       value: bounty.value.toString(),
       fee: bounty.fee.toString(),
       curatorDeposit: bounty.curatorDeposit.toString(),
