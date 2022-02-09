@@ -1,12 +1,12 @@
 deploy:
 	@git pull \
-		&& docker-compose -f docker-compose.prod.yml -p api-gateway_$$(git rev-parse --short HEAD) up --build -d api-gateway \
+		&& docker-compose -f docker-compose.prod.yml -p graphql-server_$$(git rev-parse --short HEAD) up --build -d graphql-server \
 		&& make -s go-live
 
 go-live:
 	@make reload-nginx \
 		&& sleep 10s \
-		&& docker ps --format '{{.ID}},{{.Image}}' | grep "api-gateway_" | grep -v api-gateway_$$(git rev-parse --short HEAD) | awk -F, '{ print $$1 }' | xargs -I@ docker stop @ \
+		&& docker ps --format '{{.ID}},{{.Image}}' | grep "graphql-server_" | grep -v graphql-server_$$(git rev-parse --short HEAD) | awk -F, '{ print $$1 }' | xargs -I@ docker stop @ \
 		&& make -s reload-nginx
 
 reload-nginx:

@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  api-gateway:
+  graphql-server:
     build: .
     ports:
       - 5000

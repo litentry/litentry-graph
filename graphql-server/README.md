@@ -1,6 +1,6 @@
-# API Gateway
+# GraphQL Server
 
-Our API Gateway stitches together both remote schemas (using their URL) and subchemas (defined in `./subschemas/subschema-name`).
+Our GraphQL Server stitches together both remote schemas (using their URL) and subchemas (defined in `./subschemas/{subschema-name}`).
 
 ## Getting Started
 

@@ -4,7 +4,7 @@ WORKDIR /
 COPY package.json .
 COPY yarn.lock .
 COPY subschemas ./subschemas
-COPY api-gateway ./api-gateway
+COPY graphql-server ./graphql-server
 
 RUN yarn install --pure-lockfile --non-interactive
 
