@@ -4,8 +4,8 @@ import type {Context} from '../../types';
 import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {BN_ONE, BN_ZERO, BN_HUNDRED} from '@polkadot/util';
-import {DeriveBounty} from '@polkadot/api-derive/types'
-import { ApiPromise } from '@polkadot/api';
+import {DeriveBounty} from '@polkadot/api-derive/types';
+import {ApiPromise} from '@polkadot/api';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -58,7 +58,7 @@ function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiP
     formattedBond: formatBalance(api, bounty.bond),
     bountyStatus: getBountyStatus(bounty.status, api),
     description,
-  }
+  };
 }
 
 export async function bounties(
@@ -79,7 +79,7 @@ export async function bounty(
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
 
   if (bountyData) {
-    return extractBountyData(bountyData, api)
+    return extractBountyData(bountyData, api);
   }
 
   return null;
@@ -115,7 +115,7 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatu
       status: 'Active',
       curator: {address: status.asActive.curator.toString()},
       updateDue: status.asActive.updateDue.toString(),
-      updateDueTime: getBlockTime(api, status.asActive.updateDue).timeStringParts
+      updateDueTime: getBlockTime(api, status.asActive.updateDue).timeStringParts,
     };
   }
 
@@ -126,7 +126,7 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatu
       status: 'PendingPayout',
       curator: {address: status.asPendingPayout.curator.toString()},
       unlockAt: status.asPendingPayout.unlockAt.toString(),
-      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt)
+      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt),
     };
   }
 
