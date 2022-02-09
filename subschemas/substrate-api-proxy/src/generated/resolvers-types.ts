@@ -178,7 +178,7 @@ export type DemocracySummary = {
   __typename?: 'DemocracySummary';
   activeProposals: Scalars['Int'];
   activeReferendums: Scalars['Int'];
-  launchPeriod: Scalars['String'];
+  launchPeriodInfo?: Maybe<LaunchPeriodInfo>;
   proposals: Scalars['String'];
   referendums: Scalars['String'];
 };
@@ -226,6 +226,13 @@ export type IdentityJudgement = {
   isOutOfDate?: Maybe<Scalars['Boolean']>;
   isReasonable?: Maybe<Scalars['Boolean']>;
   isUnknown?: Maybe<Scalars['Boolean']>;
+};
+
+export type LaunchPeriodInfo = {
+  __typename?: 'LaunchPeriodInfo';
+  progressPercent: Scalars['Int'];
+  timeLeft: Scalars['String'];
+  timeLeftParts: Array<Scalars['String']>;
 };
 
 export type Lease = {
@@ -626,6 +633,7 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  LaunchPeriodInfo: ResolverTypeWrapper<LaunchPeriodInfo>;
   Lease: ResolverTypeWrapper<Lease>;
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
@@ -707,6 +715,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   IdentityJudgement: IdentityJudgement;
   Int: Scalars['Int'];
+  LaunchPeriodInfo: LaunchPeriodInfo;
   Lease: Lease;
   LeasePeriod: LeasePeriod;
   ModuleElection: ModuleElection;
@@ -958,7 +967,7 @@ export type DemocracySummaryResolvers<
 > = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   activeReferendums?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  launchPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  launchPeriodInfo?: Resolver<Maybe<ResolversTypes['LaunchPeriodInfo']>, ParentType, ContextType>;
   proposals?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   referendums?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1021,6 +1030,16 @@ export type IdentityJudgementResolvers<
   isOutOfDate?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isReasonable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isUnknown?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LaunchPeriodInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['LaunchPeriodInfo'] = ResolversParentTypes['LaunchPeriodInfo'],
+> = {
+  progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeLeft?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timeLeftParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1403,6 +1422,7 @@ export type Resolvers<ContextType = any> = {
   Event?: EventResolvers<ContextType>;
   Finder?: FinderResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
+  LaunchPeriodInfo?: LaunchPeriodInfoResolvers<ContextType>;
   Lease?: LeaseResolvers<ContextType>;
   LeasePeriod?: LeasePeriodResolvers<ContextType>;
   ModuleElection?: ModuleElectionResolvers<ContextType>;

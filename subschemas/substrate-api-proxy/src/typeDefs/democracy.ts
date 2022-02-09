@@ -4,7 +4,13 @@ export default /* GraphQL */ `
     proposals: String!
     referendums: String!
     activeReferendums: Int!
-    launchPeriod: String!
+    launchPeriodInfo: LaunchPeriodInfo
+  }
+
+  type LaunchPeriodInfo {
+    progressPercent: Int!
+    timeLeft: String!
+    timeLeftParts: [String!]!
   }
 
   type ProposalArg {
