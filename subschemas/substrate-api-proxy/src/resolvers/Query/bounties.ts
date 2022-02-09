@@ -38,8 +38,8 @@ export async function bountiesSummary(
 }
 
 interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
-  proposer: {address: string}
-  bountyStatus: BountyStatusInfo
+  proposer: {address: string};
+  bountyStatus: BountyStatusInfo;
 }
 
 export async function bounties(
@@ -86,17 +86,17 @@ export async function bounty(
 }
 
 interface BountyStatusInfo extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
-  curator?: PartialCurator
-  beneficiary?: PartialBeneficiary
-};
+  curator?: PartialCurator;
+  beneficiary?: PartialBeneficiary;
+}
 
 export type PartialCurator = {
-  address: string
-}
+  address: string;
+};
 
 export type PartialBeneficiary = {
-  address: string
-}
+  address: string;
+};
 
 const getBountyStatus = (status: BountyStatusType): BountyStatusInfo => {
   let result = {};

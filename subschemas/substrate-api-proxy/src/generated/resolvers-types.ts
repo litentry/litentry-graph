@@ -1,17 +1,17 @@
-import { GraphQLResolveInfo } from 'graphql';
-import { PartialCouncilCandidate, PartialCouncilMember } from '../resolvers/Query/council';
-import { PartialRegistrar } from '../resolvers/Query/registrars';
-import { PartialProposalSecond, PartialProposer } from '../resolvers/Query/democracy';
-import { PartialDepositor, PartialContribution } from '../resolvers/Query/crowdloan';
-import { PartialFinder, PartialWho, PartialTipper } from '../resolvers/Query/tips';
-import { PartialCurator, PartialBeneficiary } from '../resolvers/Query/bounties';
+import {GraphQLResolveInfo} from 'graphql';
+import {PartialCouncilCandidate, PartialCouncilMember} from '../resolvers/Query/council';
+import {PartialRegistrar} from '../resolvers/Query/registrars';
+import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democracy';
+import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
+import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
+import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
+export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -384,47 +384,38 @@ export type Query = {
   treasurySummary: TreasurySummary;
 };
 
-
 export type QueryAccountArgs = {
   address: Scalars['String'];
 };
-
 
 export type QueryBalanceArgs = {
   address: Scalars['String'];
   blockNumber?: InputMaybe<Scalars['Int']>;
 };
 
-
 export type QueryBountyArgs = {
   index: Scalars['String'];
 };
-
 
 export type QueryCrowdloanArgs = {
   paraId: Scalars['String'];
 };
 
-
 export type QueryCrowdloanContributionArgs = {
   paraId: Scalars['String'];
 };
-
 
 export type QueryDemocracyProposalArgs = {
   index: Scalars['String'];
 };
 
-
 export type QueryDemocracyReferendumArgs = {
   index: Scalars['String'];
 };
 
-
 export type QueryParachainArgs = {
   id: Scalars['String'];
 };
-
 
 export type QueryTipArgs = {
   id: Scalars['String'];
@@ -538,40 +529,39 @@ export type Who = {
   address: Scalars['String'];
 };
 
-
-
 export type ResolverTypeWrapper<T> = Promise<T> | T;
-
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
+export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
+  | ResolverFn<TResult, TParent, TContext, TArgs>
+  | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
 
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
   args: TArgs,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => Promise<TResult> | TResult;
 
 export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
   args: TArgs,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
 
 export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
   args: TArgs,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
 export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+  subscribe: SubscriptionSubscribeFn<{[key in TKey]: TResult}, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, {[key in TKey]: TResult}, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -590,10 +580,14 @@ export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TCo
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   parent: TParent,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}, TContext = {}> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
+  obj: T,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -602,7 +596,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   parent: TParent,
   args: TArgs,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -614,17 +608,39 @@ export type ResolversTypes = {
   Beneficiary: ResolverTypeWrapper<PartialBeneficiary>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
-  Bounty: ResolverTypeWrapper<Omit<Bounty, 'bountyStatus' | 'proposer'> & { bountyStatus?: Maybe<ResolversTypes['BountyStatus']>, proposer: ResolversTypes['Proposer'] }>;
-  BountyStatus: ResolverTypeWrapper<Omit<BountyStatus, 'beneficiary' | 'curator'> & { beneficiary?: Maybe<ResolversTypes['Beneficiary']>, curator?: Maybe<ResolversTypes['Curator']> }>;
+  Bounty: ResolverTypeWrapper<
+    Omit<Bounty, 'bountyStatus' | 'proposer'> & {
+      bountyStatus?: Maybe<ResolversTypes['BountyStatus']>;
+      proposer: ResolversTypes['Proposer'];
+    }
+  >;
+  BountyStatus: ResolverTypeWrapper<
+    Omit<BountyStatus, 'beneficiary' | 'curator'> & {
+      beneficiary?: Maybe<ResolversTypes['Beneficiary']>;
+      curator?: Maybe<ResolversTypes['Curator']>;
+    }
+  >;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Contribution: ResolverTypeWrapper<PartialContribution>;
   Conviction: ResolverTypeWrapper<Conviction>;
-  Council: ResolverTypeWrapper<Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversTypes['CouncilCandidate']>, members: Array<ResolversTypes['CouncilMember']>, primeMember?: Maybe<ResolversTypes['CouncilMember']>, runnersUp: Array<ResolversTypes['CouncilMember']> }>;
+  Council: ResolverTypeWrapper<
+    Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
+      candidates: Array<ResolversTypes['CouncilCandidate']>;
+      members: Array<ResolversTypes['CouncilMember']>;
+      primeMember?: Maybe<ResolversTypes['CouncilMember']>;
+      runnersUp: Array<ResolversTypes['CouncilMember']>;
+    }
+  >;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
-  CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & { proposal: ResolversTypes['MotionProposal'] }>;
-  Crowdloan: ResolverTypeWrapper<Omit<Crowdloan, 'contribution' | 'depositor'> & { contribution: ResolversTypes['Contribution'], depositor: ResolversTypes['Depositor'] }>;
+  CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & {proposal: ResolversTypes['MotionProposal']}>;
+  Crowdloan: ResolverTypeWrapper<
+    Omit<Crowdloan, 'contribution' | 'depositor'> & {
+      contribution: ResolversTypes['Contribution'];
+      depositor: ResolversTypes['Depositor'];
+    }
+  >;
   CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   Curator: ResolverTypeWrapper<PartialCurator>;
@@ -640,23 +656,37 @@ export type ResolversTypes = {
   Lease: ResolverTypeWrapper<Lease>;
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
-  MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & { args: Array<ResolversTypes['ProposalArg']> }>;
+  MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   MotionVotes: ResolverTypeWrapper<MotionVotes>;
   PalletProposal: ResolverTypeWrapper<PalletProposal>;
   Parachain: ResolverTypeWrapper<Parachain>;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
-  Proposal: ResolverTypeWrapper<Omit<Proposal, 'args' | 'proposer' | 'seconds'> & { args: Array<ResolversTypes['ProposalArg']>, proposer: ResolversTypes['Proposer'], seconds: Array<ResolversTypes['ProposalSecond']> }>;
-  ProposalArg: ResolverTypeWrapper<Omit<ProposalArg, 'subCalls'> & { subCalls?: Maybe<Array<Maybe<ResolversTypes['Proposal']>>> }>;
+  Proposal: ResolverTypeWrapper<
+    Omit<Proposal, 'args' | 'proposer' | 'seconds'> & {
+      args: Array<ResolversTypes['ProposalArg']>;
+      proposer: ResolversTypes['Proposer'];
+      seconds: Array<ResolversTypes['ProposalSecond']>;
+    }
+  >;
+  ProposalArg: ResolverTypeWrapper<
+    Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['Proposal']>>>}
+  >;
   ProposalSecond: ResolverTypeWrapper<PartialProposalSecond>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<PartialProposer>;
   Query: ResolverTypeWrapper<{}>;
-  Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & { args: Array<ResolversTypes['ProposalArg']> }>;
+  Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
-  Tip: ResolverTypeWrapper<Omit<Tip, 'finder' | 'tippers' | 'who'> & { finder?: Maybe<ResolversTypes['Finder']>, tippers: Array<ResolversTypes['Tipper']>, who: ResolversTypes['Who'] }>;
+  Tip: ResolverTypeWrapper<
+    Omit<Tip, 'finder' | 'tippers' | 'who'> & {
+      finder?: Maybe<ResolversTypes['Finder']>;
+      tippers: Array<ResolversTypes['Tipper']>;
+      who: ResolversTypes['Who'];
+    }
+  >;
   Tipper: ResolverTypeWrapper<PartialTipper>;
   Treasury: ResolverTypeWrapper<Treasury>;
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
@@ -675,17 +705,31 @@ export type ResolversParentTypes = {
   Beneficiary: PartialBeneficiary;
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
-  Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & { bountyStatus?: Maybe<ResolversParentTypes['BountyStatus']>, proposer: ResolversParentTypes['Proposer'] };
-  BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & { beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>, curator?: Maybe<ResolversParentTypes['Curator']> };
+  Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & {
+    bountyStatus?: Maybe<ResolversParentTypes['BountyStatus']>;
+    proposer: ResolversParentTypes['Proposer'];
+  };
+  BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & {
+    beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>;
+    curator?: Maybe<ResolversParentTypes['Curator']>;
+  };
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
   Contribution: PartialContribution;
   Conviction: Conviction;
-  Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & { candidates: Array<ResolversParentTypes['CouncilCandidate']>, members: Array<ResolversParentTypes['CouncilMember']>, primeMember?: Maybe<ResolversParentTypes['CouncilMember']>, runnersUp: Array<ResolversParentTypes['CouncilMember']> };
+  Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
+    candidates: Array<ResolversParentTypes['CouncilCandidate']>;
+    members: Array<ResolversParentTypes['CouncilMember']>;
+    primeMember?: Maybe<ResolversParentTypes['CouncilMember']>;
+    runnersUp: Array<ResolversParentTypes['CouncilMember']>;
+  };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
-  CouncilMotion: Omit<CouncilMotion, 'proposal'> & { proposal: ResolversParentTypes['MotionProposal'] };
-  Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & { contribution: ResolversParentTypes['Contribution'], depositor: ResolversParentTypes['Depositor'] };
+  CouncilMotion: Omit<CouncilMotion, 'proposal'> & {proposal: ResolversParentTypes['MotionProposal']};
+  Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
+    contribution: ResolversParentTypes['Contribution'];
+    depositor: ResolversParentTypes['Depositor'];
+  };
   CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
   Curator: PartialCurator;
@@ -701,23 +745,31 @@ export type ResolversParentTypes = {
   Lease: Lease;
   LeasePeriod: LeasePeriod;
   ModuleElection: ModuleElection;
-  MotionProposal: Omit<MotionProposal, 'args'> & { args: Array<ResolversParentTypes['ProposalArg']> };
+  MotionProposal: Omit<MotionProposal, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   MotionVotes: MotionVotes;
   PalletProposal: PalletProposal;
   Parachain: Parachain;
   ParachainsInfo: ParachainsInfo;
-  Proposal: Omit<Proposal, 'args' | 'proposer' | 'seconds'> & { args: Array<ResolversParentTypes['ProposalArg']>, proposer: ResolversParentTypes['Proposer'], seconds: Array<ResolversParentTypes['ProposalSecond']> };
-  ProposalArg: Omit<ProposalArg, 'subCalls'> & { subCalls?: Maybe<Array<Maybe<ResolversParentTypes['Proposal']>>> };
+  Proposal: Omit<Proposal, 'args' | 'proposer' | 'seconds'> & {
+    args: Array<ResolversParentTypes['ProposalArg']>;
+    proposer: ResolversParentTypes['Proposer'];
+    seconds: Array<ResolversParentTypes['ProposalSecond']>;
+  };
+  ProposalArg: Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversParentTypes['Proposal']>>>};
   ProposalSecond: PartialProposalSecond;
   ProposalVotes: ProposalVotes;
   Proposer: PartialProposer;
   Query: {};
-  Referendum: Omit<Referendum, 'args'> & { args: Array<ResolversParentTypes['ProposalArg']> };
+  Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
   TermProgress: TermProgress;
-  Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & { finder?: Maybe<ResolversParentTypes['Finder']>, tippers: Array<ResolversParentTypes['Tipper']>, who: ResolversParentTypes['Who'] };
+  Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
+    finder?: Maybe<ResolversParentTypes['Finder']>;
+    tippers: Array<ResolversParentTypes['Tipper']>;
+    who: ResolversParentTypes['Who'];
+  };
   Tipper: PartialTipper;
   Treasury: Treasury;
   TreasuryBalance: TreasuryBalance;
@@ -727,20 +779,29 @@ export type ResolversParentTypes = {
   Who: PartialWho;
 };
 
-export type AccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = {
+export type AccountResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account'],
+> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AccountInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo']> = {
+export type AccountInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BalanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Balance'] = ResolversParentTypes['Balance']> = {
+export type BalanceResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Balance'] = ResolversParentTypes['Balance'],
+> = {
   consumers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   data?: Resolver<ResolversTypes['BalanceData'], ParentType, ContextType>;
   nonce?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -749,7 +810,10 @@ export type BalanceResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BalanceDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['BalanceData'] = ResolversParentTypes['BalanceData']> = {
+export type BalanceDataResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['BalanceData'] = ResolversParentTypes['BalanceData'],
+> = {
   feeFrozen?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   free?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   miscFrozen?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -757,13 +821,19 @@ export type BalanceDataResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BeneficiaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Beneficiary'] = ResolversParentTypes['Beneficiary']> = {
+export type BeneficiaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Beneficiary'] = ResolversParentTypes['Beneficiary'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BountiesSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary']> = {
+export type BountiesSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary'],
+> = {
   activeBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedTotalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -774,7 +844,10 @@ export type BountiesSummaryResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BountyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty']> = {
+export type BountyResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty'],
+> = {
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyStatus?: Resolver<Maybe<ResolversTypes['BountyStatus']>, ParentType, ContextType>;
   curatorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -786,7 +859,10 @@ export type BountyResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BountyStatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus']> = {
+export type BountyStatusResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus'],
+> = {
   beneficiary?: Resolver<Maybe<ResolversTypes['Beneficiary']>, ParentType, ContextType>;
   curator?: Resolver<Maybe<ResolversTypes['Curator']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -795,33 +871,48 @@ export type BountyStatusResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ChainInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo']> = {
+export type ChainInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo'],
+> = {
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CollectiveProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['CollectiveProposal'] = ResolversParentTypes['CollectiveProposal']> = {
+export type CollectiveProposalResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CollectiveProposal'] = ResolversParentTypes['CollectiveProposal'],
+> = {
   callIndex?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   votes?: Resolver<ResolversTypes['ProposalVotes'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ContributionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Contribution'] = ResolversParentTypes['Contribution']> = {
+export type ContributionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Contribution'] = ResolversParentTypes['Contribution'],
+> = {
   contribution?: Resolver<ResolversTypes['CrowdloanContribution'], ParentType, ContextType>;
   paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ConvictionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Conviction'] = ResolversParentTypes['Conviction']> = {
+export type ConvictionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Conviction'] = ResolversParentTypes['Conviction'],
+> = {
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CouncilResolvers<ContextType = any, ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council']> = {
+export type CouncilResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
+> = {
   candidates?: Resolver<Array<ResolversTypes['CouncilCandidate']>, ParentType, ContextType>;
   desiredRunnersUp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   desiredSeats?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -832,13 +923,19 @@ export type CouncilResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CouncilCandidateResolvers<ContextType = any, ParentType extends ResolversParentTypes['CouncilCandidate'] = ResolversParentTypes['CouncilCandidate']> = {
+export type CouncilCandidateResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CouncilCandidate'] = ResolversParentTypes['CouncilCandidate'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CouncilMemberResolvers<ContextType = any, ParentType extends ResolversParentTypes['CouncilMember'] = ResolversParentTypes['CouncilMember']> = {
+export type CouncilMemberResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CouncilMember'] = ResolversParentTypes['CouncilMember'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   backing?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -846,14 +943,20 @@ export type CouncilMemberResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CouncilMotionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CouncilMotion'] = ResolversParentTypes['CouncilMotion']> = {
+export type CouncilMotionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CouncilMotion'] = ResolversParentTypes['CouncilMotion'],
+> = {
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposal?: Resolver<ResolversTypes['MotionProposal'], ParentType, ContextType>;
   votes?: Resolver<Maybe<ResolversTypes['MotionVotes']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CrowdloanResolvers<ContextType = any, ParentType extends ResolversParentTypes['Crowdloan'] = ResolversParentTypes['Crowdloan']> = {
+export type CrowdloanResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Crowdloan'] = ResolversParentTypes['Crowdloan'],
+> = {
   cap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   contribution?: Resolver<ResolversTypes['Contribution'], ParentType, ContextType>;
   depositor?: Resolver<ResolversTypes['Depositor'], ParentType, ContextType>;
@@ -868,13 +971,19 @@ export type CrowdloanResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CrowdloanContributionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CrowdloanContribution'] = ResolversParentTypes['CrowdloanContribution']> = {
+export type CrowdloanContributionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CrowdloanContribution'] = ResolversParentTypes['CrowdloanContribution'],
+> = {
   contributorsCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CrowdloanSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['CrowdloanSummary'] = ResolversParentTypes['CrowdloanSummary']> = {
+export type CrowdloanSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CrowdloanSummary'] = ResolversParentTypes['CrowdloanSummary'],
+> = {
   activeCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   activeProgress?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   activeRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -889,13 +998,19 @@ export type CrowdloanSummaryResolvers<ContextType = any, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Curator'] = ResolversParentTypes['Curator']> = {
+export type CuratorResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Curator'] = ResolversParentTypes['Curator'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DemocracySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['DemocracySummary'] = ResolversParentTypes['DemocracySummary']> = {
+export type DemocracySummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DemocracySummary'] = ResolversParentTypes['DemocracySummary'],
+> = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   activeReferendums?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   launchPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -904,13 +1019,19 @@ export type DemocracySummaryResolvers<ContextType = any, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DepositorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Depositor'] = ResolversParentTypes['Depositor']> = {
+export type DepositorResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Depositor'] = ResolversParentTypes['Depositor'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DeriveAccountRegistrationResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeriveAccountRegistration'] = ResolversParentTypes['DeriveAccountRegistration']> = {
+export type DeriveAccountRegistrationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DeriveAccountRegistration'] = ResolversParentTypes['DeriveAccountRegistration'],
+> = {
   display?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   displayParent?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -924,7 +1045,10 @@ export type DeriveAccountRegistrationResolvers<ContextType = any, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
+export type EventResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event'],
+> = {
   blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -932,13 +1056,19 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type FinderResolvers<ContextType = any, ParentType extends ResolversParentTypes['Finder'] = ResolversParentTypes['Finder']> = {
+export type FinderResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Finder'] = ResolversParentTypes['Finder'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type IdentityJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['IdentityJudgement'] = ResolversParentTypes['IdentityJudgement']> = {
+export type IdentityJudgementResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['IdentityJudgement'] = ResolversParentTypes['IdentityJudgement'],
+> = {
   isErroneous?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isFeePaid?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isKnownGood?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -949,13 +1079,19 @@ export type IdentityJudgementResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LeaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Lease'] = ResolversParentTypes['Lease']> = {
+export type LeaseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Lease'] = ResolversParentTypes['Lease'],
+> = {
   blockTime?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   period?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LeasePeriodResolvers<ContextType = any, ParentType extends ResolversParentTypes['LeasePeriod'] = ResolversParentTypes['LeasePeriod']> = {
+export type LeasePeriodResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['LeasePeriod'] = ResolversParentTypes['LeasePeriod'],
+> = {
   currentLease?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   remainder?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -963,13 +1099,19 @@ export type LeasePeriodResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ModuleElectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection']> = {
+export type ModuleElectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection'],
+> = {
   hasElections?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   module?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MotionProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['MotionProposal'] = ResolversParentTypes['MotionProposal']> = {
+export type MotionProposalResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['MotionProposal'] = ResolversParentTypes['MotionProposal'],
+> = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -977,7 +1119,10 @@ export type MotionProposalResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MotionVotesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MotionVotes'] = ResolversParentTypes['MotionVotes']> = {
+export type MotionVotesResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['MotionVotes'] = ResolversParentTypes['MotionVotes'],
+> = {
   ayes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   end?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -986,7 +1131,10 @@ export type MotionVotesResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type PalletProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['PalletProposal'] = ResolversParentTypes['PalletProposal']> = {
+export type PalletProposalResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PalletProposal'] = ResolversParentTypes['PalletProposal'],
+> = {
   beneficiary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -994,7 +1142,10 @@ export type PalletProposalResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ParachainResolvers<ContextType = any, ParentType extends ResolversParentTypes['Parachain'] = ResolversParentTypes['Parachain']> = {
+export type ParachainResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Parachain'] = ResolversParentTypes['Parachain'],
+> = {
   homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastBackedBlock?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1007,7 +1158,10 @@ export type ParachainResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ParachainsInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['ParachainsInfo'] = ResolversParentTypes['ParachainsInfo']> = {
+export type ParachainsInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ParachainsInfo'] = ResolversParentTypes['ParachainsInfo'],
+> = {
   leasePeriod?: Resolver<ResolversTypes['LeasePeriod'], ParentType, ContextType>;
   parachainsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   parathreadsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -1015,7 +1169,10 @@ export type ParachainsInfoResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal']> = {
+export type ProposalResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal'],
+> = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1028,7 +1185,10 @@ export type ProposalResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposalArgResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProposalArg'] = ResolversParentTypes['ProposalArg']> = {
+export type ProposalArgResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProposalArg'] = ResolversParentTypes['ProposalArg'],
+> = {
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['Proposal']>>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1036,13 +1196,19 @@ export type ProposalArgResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposalSecondResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProposalSecond'] = ResolversParentTypes['ProposalSecond']> = {
+export type ProposalSecondResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProposalSecond'] = ResolversParentTypes['ProposalSecond'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposalVotesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProposalVotes'] = ResolversParentTypes['ProposalVotes']> = {
+export type ProposalVotesResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProposalVotes'] = ResolversParentTypes['ProposalVotes'],
+> = {
   ayes?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1051,14 +1217,25 @@ export type ProposalVotesResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Proposer'] = ResolversParentTypes['Proposer']> = {
+export type ProposerResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Proposer'] = ResolversParentTypes['Proposer'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'address'>>;
+export type QueryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
+> = {
+  account?: Resolver<
+    Maybe<ResolversTypes['Account']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryAccountArgs, 'address'>
+  >;
   activeCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['Balance'], ParentType, ContextType, RequireFields<QueryBalanceArgs, 'address'>>;
   bounties?: Resolver<Array<ResolversTypes['Bounty']>, ParentType, ContextType>;
@@ -1068,18 +1245,43 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
-  crowdloan?: Resolver<Maybe<ResolversTypes['Crowdloan']>, ParentType, ContextType, RequireFields<QueryCrowdloanArgs, 'paraId'>>;
-  crowdloanContribution?: Resolver<ResolversTypes['CrowdloanContribution'], ParentType, ContextType, RequireFields<QueryCrowdloanContributionArgs, 'paraId'>>;
+  crowdloan?: Resolver<
+    Maybe<ResolversTypes['Crowdloan']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloanArgs, 'paraId'>
+  >;
+  crowdloanContribution?: Resolver<
+    ResolversTypes['CrowdloanContribution'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloanContributionArgs, 'paraId'>
+  >;
   crowdloanSummary?: Resolver<ResolversTypes['CrowdloanSummary'], ParentType, ContextType>;
-  democracyProposal?: Resolver<Maybe<ResolversTypes['Proposal']>, ParentType, ContextType, RequireFields<QueryDemocracyProposalArgs, 'index'>>;
+  democracyProposal?: Resolver<
+    Maybe<ResolversTypes['Proposal']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDemocracyProposalArgs, 'index'>
+  >;
   democracyProposals?: Resolver<Array<ResolversTypes['Proposal']>, ParentType, ContextType>;
-  democracyReferendum?: Resolver<Maybe<ResolversTypes['Referendum']>, ParentType, ContextType, RequireFields<QueryDemocracyReferendumArgs, 'index'>>;
+  democracyReferendum?: Resolver<
+    Maybe<ResolversTypes['Referendum']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDemocracyReferendumArgs, 'index'>
+  >;
   democracyReferendums?: Resolver<Array<ResolversTypes['Referendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   endedCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
-  parachain?: Resolver<Maybe<ResolversTypes['Parachain']>, ParentType, ContextType, RequireFields<QueryParachainArgs, 'id'>>;
+  parachain?: Resolver<
+    Maybe<ResolversTypes['Parachain']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryParachainArgs, 'id'>
+  >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
   registrars?: Resolver<Maybe<Array<ResolversTypes['Registrar']>>, ParentType, ContextType>;
@@ -1089,7 +1291,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
 };
 
-export type ReferendumResolvers<ContextType = any, ParentType extends ResolversParentTypes['Referendum'] = ResolversParentTypes['Referendum']> = {
+export type ReferendumResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Referendum'] = ResolversParentTypes['Referendum'],
+> = {
   activatePeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1105,7 +1310,10 @@ export type ReferendumResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RegistrarResolvers<ContextType = any, ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar']> = {
+export type RegistrarResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar'],
+> = {
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   fee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1114,20 +1322,29 @@ export type RegistrarResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RegistrationJudgementResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegistrationJudgement'] = ResolversParentTypes['RegistrationJudgement']> = {
+export type RegistrationJudgementResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RegistrationJudgement'] = ResolversParentTypes['RegistrationJudgement'],
+> = {
   index?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   judgement?: Resolver<Maybe<ResolversTypes['IdentityJudgement']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TermProgressResolvers<ContextType = any, ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress']> = {
+export type TermProgressResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress'],
+> = {
   percentage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   termDuration?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   termLeft?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TipResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tip'] = ResolversParentTypes['Tip']> = {
+export type TipResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Tip'] = ResolversParentTypes['Tip'],
+> = {
   closes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   finder?: Resolver<Maybe<ResolversTypes['Finder']>, ParentType, ContextType>;
@@ -1141,7 +1358,10 @@ export type TipResolvers<ContextType = any, ParentType extends ResolversParentTy
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TipperResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tipper'] = ResolversParentTypes['Tipper']> = {
+export type TipperResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Tipper'] = ResolversParentTypes['Tipper'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1149,13 +1369,19 @@ export type TipperResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TreasuryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Treasury'] = ResolversParentTypes['Treasury']> = {
+export type TreasuryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Treasury'] = ResolversParentTypes['Treasury'],
+> = {
   approvals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
   proposals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TreasuryBalanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryBalance'] = ResolversParentTypes['TreasuryBalance']> = {
+export type TreasuryBalanceResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TreasuryBalance'] = ResolversParentTypes['TreasuryBalance'],
+> = {
   accountId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   accountNonce?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   freeBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1166,14 +1392,20 @@ export type TreasuryBalanceResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TreasuryProposalResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasuryProposal'] = ResolversParentTypes['TreasuryProposal']> = {
+export type TreasuryProposalResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TreasuryProposal'] = ResolversParentTypes['TreasuryProposal'],
+> = {
   councils?: Resolver<Array<ResolversTypes['CollectiveProposal']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposal?: Resolver<ResolversTypes['PalletProposal'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TreasurySummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreasurySummary'] = ResolversParentTypes['TreasurySummary']> = {
+export type TreasurySummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TreasurySummary'] = ResolversParentTypes['TreasurySummary'],
+> = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   approvedProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   burn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1183,13 +1415,19 @@ export type TreasurySummaryResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ValidatorsGroupResolvers<ContextType = any, ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup']> = {
+export type ValidatorsGroupResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup'],
+> = {
   groupIndex?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   validators?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type WhoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Who'] = ResolversParentTypes['Who']> = {
+export type WhoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Who'] = ResolversParentTypes['Who'],
+> = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1249,4 +1487,3 @@ export type Resolvers<ContextType = any> = {
   ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
   Who?: WhoResolvers<ContextType>;
 };
-

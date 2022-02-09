@@ -39,5 +39,5 @@ export const resolvers: Resolvers<Context> = {
   },
   Beneficiary: {
     account: Query.account,
-  }
+  },
 };
