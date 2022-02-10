@@ -1,7 +1,8 @@
 import type {Context} from '../../types';
 import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Council} from '../../generated/resolvers-types';
+import type {Council, TermProgress} from '../../generated/resolvers-types';
+import {getBlockTime} from '../../services/substrateChainService';
 
 type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
 
@@ -63,9 +64,17 @@ export async function council(
     : null;
 
   const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
-  const termProgress = {
-    termDuration: electionsInfo.termDuration?.toString(),
-    termLeft: termLeft.toString(),
+  const {formattedTime: formattedTermLeft, timeStringParts: termLeftParts} = getBlockTime(api, termLeft);
+  const {formattedTime: formattedTermDuration, timeStringParts: termDurationParts} = getBlockTime(
+    api,
+    electionsInfo.termDuration,
+  );
+
+  const termProgress: TermProgress = {
+    termDuration: formattedTermDuration,
+    termDurationParts: termDurationParts,
+    termLeft: formattedTermLeft,
+    termLeftParts,
     percentage,
   };
 
@@ -75,7 +84,9 @@ export async function council(
     candidates,
     primeMember,
     desiredSeats: Number(electionsInfo.desiredSeats),
+    totalMembers: members.length,
     desiredRunnersUp: Number(electionsInfo.desiredRunnersUp),
+    totalRunnersUp: runnersUp.length,
     termProgress,
   };
 }
