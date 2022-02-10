@@ -1,11 +1,11 @@
 import {BN} from '@polkadot/util';
-import type {BountyStatus as BountyStatusType} from '@polkadot/types/interfaces';
+import type {BountyStatus as BountyStatusType, BlockNumber} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
 import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {BN_ONE, BN_ZERO, BN_HUNDRED} from '@polkadot/util';
-import {DeriveBounty} from '@polkadot/api-derive/types';
-import {ApiPromise} from '@polkadot/api';
+import {BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn} from '@polkadot/util';
+import type {DeriveBounty} from '@polkadot/api-derive/types';
+import type {ApiPromise} from '@polkadot/api';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -44,7 +44,7 @@ interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   bountyStatus: BountyStatusInfo;
 }
 
-function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiPromise): BountyInfo {
+function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiPromise, bestNumber: BlockNumber): BountyInfo {
   return {
     index: index.toString(),
     proposer: {address: bounty.proposer.toString()},
@@ -56,7 +56,7 @@ function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiP
     formattedCuratorDeposit: formatBalance(api, bounty.curatorDeposit),
     bond: bounty.bond.toString(),
     formattedBond: formatBalance(api, bounty.bond),
-    bountyStatus: getBountyStatus(bounty.status, api),
+    bountyStatus: getBountyStatus(bounty.status, api, bestNumber),
     description,
   };
 }
@@ -67,7 +67,8 @@ export async function bounties(
   {api}: Context,
 ): Promise<BountyInfo[]> {
   const deriveBounties = await api.derive.bounties.bounties();
-  return deriveBounties.map((bounty) => extractBountyData(bounty, api));
+  const bestNumber = await  api.derive.chain.bestNumber();
+  return deriveBounties.map((bounty) => extractBountyData(bounty, api, bestNumber));
 }
 
 export async function bounty(
@@ -75,11 +76,12 @@ export async function bounty(
   {index}: {index: string},
   {api}: Context,
 ): Promise<BountyInfo | null> {
+  const bestNumber = await  api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
 
   if (bountyData) {
-    return extractBountyData(bountyData, api);
+    return extractBountyData(bountyData, api, bestNumber);
   }
 
   return null;
@@ -98,7 +100,7 @@ export type PartialBeneficiary = {
   address: string;
 };
 
-const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatusInfo => {
+const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): BountyStatusInfo => {
   let result: BountyStatusInfo = {
     status: status.type,
   };
@@ -112,23 +114,31 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatu
   }
 
   if (status.isActive) {
+    const updateDue = status.asActive.updateDue;
+    const blocksUntilUpdate = updateDue?.sub(bnToBn(bestNumber));
+    const {timeStringParts} = getBlockTime(api, blocksUntilUpdate)
+
     result = {
       ...result,
       status: 'Active',
       curator: {address: status.asActive.curator.toString()},
       updateDue: status.asActive.updateDue.toString(),
-      updateDueTime: getBlockTime(api, status.asActive.updateDue).timeStringParts,
+      updateDueTime: timeStringParts,
     };
   }
 
   if (status.isPendingPayout) {
+    const unlockAt = status.asPendingPayout.unlockAt;
+    const blocksUntilPayout = unlockAt?.sub(bnToBn(bestNumber));
+    const {timeStringParts} = getBlockTime(api, blocksUntilPayout);
+
     result = {
       ...result,
       beneficiary: {address: status.asPendingPayout.beneficiary.toString()},
       status: 'PendingPayout',
       curator: {address: status.asPendingPayout.curator.toString()},
       unlockAt: status.asPendingPayout.unlockAt.toString(),
-      unlockAtTime: getBlockTime(api, status.asPendingPayout.unlockAt).timeStringParts,
+      unlockAtTime: timeStringParts,
     };
   }
 
