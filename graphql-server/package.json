@@ -1,7 +1,7 @@
 {
-  "name": "api-gateway",
+  "name": "graphql-server",
   "version": "0.0.1",
-  "description": "Litentry's GraphQL Gateway",
+  "description": "Litentry Graph's GraphQL Server",
   "main": "dist/index.ts",
   "repository": "git@github.com:litentry/web3-indexer.git",
   "contributors": [

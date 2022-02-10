@@ -1,13 +1,32 @@
-# Litentry API Gateway
+# Litentry Graph
 
-This repository contains the GraphQL API Gateway and the subschemas that are exposed via the gateway. We also load remote schemas via the gateway e.g. the one based on our [Subsquid mappings](https://github.com/litentry/subsquid-mappings).
+This repository contains the GraphQL server and the subschemas that are exposed via the graph. We also load remote schemas via the graph e.g. [the one based on Substrate data](https://github.com/litentry/squid).
 
 ## Contents
 
-- [API Gateway](https://github.com/litentry/api-gateway/blob/main/api-gateway/README.md)
+- [GraphQL Server](https://github.com/litentry/litentry-graph/blob/main/graphql-server/README.md)
 
-- [Substrate API Proxy](https://github.com/litentry/api-gateway/blob/main/subschemas/substrate-api-proxy/README.md)
+- [Substrate API Proxy](https://github.com/litentry/litentry-graph/blob/main/subschemas/substrate-api-proxy/README.md)
 
 ## Getting Started
 
 Run `yarn && yarn start`
+
+## Deployment
+
+### Initial deployment
+
+- Clone repository
+- Run `./init-letsencrypt.sh`
+- Run `docker-compose -f docker-compose.prod.yml up -d`
+
+### Subsequent deployments
+
+- Run `make deploy`
+
+Make deploy will: 
+- pull the latest code
+- build a new container
+- reload nginx so that it resolves to the new container
+- tear down the old container 
+- reload nginx so that it stops resolving to the old container

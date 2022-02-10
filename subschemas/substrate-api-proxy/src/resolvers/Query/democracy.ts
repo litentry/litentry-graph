@@ -1,11 +1,12 @@
-import type {DemocracySummary, Proposal, Referendum} from '../../generated/resolvers-types';
+import type {u32} from '@polkadot/types';
 import type {DeriveProposal, DeriveReferendumExt} from '@polkadot/api-derive/types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
+import type {DemocracySummary, Proposal, Referendum, LaunchPeriodInfo} from '../../generated/resolvers-types';
 
 import {Context} from '../../types';
 import {getCallParams, formatCallMeta} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
-import {BN_ONE} from '@polkadot/util';
+import {BN_ONE, BN_HUNDRED} from '@polkadot/util';
 import {getBlockTime} from '../../services/substrateChainService';
 
 interface ProposalInfo extends Omit<Proposal, 'seconds' | 'proposer'> {
@@ -27,11 +28,12 @@ export async function democracySummary(
   context: Context,
 ): Promise<DemocracySummary> {
   const {api} = context;
-  const [referendumIds, activeProposals, publicPropCount, referendumTotal] = await Promise.all([
+  const [referendumIds, activeProposals, publicPropCount, referendumTotal, bestNumber] = await Promise.all([
     api.derive.democracy.referendumIds(),
     api.derive.democracy.proposals(),
     api.query.democracy.publicPropCount(),
     api.query.democracy.referendumCount(),
+    api.derive.chain.bestNumber(),
   ]);
 
   return {
@@ -39,7 +41,24 @@ export async function democracySummary(
     proposals: publicPropCount.toString(),
     referendums: referendumTotal.toString(),
     activeReferendums: referendumIds.length,
-    launchPeriod: String(api.consts.democracy.launchPeriod),
+    launchPeriodInfo: getLaunchPeriodInfo(api, api.consts.democracy.launchPeriod, bestNumber),
+  };
+}
+
+function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber: BlockNumber): LaunchPeriodInfo {
+  const progress = bestNumber.mod(launchPeriod).iadd(BN_ONE);
+  const timeLeft = launchPeriod.sub(progress);
+  const {timeStringParts, formattedTime} = getBlockTime(api, timeLeft);
+
+  const progressPercent = progress
+    .mul(BN_HUNDRED)
+    .div(launchPeriod ?? BN_ONE)
+    .toNumber();
+
+  return {
+    progressPercent,
+    timeLeft: formattedTime,
+    timeLeftParts: timeStringParts,
   };
 }
 
