@@ -109,12 +109,14 @@ export type Conviction = {
 export type Council = {
   __typename?: 'Council';
   candidates: Array<CouncilCandidate>;
-  desiredRunnersUp?: Maybe<Scalars['Int']>;
-  desiredSeats?: Maybe<Scalars['Int']>;
+  desiredRunnersUp: Scalars['Int'];
+  desiredSeats: Scalars['Int'];
   members: Array<CouncilMember>;
   primeMember?: Maybe<CouncilMember>;
   runnersUp: Array<CouncilMember>;
   termProgress: TermProgress;
+  totalMembers: Scalars['Int'];
+  totalRunnersUp: Scalars['Int'];
 };
 
 export type CouncilCandidate = {
@@ -449,7 +451,9 @@ export type TermProgress = {
   __typename?: 'TermProgress';
   percentage?: Maybe<Scalars['Int']>;
   termDuration?: Maybe<Scalars['String']>;
+  termDurationParts: Array<Scalars['String']>;
   termLeft?: Maybe<Scalars['String']>;
+  termLeftParts?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Tip = {
@@ -877,12 +881,14 @@ export type CouncilResolvers<
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
 > = {
   candidates?: Resolver<Array<ResolversTypes['CouncilCandidate']>, ParentType, ContextType>;
-  desiredRunnersUp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  desiredSeats?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  desiredRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  desiredSeats?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   primeMember?: Resolver<Maybe<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   runnersUp?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   termProgress?: Resolver<ResolversTypes['TermProgress'], ParentType, ContextType>;
+  totalMembers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1301,7 +1307,9 @@ export type TermProgressResolvers<
 > = {
   percentage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   termDuration?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  termDurationParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   termLeft?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  termLeftParts?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
