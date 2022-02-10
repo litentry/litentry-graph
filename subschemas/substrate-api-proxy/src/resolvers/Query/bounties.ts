@@ -99,7 +99,9 @@ export type PartialBeneficiary = {
 };
 
 const getBountyStatus = (status: BountyStatusType, api: ApiPromise): BountyStatusInfo => {
-  let result = {};
+  let result: BountyStatusInfo = {
+    status: status.type,
+  };
 
   if (status.isCuratorProposed) {
     result = {
