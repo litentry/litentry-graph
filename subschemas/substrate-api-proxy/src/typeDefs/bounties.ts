@@ -41,7 +41,7 @@ export default /* GraphQL */ `
     formattedCuratorDeposit: String!
     bond: String!
     formattedBond: String!
-    bountyStatus: BountyStatus
+    bountyStatus: BountyStatus!
   }
   type Query {
     bountiesSummary: BountiesSummary!

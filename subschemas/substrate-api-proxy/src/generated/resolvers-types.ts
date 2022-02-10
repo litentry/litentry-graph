@@ -71,7 +71,7 @@ export type BountiesSummary = {
 export type Bounty = {
   __typename?: 'Bounty';
   bond: Scalars['String'];
-  bountyStatus?: Maybe<BountyStatus>;
+  bountyStatus: BountyStatus;
   curatorDeposit: Scalars['String'];
   description: Scalars['String'];
   fee: Scalars['String'];
@@ -616,7 +616,7 @@ export type ResolversTypes = {
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
   Bounty: ResolverTypeWrapper<
     Omit<Bounty, 'bountyStatus' | 'proposer'> & {
-      bountyStatus?: Maybe<ResolversTypes['BountyStatus']>;
+      bountyStatus: ResolversTypes['BountyStatus'];
       proposer: ResolversTypes['Proposer'];
     }
   >;
@@ -712,7 +712,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
   Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & {
-    bountyStatus?: Maybe<ResolversParentTypes['BountyStatus']>;
+    bountyStatus: ResolversParentTypes['BountyStatus'];
     proposer: ResolversParentTypes['Proposer'];
   };
   BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & {
@@ -855,7 +855,7 @@ export type BountyResolvers<
   ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty'],
 > = {
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  bountyStatus?: Resolver<Maybe<ResolversTypes['BountyStatus']>, ParentType, ContextType>;
+  bountyStatus?: Resolver<ResolversTypes['BountyStatus'], ParentType, ContextType>;
   curatorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
