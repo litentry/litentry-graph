@@ -82,6 +82,7 @@ export async function council(
     members,
     runnersUp,
     candidates,
+    totalCandidates: candidates.length,
     primeMember,
     desiredSeats: Number(electionsInfo.desiredSeats),
     totalMembers: members.length,

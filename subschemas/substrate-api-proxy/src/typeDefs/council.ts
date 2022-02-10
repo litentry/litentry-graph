@@ -23,6 +23,7 @@ export default /* GraphQL */ `
     members: [CouncilMember!]!
     runnersUp: [CouncilMember!]!
     candidates: [CouncilCandidate!]!
+    totalCandidates: Int!
     primeMember: CouncilMember
     desiredSeats: Int!
     totalMembers: Int!
