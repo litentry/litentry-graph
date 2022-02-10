@@ -66,7 +66,7 @@ export type AuctionLeasePeriod = {
 export type AuctionsInfo = {
   __typename?: 'AuctionsInfo';
   active: Scalars['Boolean'];
-  numAuctions: Scalars['Int'];
+  numAuctions: Scalars['String'];
 };
 
 export type AuctionsSummary = {
@@ -874,7 +874,7 @@ export type AuctionsInfoResolvers<
   ParentType extends ResolversParentTypes['AuctionsInfo'] = ResolversParentTypes['AuctionsInfo'],
 > = {
   active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  numAuctions?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  numAuctions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

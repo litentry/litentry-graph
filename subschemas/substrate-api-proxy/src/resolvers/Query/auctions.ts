@@ -1,0 +1,83 @@
+import type {AuctionIndex, BlockNumber, LeasePeriodOf, WinningData, ParaId} from '@polkadot/types/interfaces';
+import type {u32} from '@polkadot/types';
+import {BN, BN_ONE, BN_ZERO, formatNumber} from '@polkadot/util';
+import type {ITuple, Registry} from '@polkadot/types/types';
+import type {Option, StorageKey} from '@polkadot/types';
+import type {Context} from '../../types';
+import type {AuctionsSummary, Auction} from '../../generated/resolvers-types';
+import { getFormattedBalance as formatBalance } from '../../utils/balance';
+import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
+import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
+import { extractWinningData } from '../../utils/winners';
+
+export async function auctionsSummary(
+  _: Record<string, string>,
+  __: Record<string, string>,
+  {api}: Context,
+): Promise<AuctionsSummary> {
+  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, registry, genesisHash] = await Promise.all([
+    api.query.auctions?.auctionCounter?.<AuctionIndex>(),
+    api.query.auctions?.auctionInfo?.<Option<ITuple<[LeasePeriodOf, BlockNumber]>>>(),
+    api.consts.auctions?.leasePeriodsPerSlot,
+    api.consts.auctions?.endingPeriod as BlockNumber | undefined,
+    api.query.auctions?.winning?.entries() as Promise<[StorageKey<[BlockNumber]>, Option<WinningData>][]>,
+    api.query.balances.totalIssuance(),
+    api.derive.chain.bestNumber(),
+    api.registry,
+    api.genesisHash.toHex(),
+  ]);
+  const [leasePeriod, endBlock] = optInfo?.unwrapOr([null, null]) ?? [null, null];
+  const winningData = extractWinningData({endBlock, leasePeriod, numAuctions, leasePeriodsPerSlot}, winners);
+  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
+  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHash);
+
+  const latestAuction = getLatestAuction(leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, registry, endpoints);
+
+  return {
+    auctionsInfo: {
+      numAuctions: formatNumber(numAuctions) ?? 0,
+      active: Boolean(leasePeriod)
+    },
+    latestAuction
+  }
+}
+
+const getLatestAuction = (leasePeriod: LeasePeriodOf | null, leasePeriodsPerSlot: any, winningData: any, totalIssuance: any, bestNumber: BlockNumber, endBlock: BlockNumber | null, endingPeriod: BlockNumber | undefined, registry: Registry, endpoints: LinkOption[]): Auction => {
+  const lastWinners = winningData && winningData[0];
+  const raised = lastWinners?.total ?? BN_ZERO;
+  const total = totalIssuance ?? BN_ZERO;
+  const raisedPercent = total.isZero() ? 0 : raised.muln(10000).div(total).toNumber() / 10000;
+  const [endingIn, currentPosition] = getEndingPeriodValues(bestNumber, endBlock, endingPeriod);
+  const remainingPercent = endingIn.isZero() ? 0 : currentPosition.muln(10000).div(endingIn).toNumber() / 10000;
+
+  return {
+    leasePeriod: {
+      first: formatNumber(leasePeriod),
+      last: formatNumber(leasePeriod?.add((leasePeriodsPerSlot as u32) ?? BN_ONE).isub(BN_ONE)),
+    },
+    endingPeriod: {
+      endingIn: formatNumber(endingIn),
+      remaining: formatNumber(endingIn.sub(currentPosition)),
+      remainingPercent,
+    },
+    raised,
+    raisedPercent,
+    latestBid: {
+      blockNumber: String(formatNumber(lastWinners?.blockNumber)),
+      projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
+      projectName: endpoints?.find((e) => e.paraId === lastWinners.winners[0]?.paraId.toNumber())?.text?.toString() || '',
+      amount: String(formatBalance(lastWinners.total, registry)),
+    }
+  };
+}
+
+const getEndingPeriodValues = (bestNumber: BlockNumber, endBlock: any, endingPeriod: any): [BN, BN] => {
+  if (endBlock && bestNumber) {
+    if (bestNumber.lt(endBlock)) {
+      return [endBlock, bestNumber];
+    } else if (endingPeriod) {
+      return [endingPeriod, bestNumber.sub(endBlock)];
+    }
+  }
+  return [BN_ZERO, BN_ZERO];
+}

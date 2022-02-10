@@ -5,7 +5,7 @@ export default /* GraphQL */ `
   }
 
   type AuctionsInfo {
-    numAuctions: Int!
+    numAuctions: String!
     active: Boolean!
   }
 
