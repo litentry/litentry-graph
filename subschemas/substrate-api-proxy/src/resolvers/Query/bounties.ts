@@ -44,7 +44,11 @@ interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   bountyStatus: BountyStatusInfo;
 }
 
-function extractBountyData({bounty, description, index}: DeriveBounty, api: ApiPromise, bestNumber: BlockNumber): BountyInfo {
+function extractBountyData(
+  {bounty, description, index}: DeriveBounty,
+  api: ApiPromise,
+  bestNumber: BlockNumber,
+): BountyInfo {
   return {
     index: index.toString(),
     proposer: {address: bounty.proposer.toString()},
@@ -67,7 +71,7 @@ export async function bounties(
   {api}: Context,
 ): Promise<BountyInfo[]> {
   const deriveBounties = await api.derive.bounties.bounties();
-  const bestNumber = await  api.derive.chain.bestNumber();
+  const bestNumber = await api.derive.chain.bestNumber();
   return deriveBounties.map((bounty) => extractBountyData(bounty, api, bestNumber));
 }
 
@@ -76,7 +80,7 @@ export async function bounty(
   {index}: {index: string},
   {api}: Context,
 ): Promise<BountyInfo | null> {
-  const bestNumber = await  api.derive.chain.bestNumber();
+  const bestNumber = await api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
 
@@ -116,7 +120,7 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: 
   if (status.isActive) {
     const updateDue = status.asActive.updateDue;
     const blocksUntilUpdate = updateDue?.sub(bnToBn(bestNumber));
-    const {timeStringParts} = getBlockTime(api, blocksUntilUpdate)
+    const {timeStringParts} = getBlockTime(api, blocksUntilUpdate);
 
     result = {
       ...result,
