@@ -73,8 +73,8 @@ const getLatestAuctionWinner = (
     latestBid: {
       blockNumber: String(formatNumber(lastWinners?.blockNumber)),
       projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
-      projectName: endpoints?.find((e) => e.paraId === lastWinners.winners[0]?.paraId.toNumber())?.text?.toString() || '',
-      amount: String(formatBalance(lastWinners.total, registry)),
+      projectName: endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',
+      amount: String(formatBalance(lastWinners?.total, registry)),
     }
   };
 }
