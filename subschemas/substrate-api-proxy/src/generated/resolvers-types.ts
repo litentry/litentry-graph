@@ -72,7 +72,7 @@ export type AuctionsInfo = {
 export type AuctionsSummary = {
   __typename?: 'AuctionsSummary';
   auctionsInfo: AuctionsInfo;
-  latestAuction: Auction;
+  latestWinner: Auction;
 };
 
 export type Balance = {
@@ -883,7 +883,7 @@ export type AuctionsSummaryResolvers<
   ParentType extends ResolversParentTypes['AuctionsSummary'] = ResolversParentTypes['AuctionsSummary'],
 > = {
   auctionsInfo?: Resolver<ResolversTypes['AuctionsInfo'], ParentType, ContextType>;
-  latestAuction?: Resolver<ResolversTypes['Auction'], ParentType, ContextType>;
+  latestWinner?: Resolver<ResolversTypes['Auction'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

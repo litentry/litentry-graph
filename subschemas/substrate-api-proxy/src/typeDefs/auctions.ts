@@ -1,7 +1,7 @@
 export default /* GraphQL */ `
   type AuctionsSummary {
     auctionsInfo: AuctionsInfo!
-    latestAuction: Auction!
+    latestWinner: Auction!
   }
 
   type AuctionsInfo {

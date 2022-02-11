@@ -107,7 +107,7 @@ interface WinnerData {
   value: BN;
 }
 
-interface Winning {
+export interface Winning {
   blockNumber: BN;
   blockOffset: BN;
   total: BN;

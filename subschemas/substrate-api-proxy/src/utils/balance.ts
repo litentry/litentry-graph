@@ -15,10 +15,7 @@ type FormatBalanceOptions = {
 };
 
 export function getFormattedBalance(value: Balance, registry: Registry, options?: FormatBalanceOptions) {
-  return format(value, Object.assign({}, {
-    decimals: registry.chainDecimals[0] ?? 0,
-    token: registry.chainTokens[0] ?? '',
-  }, options));
+  return format(value, Object.assign({}, getFormat(registry), options));
 }
 
 function getFormat(registry: Registry) {
