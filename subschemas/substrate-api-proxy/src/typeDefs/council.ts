@@ -13,7 +13,9 @@ export default /* GraphQL */ `
 
   type TermProgress {
     termDuration: String
+    termDurationParts: [String!]!
     termLeft: String
+    termLeftParts: [String!]
     percentage: Int
   }
 
@@ -21,9 +23,12 @@ export default /* GraphQL */ `
     members: [CouncilMember!]!
     runnersUp: [CouncilMember!]!
     candidates: [CouncilCandidate!]!
+    totalCandidates: Int!
     primeMember: CouncilMember
-    desiredSeats: Int
-    desiredRunnersUp: Int
+    desiredSeats: Int!
+    totalMembers: Int!
+    desiredRunnersUp: Int!
+    totalRunnersUp: Int!
     termProgress: TermProgress!
   }
 
