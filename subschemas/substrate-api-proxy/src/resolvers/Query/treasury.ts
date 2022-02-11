@@ -1,8 +1,9 @@
 import type {Context} from '../../types';
-import {u8aConcat, BN_MILLION} from '@polkadot/util';
-import {AccountId} from '@polkadot/types/interfaces';
+import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
+import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
-import type {TreasurySummary, Treasury} from '../../generated/resolvers-types';
+import type {TreasurySummary, Treasury, SpendPeriod} from '../../generated/resolvers-types';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
@@ -20,6 +21,7 @@ export async function treasurySummary(
   ).subarray(0, 32) as AccountId;
 
   const treasuryBalance = await api.derive.balances.account(treasuryAccount);
+  const bestNumber = await api.derive.chain.bestNumber();
 
   const burn =
     treasuryBalance?.freeBalance.gtn(0) && !api.consts.treasury.burn.isZero()
@@ -28,19 +30,41 @@ export async function treasurySummary(
 
   return {
     activeProposals: proposals.proposals.length,
-    proposalCount: proposals.proposalCount.toString(),
+    totalProposals: proposals.proposalCount.toNumber(),
     approvedProposals: proposals.approvals.length,
-    spendPeriod: api.consts.treasury.spendPeriod.toString(),
+    spendPeriod: createSpendPeriod(api, bestNumber),
     treasuryBalance: {
       accountId: treasuryBalance.accountId.toString(),
       accountNonce: treasuryBalance.accountNonce.toString(),
-      freeBalance: treasuryBalance.freeBalance.toString(),
-      frozenFee: treasuryBalance.frozenFee.toString(),
-      frozenMisc: treasuryBalance.frozenMisc.toString(),
-      reservedBalance: treasuryBalance.reservedBalance.toString(),
-      votingBalance: treasuryBalance.votingBalance.toString(),
+      freeBalance: formatBalance(api, treasuryBalance.freeBalance),
+      frozenFee: formatBalance(api, treasuryBalance.frozenFee),
+      frozenMisc: formatBalance(api, treasuryBalance.frozenMisc),
+      reservedBalance: formatBalance(api, treasuryBalance.reservedBalance),
+      votingBalance: formatBalance(api, treasuryBalance.votingBalance),
     },
-    burn: burn?.toString(),
+    nextBurn: formatBalance(api, burn ?? BN_ZERO, true),
+  };
+}
+
+function createSpendPeriod(api: Context['api'], bestNumber: BlockNumber): SpendPeriod {
+  const spendPeriod = api.consts.treasury.spendPeriod;
+  const {timeStringParts: periodParts} = getBlockTime(api, spendPeriod);
+  const total = spendPeriod || BN_ONE;
+  const value = bestNumber?.mod(spendPeriod?.toBn() ?? BN_ONE);
+  const angle = total.gtn(0)
+    ? bnToBn(value || 0)
+        .muln(36000)
+        .div(total)
+        .toNumber() / 100
+    : 0;
+  const percentage = Math.floor((angle * 100) / 360);
+  const {formattedTime: termLeft, timeStringParts: termLeftParts} = getBlockTime(api, total.sub(value || BN_ONE));
+
+  return {
+    period: periodParts[0],
+    percentage,
+    termLeft,
+    termLeftParts,
   };
 }
 
