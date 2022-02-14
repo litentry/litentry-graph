@@ -393,7 +393,7 @@ export type Query = {
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
-  registrars?: Maybe<Array<Registrar>>;
+  registrars: Array<Registrar>;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasury: Treasury;
@@ -455,10 +455,10 @@ export type Referendum = {
 
 export type Registrar = {
   __typename?: 'Registrar';
-  account?: Maybe<Account>;
-  address?: Maybe<Scalars['String']>;
-  fee?: Maybe<Scalars['String']>;
-  formattedFee?: Maybe<Scalars['String']>;
+  account: Account;
+  address: Scalars['String'];
+  fee: Scalars['String'];
+  formattedFee: Scalars['String'];
   /** id: Registrar index */
   id: Scalars['String'];
 };
@@ -1323,7 +1323,7 @@ export type QueryResolvers<
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
-  registrars?: Resolver<Maybe<Array<ResolversTypes['Registrar']>>, ParentType, ContextType>;
+  registrars?: Resolver<Array<ResolversTypes['Registrar']>, ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasury?: Resolver<ResolversTypes['Treasury'], ParentType, ContextType>;
@@ -1353,10 +1353,10 @@ export type RegistrarResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar'],
 > = {
-  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
-  address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  fee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  formattedFee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
