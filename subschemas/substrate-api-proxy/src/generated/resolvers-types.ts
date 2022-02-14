@@ -393,7 +393,6 @@ export type Query = {
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
-  registrars: Array<Registrar>;
   registrarsSummary: RegistrarsSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
@@ -469,6 +468,7 @@ export type RegistrarsSummary = {
   formattedHighestFee: Scalars['String'];
   formattedLowestFee: Scalars['String'];
   highestFee: Scalars['String'];
+  list: Array<Registrar>;
   lowestFee: Scalars['String'];
   registrarsCount: Scalars['Int'];
 };
@@ -706,7 +706,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
-  RegistrarsSummary: ResolverTypeWrapper<RegistrarsSummary>;
+  RegistrarsSummary: ResolverTypeWrapper<Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversTypes['Registrar']>}>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
@@ -793,7 +793,7 @@ export type ResolversParentTypes = {
   Query: {};
   Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
-  RegistrarsSummary: RegistrarsSummary;
+  RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversParentTypes['Registrar']>};
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
   TermProgress: TermProgress;
@@ -1335,7 +1335,6 @@ export type QueryResolvers<
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
-  registrars?: Resolver<Array<ResolversTypes['Registrar']>, ParentType, ContextType>;
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
@@ -1381,6 +1380,7 @@ export type RegistrarsSummaryResolvers<
   formattedHighestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedLowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   highestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  list?: Resolver<Array<ResolversTypes['Registrar']>, ParentType, ContextType>;
   lowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registrarsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

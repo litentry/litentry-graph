@@ -19,7 +19,7 @@ import moduleElection from './moduleElection';
 import {parachainsInfo} from './parachains';
 import {tips, tip} from './tips';
 import {treasurySummary, treasury} from './treasury';
-import {registrars, registrarsSummary} from './registrars';
+import {registrarsSummary} from './registrars';
 
 export const Query = {
   account,
@@ -44,7 +44,6 @@ export const Query = {
   events,
   moduleElection,
   parachainsInfo,
-  registrars,
   registrarsSummary,
   tip,
   tips,

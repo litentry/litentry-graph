@@ -14,10 +14,10 @@ export default /* GraphQL */ `
     formattedLowestFee: String!
     highestFee: String!
     formattedHighestFee: String!
+    list: [Registrar!]!
   }
 
   type Query {
-    registrars: [Registrar!]!
     registrarsSummary: RegistrarsSummary!
   }
 `;
