@@ -2,6 +2,7 @@ import {BN_ZERO} from '@polkadot/util';
 import type {Context} from '../../types';
 import {formatBalance} from '../../services/substrateChainService';
 import type {Registrar, RegistrarsSummary} from '../../generated/resolvers-types';
+import type {PalletIdentityRegistrarInfo} from '@polkadot/types/lookup';
 
 export type PartialRegistrar = Omit<Registrar, 'account'>;
 
@@ -10,9 +11,12 @@ export async function registrars(
   __: Record<string, never>,
   {api}: Context,
 ): Promise<PartialRegistrar[]> {
-  const registrars = await api.query.identity.registrars();
+  const registrarsData = await api.query.identity.registrars();
+  const registrars = registrarsData
+    .map((r) => r.unwrapOr(undefined))
+    .filter((r) => r !== undefined) as PalletIdentityRegistrarInfo[];
+
   return registrars
-    .map((r) => r.unwrap())
     .sort((a, b) => (a.fee.toNumber() > b.fee.toNumber() ? 1 : -1))
     .map((r, index) => ({
       id: index.toString(),
@@ -27,13 +31,15 @@ export async function registrarsSummary(
   __: Record<string, never>,
   {api}: Context,
 ): Promise<RegistrarsSummary> {
-  const registrarData = await api.query.identity.registrars();
-  const registrars = registrarData
-    .map((r) => r.unwrap())
-    .sort((a, b) => (a.fee.toNumber() > b.fee.toNumber() ? 1 : -1));
-  const lowestFee = registrars[0].fee.toString();
+  const registrarsData = await api.query.identity.registrars();
+  const registrars = registrarsData
+    .map((r) => r.unwrapOr(undefined))
+    .filter((r) => r !== undefined) as PalletIdentityRegistrarInfo[];
+  const sortedRegistrars = registrars.sort((a, b) => (a.fee.toNumber() > b.fee.toNumber() ? 1 : -1));
+
+  const lowestFee = sortedRegistrars[0].fee.toString();
   const formattedLowestFee = formatBalance(api, lowestFee);
-  const highestFee = registrars[registrars.length - 1].fee.toString();
+  const highestFee = sortedRegistrars[sortedRegistrars.length - 1].fee.toString();
   const formattedHighestFee = formatBalance(api, highestFee);
 
   return {
