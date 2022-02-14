@@ -8,7 +8,16 @@ export default /* GraphQL */ `
     formattedFee: String!
   }
 
+  type RegistrarsSummary {
+    registrarsCount: Int!
+    lowestFee: String!
+    formattedLowestFee: String!
+    highestFee: String!
+    formattedHighestFee: String!
+  }
+
   type Query {
     registrars: [Registrar!]!
+    registrarsSummary: RegistrarsSummary!
   }
 `;

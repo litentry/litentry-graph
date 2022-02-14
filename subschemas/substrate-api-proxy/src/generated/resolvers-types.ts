@@ -394,6 +394,7 @@ export type Query = {
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
   registrars: Array<Registrar>;
+  registrarsSummary: RegistrarsSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasury: Treasury;
@@ -461,6 +462,15 @@ export type Registrar = {
   formattedFee: Scalars['String'];
   /** id: Registrar index */
   id: Scalars['String'];
+};
+
+export type RegistrarsSummary = {
+  __typename?: 'RegistrarsSummary';
+  formattedHighestFee: Scalars['String'];
+  formattedLowestFee: Scalars['String'];
+  highestFee: Scalars['String'];
+  lowestFee: Scalars['String'];
+  registrarsCount: Scalars['Int'];
 };
 
 export type RegistrationJudgement = {
@@ -696,6 +706,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
+  RegistrarsSummary: ResolverTypeWrapper<RegistrarsSummary>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
@@ -782,6 +793,7 @@ export type ResolversParentTypes = {
   Query: {};
   Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
+  RegistrarsSummary: RegistrarsSummary;
   RegistrationJudgement: RegistrationJudgement;
   String: Scalars['String'];
   TermProgress: TermProgress;
@@ -1324,6 +1336,7 @@ export type QueryResolvers<
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
   registrars?: Resolver<Array<ResolversTypes['Registrar']>, ParentType, ContextType>;
+  registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasury?: Resolver<ResolversTypes['Treasury'], ParentType, ContextType>;
@@ -1358,6 +1371,18 @@ export type RegistrarResolvers<
   fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RegistrarsSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RegistrarsSummary'] = ResolversParentTypes['RegistrarsSummary'],
+> = {
+  formattedHighestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedLowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  highestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  registrarsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1518,6 +1543,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Referendum?: ReferendumResolvers<ContextType>;
   Registrar?: RegistrarResolvers<ContextType>;
+  RegistrarsSummary?: RegistrarsSummaryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
