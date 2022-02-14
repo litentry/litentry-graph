@@ -1,4 +1,5 @@
 
+import {ApiPromise} from '@polkadot/api';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {ITuple, Registry, Codec} from '@polkadot/types/types';
@@ -7,15 +8,15 @@ import type {AuctionIndex, BlockNumber, LeasePeriodOf, WinningData} from '@polka
 import {BN, BN_ONE, BN_ZERO, formatNumber} from '@polkadot/util';
 import type {Context} from '../../types';
 import type {AuctionsSummary, Auction} from '../../generated/resolvers-types';
-import {getFormattedBalance as formatBalance} from '../../utils/balance';
 import {extractWinningData, Winning} from '../../utils/winners';
+import {formatBalance} from '../../services/substrateChainService';
 
 export async function auctionsSummary(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
 ): Promise<AuctionsSummary> {
-  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, registry, genesisHash] = await Promise.all([
+  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, genesisHash] = await Promise.all([
     api.query.auctions?.auctionCounter?.<AuctionIndex>(),
     api.query.auctions?.auctionInfo?.<Option<ITuple<[LeasePeriodOf, BlockNumber]>>>(),
     api.consts.auctions?.leasePeriodsPerSlot,
@@ -23,7 +24,6 @@ export async function auctionsSummary(
     api.query.auctions?.winning?.entries() as Promise<[StorageKey<[BlockNumber]>, Option<WinningData>][]>,
     api.query.balances.totalIssuance(),
     api.derive.chain.bestNumber(),
-    api.registry,
     api.genesisHash.toHex(),
   ]);
   const [leasePeriod, endBlock] = optInfo?.unwrapOr([null, null]) ?? [null, null];
@@ -36,11 +36,12 @@ export async function auctionsSummary(
       numAuctions: formatNumber(numAuctions) ?? 0,
       active: Boolean(leasePeriod)
     },
-    latestWinner: getLatestAuctionWinner(leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, registry, endpoints)
+    latestWinner: getLatestAuctionWinner(api, leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, endpoints)
   }
 }
 
 const getLatestAuctionWinner = (
+  api: ApiPromise,
   leasePeriod: LeasePeriodOf | null, 
   leasePeriodsPerSlot: Codec, 
   winningData: Winning[], 
@@ -48,8 +49,7 @@ const getLatestAuctionWinner = (
   bestNumber: BlockNumber, 
   endBlock: BlockNumber | null, 
   endingPeriod: BlockNumber | undefined, 
-  registry: Registry, 
-  endpoints: LinkOption[]
+  endpoints: LinkOption[],
 ): Auction => {
   const lastWinners = winningData && winningData[0];
   const raised = lastWinners?.total ?? BN_ZERO;
@@ -74,7 +74,7 @@ const getLatestAuctionWinner = (
       blockNumber: String(formatNumber(lastWinners?.blockNumber)),
       projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
       projectName: endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',
-      amount: String(formatBalance(lastWinners?.total, registry)),
+      amount: String(formatBalance(api, lastWinners?.total)),
     }
   };
 }
