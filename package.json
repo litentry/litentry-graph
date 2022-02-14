@@ -3,6 +3,7 @@
   "scripts": {
     "start": "cd graphql-server && yarn start",
     "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
     "postinstall": "yarn build"
   },
   "workspaces": [
