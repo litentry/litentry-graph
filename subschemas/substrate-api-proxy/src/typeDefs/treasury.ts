@@ -33,11 +33,17 @@ export default /* GraphQL */ `
   }
   type TreasurySummary {
     activeProposals: Int!
-    proposalCount: String!
+    totalProposals: Int!
     approvedProposals: Int!
-    spendPeriod: String!
+    spendPeriod: SpendPeriod!
     treasuryBalance: TreasuryBalance!
-    burn: String
+    nextBurn: String!
+  }
+  type SpendPeriod {
+    percentage: Int!
+    termLeft: String!
+    termLeftParts: [String!]!
+    period: String!
   }
   type Treasury {
     approvals: [TreasuryProposal!]!

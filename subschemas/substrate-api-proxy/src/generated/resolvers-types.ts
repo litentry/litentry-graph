@@ -469,6 +469,14 @@ export type RegistrationJudgement = {
   judgement?: Maybe<IdentityJudgement>;
 };
 
+export type SpendPeriod = {
+  __typename?: 'SpendPeriod';
+  percentage: Scalars['Int'];
+  period: Scalars['String'];
+  termLeft: Scalars['String'];
+  termLeftParts: Array<Scalars['String']>;
+};
+
 export type TermProgress = {
   __typename?: 'TermProgress';
   percentage?: Maybe<Scalars['Int']>;
@@ -529,9 +537,9 @@ export type TreasurySummary = {
   __typename?: 'TreasurySummary';
   activeProposals: Scalars['Int'];
   approvedProposals: Scalars['Int'];
-  burn?: Maybe<Scalars['String']>;
-  proposalCount: Scalars['String'];
-  spendPeriod: Scalars['String'];
+  nextBurn: Scalars['String'];
+  spendPeriod: SpendPeriod;
+  totalProposals: Scalars['Int'];
   treasuryBalance: TreasuryBalance;
 };
 
@@ -697,6 +705,7 @@ export type ResolversTypes = {
   Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
+  SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
@@ -783,6 +792,7 @@ export type ResolversParentTypes = {
   Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
   RegistrationJudgement: RegistrationJudgement;
+  SpendPeriod: SpendPeriod;
   String: Scalars['String'];
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
@@ -1370,6 +1380,17 @@ export type RegistrationJudgementResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SpendPeriodResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SpendPeriod'] = ResolversParentTypes['SpendPeriod'],
+> = {
+  percentage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  period?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termLeft?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termLeftParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TermProgressResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress'],
@@ -1449,9 +1470,9 @@ export type TreasurySummaryResolvers<
 > = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   approvedProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  burn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  proposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  spendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nextBurn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  spendPeriod?: Resolver<ResolversTypes['SpendPeriod'], ParentType, ContextType>;
+  totalProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   treasuryBalance?: Resolver<ResolversTypes['TreasuryBalance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1519,6 +1540,7 @@ export type Resolvers<ContextType = any> = {
   Referendum?: ReferendumResolvers<ContextType>;
   Registrar?: RegistrarResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
+  SpendPeriod?: SpendPeriodResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
   Tipper?: TipperResolvers<ContextType>;
