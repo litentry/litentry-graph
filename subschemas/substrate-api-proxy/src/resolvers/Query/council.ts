@@ -59,13 +59,15 @@ export async function council(
 
   let primeMember: PartialCouncilMember | null = null;
   if (prime) {
-    const backing = electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1] as BN;
-    primeMember = {
-      address: prime.toString(),
-      backing: backing?.toString() as string,
-      formattedBacking: formatBalance(api, backing),
-      voters: [],
-    };
+    const backing = electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1];
+    if (backing) {
+      primeMember = {
+        address: prime.toString(),
+        backing: backing?.toString() as string,
+        formattedBacking: formatBalance(api, backing),
+        voters: [],
+      };
+    }
   }
 
   const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
