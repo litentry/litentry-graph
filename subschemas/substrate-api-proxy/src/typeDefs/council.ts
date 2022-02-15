@@ -2,7 +2,8 @@ export default /* GraphQL */ `
   type CouncilMember {
     address: String!
     account: Account!
-    backing: String
+    backing: String!
+    formattedBacking: String!
     voters: [String!]!
   }
 
@@ -12,11 +13,11 @@ export default /* GraphQL */ `
   }
 
   type TermProgress {
-    termDuration: String
+    termDuration: String!
     termDurationParts: [String!]!
-    termLeft: String
+    termLeft: String!
     termLeftParts: [String!]
-    percentage: Int
+    percentage: Int!
   }
 
   type Council {

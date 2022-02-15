@@ -2,7 +2,7 @@ import type {Context} from '../../types';
 import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Council, TermProgress} from '../../generated/resolvers-types';
-import {getBlockTime} from '../../services/substrateChainService';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
 
@@ -42,12 +42,14 @@ export async function council(
   const members = electionsInfo.members.map<PartialCouncilMember>(([accountId, balance]) => ({
     address: String(accountId),
     backing: balance.toString(),
+    formattedBacking: formatBalance(api, balance),
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
   const runnersUp = electionsInfo.runnersUp.map<PartialCouncilMember>(([accountId, balance]) => ({
     address: String(accountId),
     backing: balance.toString(),
+    formattedBacking: formatBalance(api, balance),
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
@@ -55,13 +57,16 @@ export async function council(
     address: String(accountId),
   }));
 
-  const primeMember: PartialCouncilMember | null = prime
-    ? {
-        address: String(prime),
-        backing: electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1]?.toString(),
-        voters: [],
-      }
-    : null;
+  let primeMember: PartialCouncilMember | null = null;
+  if (prime) {
+    const backing = electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1] as BN;
+    primeMember = {
+      address: prime.toString(),
+      backing: backing?.toString() as string,
+      formattedBacking: formatBalance(api, backing),
+      voters: [],
+    };
+  }
 
   const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
   const {formattedTime: formattedTermLeft, timeStringParts: termLeftParts} = getBlockTime(api, termLeft);
@@ -115,6 +120,7 @@ export type PartialCouncilCandidate = {
 
 export type PartialCouncilMember = {
   address: string;
-  backing?: string;
+  backing: string;
+  formattedBacking: string;
   voters: string[];
 };
