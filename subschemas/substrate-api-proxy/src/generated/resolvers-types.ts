@@ -145,7 +145,8 @@ export type CouncilMember = {
   __typename?: 'CouncilMember';
   account: Account;
   address: Scalars['String'];
-  backing?: Maybe<Scalars['String']>;
+  backing: Scalars['String'];
+  formattedBacking: Scalars['String'];
   voters: Array<Scalars['String']>;
 };
 
@@ -489,10 +490,10 @@ export type SpendPeriod = {
 
 export type TermProgress = {
   __typename?: 'TermProgress';
-  percentage?: Maybe<Scalars['Int']>;
-  termDuration?: Maybe<Scalars['String']>;
+  percentage: Scalars['Int'];
+  termDuration: Scalars['String'];
   termDurationParts: Array<Scalars['String']>;
-  termLeft?: Maybe<Scalars['String']>;
+  termLeft: Scalars['String'];
   termLeftParts?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -989,7 +990,8 @@ export type CouncilMemberResolvers<
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  backing?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   voters?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1420,10 +1422,10 @@ export type TermProgressResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress'],
 > = {
-  percentage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  termDuration?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  percentage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  termDuration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   termDurationParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  termLeft?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  termLeft?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   termLeftParts?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
