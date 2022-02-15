@@ -5,8 +5,6 @@ import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as proxySchema } from 'substrate-api-proxy';
-import { schema as web2Schema } from '@litentry/web2-subschema';
-import { schema as ipfsSchema } from '@litentry/ipfs-subschema';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
@@ -34,28 +32,9 @@ async function makeAggregatedSchema() {
       new RenameRootFields((_, name) => `proxy${capitalize(name)}`),
     ],
   });
-  const wrappedIpfsSchema = wrapSchema({
-    schema: ipfsSchema,
-    transforms: [
-      new RenameTypes((name) => `Ipfs${name}`),
-      new RenameRootFields((_, name) => `ipfs${name}`),
-    ],
-  });
-  const wrappedWeb2Schema = wrapSchema({
-    schema: web2Schema,
-    transforms: [
-      new RenameTypes((name) => `Web2${name}`),
-      new RenameRootFields((_, name) => `web2${name}`),
-    ],
-  });
 
   return stitchSchemas({
-    subschemas: [
-      wrappedProxySchema,
-      wrappedIpfsSchema,
-      wrappedWeb2Schema,
-      ...remoteSchemas,
-    ],
+    subschemas: [wrappedProxySchema, ...remoteSchemas],
   });
 }
 
