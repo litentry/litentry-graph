@@ -36,10 +36,18 @@ export type AccountInfo = {
 export type Auction = {
   __typename?: 'Auction';
   endingPeriod?: Maybe<AuctionEndingPeriod>;
-  latestBid?: Maybe<AuctionLatestBid>;
   leasePeriod?: Maybe<AuctionLeasePeriod>;
   raised: Scalars['String'];
   raisedPercent: Scalars['Float'];
+  winningBid?: Maybe<AuctionBid>;
+};
+
+export type AuctionBid = {
+  __typename?: 'AuctionBid';
+  amount: Scalars['String'];
+  blockNumber: Scalars['String'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
 };
 
 export type AuctionEndingPeriod = {
@@ -47,14 +55,6 @@ export type AuctionEndingPeriod = {
   endingIn: Scalars['String'];
   remaining: Scalars['String'];
   remainingPercent: Scalars['Float'];
-};
-
-export type AuctionLatestBid = {
-  __typename?: 'AuctionLatestBid';
-  amount: Scalars['String'];
-  blockNumber: Scalars['String'];
-  projectId: Scalars['String'];
-  projectName: Scalars['String'];
 };
 
 export type AuctionLeasePeriod = {
@@ -72,7 +72,7 @@ export type AuctionsInfo = {
 export type AuctionsSummary = {
   __typename?: 'AuctionsSummary';
   auctionsInfo: AuctionsInfo;
-  latestWinner: Auction;
+  latestAuction: Auction;
 };
 
 export type Balance = {
@@ -639,8 +639,8 @@ export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
   AccountInfo: ResolverTypeWrapper<AccountInfo>;
   Auction: ResolverTypeWrapper<Auction>;
+  AuctionBid: ResolverTypeWrapper<AuctionBid>;
   AuctionEndingPeriod: ResolverTypeWrapper<AuctionEndingPeriod>;
-  AuctionLatestBid: ResolverTypeWrapper<AuctionLatestBid>;
   AuctionLeasePeriod: ResolverTypeWrapper<AuctionLeasePeriod>;
   AuctionsInfo: ResolverTypeWrapper<AuctionsInfo>;
   AuctionsSummary: ResolverTypeWrapper<AuctionsSummary>;
@@ -731,8 +731,8 @@ export type ResolversParentTypes = {
   Account: Account;
   AccountInfo: AccountInfo;
   Auction: Auction;
+  AuctionBid: AuctionBid;
   AuctionEndingPeriod: AuctionEndingPeriod;
-  AuctionLatestBid: AuctionLatestBid;
   AuctionLeasePeriod: AuctionLeasePeriod;
   AuctionsInfo: AuctionsInfo;
   AuctionsSummary: AuctionsSummary;
@@ -832,10 +832,21 @@ export type AuctionResolvers<
   ParentType extends ResolversParentTypes['Auction'] = ResolversParentTypes['Auction'],
 > = {
   endingPeriod?: Resolver<Maybe<ResolversTypes['AuctionEndingPeriod']>, ParentType, ContextType>;
-  latestBid?: Resolver<Maybe<ResolversTypes['AuctionLatestBid']>, ParentType, ContextType>;
   leasePeriod?: Resolver<Maybe<ResolversTypes['AuctionLeasePeriod']>, ParentType, ContextType>;
   raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   raisedPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  winningBid?: Resolver<Maybe<ResolversTypes['AuctionBid']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionBidResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionBid'] = ResolversParentTypes['AuctionBid'],
+> = {
+  amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -846,17 +857,6 @@ export type AuctionEndingPeriodResolvers<
   endingIn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   remaining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   remainingPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AuctionLatestBidResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['AuctionLatestBid'] = ResolversParentTypes['AuctionLatestBid'],
-> = {
-  amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -883,7 +883,7 @@ export type AuctionsSummaryResolvers<
   ParentType extends ResolversParentTypes['AuctionsSummary'] = ResolversParentTypes['AuctionsSummary'],
 > = {
   auctionsInfo?: Resolver<ResolversTypes['AuctionsInfo'], ParentType, ContextType>;
-  latestWinner?: Resolver<ResolversTypes['Auction'], ParentType, ContextType>;
+  latestAuction?: Resolver<ResolversTypes['Auction'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1517,8 +1517,8 @@ export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   AccountInfo?: AccountInfoResolvers<ContextType>;
   Auction?: AuctionResolvers<ContextType>;
+  AuctionBid?: AuctionBidResolvers<ContextType>;
   AuctionEndingPeriod?: AuctionEndingPeriodResolvers<ContextType>;
-  AuctionLatestBid?: AuctionLatestBidResolvers<ContextType>;
   AuctionLeasePeriod?: AuctionLeasePeriodResolvers<ContextType>;
   AuctionsInfo?: AuctionsInfoResolvers<ContextType>;
   AuctionsSummary?: AuctionsSummaryResolvers<ContextType>;

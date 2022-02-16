@@ -36,11 +36,11 @@ export async function auctionsSummary(
       numAuctions: formatNumber(numAuctions) ?? 0,
       active: Boolean(leasePeriod)
     },
-    latestWinner: getLatestAuctionWinner(api, leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, endpoints)
+    latestAuction: getLatestAuction(api, leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, endpoints)
   }
 }
 
-const getLatestAuctionWinner = (
+const getLatestAuction = (
   api: ApiPromise,
   leasePeriod: LeasePeriodOf | null, 
   leasePeriodsPerSlot: Codec, 
@@ -70,7 +70,7 @@ const getLatestAuctionWinner = (
     },
     raised: formatNumber(raised),
     raisedPercent,
-    latestBid: {
+    winningBid: {
       blockNumber: String(formatNumber(lastWinners?.blockNumber)),
       projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
       projectName: endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',

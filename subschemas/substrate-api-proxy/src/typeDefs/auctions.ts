@@ -1,7 +1,7 @@
 export default /* GraphQL */ `
   type AuctionsSummary {
     auctionsInfo: AuctionsInfo!
-    latestWinner: Auction!
+    latestAuction: Auction!
   }
 
   type AuctionsInfo {
@@ -20,7 +20,7 @@ export default /* GraphQL */ `
     remainingPercent: Float!
   }
 
-  type AuctionLatestBid {
+  type AuctionBid {
     blockNumber: String!
     projectId: String!
     projectName: String!
@@ -32,7 +32,7 @@ export default /* GraphQL */ `
     endingPeriod: AuctionEndingPeriod
     raised: String!
     raisedPercent: Float!
-    latestBid: AuctionLatestBid
+    winningBid: AuctionBid
   }
 
   extend type Query {
