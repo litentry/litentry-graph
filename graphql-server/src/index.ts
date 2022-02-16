@@ -4,7 +4,7 @@ import { graphqlHTTP } from 'express-graphql';
 import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
-import { schema as proxySchema } from 'substrate-api-proxy';
+import { schema as substrateChainSchema } from 'substrate-chain';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
@@ -25,16 +25,16 @@ async function makeAggregatedSchema() {
     );
   }
 
-  const wrappedProxySchema = wrapSchema({
-    schema: proxySchema,
+  const wrappedSubstrateChainSchema = wrapSchema({
+    schema: substrateChainSchema,
     transforms: [
-      new RenameTypes((name) => `Proxy${capitalize(name)}`),
-      new RenameRootFields((_, name) => `proxy${capitalize(name)}`),
+      new RenameTypes((name) => `SubstrateChain${capitalize(name)}`),
+      new RenameRootFields((_, name) => `substrateChain${capitalize(name)}`),
     ],
   });
 
   return stitchSchemas({
-    subschemas: [wrappedProxySchema, ...remoteSchemas],
+    subschemas: [wrappedSubstrateChainSchema, ...remoteSchemas],
   });
 }
 
