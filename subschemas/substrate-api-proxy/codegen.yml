@@ -18,6 +18,8 @@ generates:
         Finder: ../resolvers/Query/tips#PartialFinder
         Who: ../resolvers/Query/tips#PartialWho
         Tipper: ../resolvers/Query/tips#PartialTipper
+        Curator: ../resolvers/Query/bounties#PartialCurator
+        Beneficiary: ../resolvers/Query/bounties#PartialBeneficiary
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

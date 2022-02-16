@@ -4,6 +4,7 @@ import {PartialRegistrar} from '../resolvers/Query/registrars';
 import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democracy';
 import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
 import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
+import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -92,34 +93,48 @@ export type BalanceData = {
   reserved: Scalars['Float'];
 };
 
+export type Beneficiary = {
+  __typename?: 'Beneficiary';
+  account: Account;
+  address: Scalars['String'];
+};
+
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
-  activeBounties: Scalars['Int'];
+  activeBounties: Scalars['String'];
   bountyCount: Scalars['String'];
+  formattedTotalValue: Scalars['String'];
   pastBounties: Scalars['String'];
+  progressPercent: Scalars['Int'];
+  timeLeft: Array<Scalars['String']>;
   totalValue: Scalars['String'];
-  treasurySpendPeriod: Scalars['String'];
 };
 
 export type Bounty = {
   __typename?: 'Bounty';
   bond: Scalars['String'];
-  bountyStatus?: Maybe<BountyStatus>;
+  bountyStatus: BountyStatus;
   curatorDeposit: Scalars['String'];
   description: Scalars['String'];
   fee: Scalars['String'];
+  formattedBond: Scalars['String'];
+  formattedCuratorDeposit: Scalars['String'];
+  formattedFee: Scalars['String'];
+  formattedValue: Scalars['String'];
   index: Scalars['String'];
-  proposer: Scalars['String'];
+  proposer: Proposer;
   value: Scalars['String'];
 };
 
 export type BountyStatus = {
   __typename?: 'BountyStatus';
-  beneficiary?: Maybe<Scalars['String']>;
-  curator?: Maybe<Scalars['String']>;
+  beneficiary?: Maybe<Beneficiary>;
+  curator?: Maybe<Curator>;
   status?: Maybe<Scalars['String']>;
   unlockAt?: Maybe<Scalars['String']>;
+  unlockAtTime?: Maybe<Array<Scalars['String']>>;
   updateDue?: Maybe<Scalars['String']>;
+  updateDueTime?: Maybe<Array<Scalars['String']>>;
 };
 
 export type ChainInfo = {
@@ -151,12 +166,15 @@ export type Conviction = {
 export type Council = {
   __typename?: 'Council';
   candidates: Array<CouncilCandidate>;
-  desiredRunnersUp?: Maybe<Scalars['Int']>;
-  desiredSeats?: Maybe<Scalars['Int']>;
+  desiredRunnersUp: Scalars['Int'];
+  desiredSeats: Scalars['Int'];
   members: Array<CouncilMember>;
   primeMember?: Maybe<CouncilMember>;
   runnersUp: Array<CouncilMember>;
   termProgress: TermProgress;
+  totalCandidates: Scalars['Int'];
+  totalMembers: Scalars['Int'];
+  totalRunnersUp: Scalars['Int'];
 };
 
 export type CouncilCandidate = {
@@ -169,7 +187,8 @@ export type CouncilMember = {
   __typename?: 'CouncilMember';
   account: Account;
   address: Scalars['String'];
-  backing?: Maybe<Scalars['String']>;
+  backing: Scalars['String'];
+  formattedBacking: Scalars['String'];
   voters: Array<Scalars['String']>;
 };
 
@@ -214,6 +233,12 @@ export type CrowdloanSummary = {
   totalFunds: Scalars['Int'];
   totalProgress: Scalars['Float'];
   totalRaised: Scalars['String'];
+};
+
+export type Curator = {
+  __typename?: 'Curator';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type DemocracySummary = {
@@ -412,7 +437,7 @@ export type Query = {
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
-  registrars?: Maybe<Array<Registrar>>;
+  registrarsSummary: RegistrarsSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasury: Treasury;
@@ -474,12 +499,22 @@ export type Referendum = {
 
 export type Registrar = {
   __typename?: 'Registrar';
-  account?: Maybe<Account>;
-  address?: Maybe<Scalars['String']>;
-  fee?: Maybe<Scalars['String']>;
-  formattedFee?: Maybe<Scalars['String']>;
+  account: Account;
+  address: Scalars['String'];
+  fee: Scalars['String'];
+  formattedFee: Scalars['String'];
   /** id: Registrar index */
   id: Scalars['String'];
+};
+
+export type RegistrarsSummary = {
+  __typename?: 'RegistrarsSummary';
+  formattedHighestFee: Scalars['String'];
+  formattedLowestFee: Scalars['String'];
+  highestFee: Scalars['String'];
+  list: Array<Registrar>;
+  lowestFee: Scalars['String'];
+  registrarsCount: Scalars['Int'];
 };
 
 export type RegistrationJudgement = {
@@ -488,11 +523,21 @@ export type RegistrationJudgement = {
   judgement?: Maybe<IdentityJudgement>;
 };
 
+export type SpendPeriod = {
+  __typename?: 'SpendPeriod';
+  percentage: Scalars['Int'];
+  period: Scalars['String'];
+  termLeft: Scalars['String'];
+  termLeftParts: Array<Scalars['String']>;
+};
+
 export type TermProgress = {
   __typename?: 'TermProgress';
-  percentage?: Maybe<Scalars['Int']>;
-  termDuration?: Maybe<Scalars['String']>;
-  termLeft?: Maybe<Scalars['String']>;
+  percentage: Scalars['Int'];
+  termDuration: Scalars['String'];
+  termDurationParts: Array<Scalars['String']>;
+  termLeft: Scalars['String'];
+  termLeftParts?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Tip = {
@@ -546,9 +591,9 @@ export type TreasurySummary = {
   __typename?: 'TreasurySummary';
   activeProposals: Scalars['Int'];
   approvedProposals: Scalars['Int'];
-  burn?: Maybe<Scalars['String']>;
-  proposalCount: Scalars['String'];
-  spendPeriod: Scalars['String'];
+  nextBurn: Scalars['String'];
+  spendPeriod: SpendPeriod;
+  totalProposals: Scalars['Int'];
   treasuryBalance: TreasuryBalance;
 };
 
@@ -646,10 +691,21 @@ export type ResolversTypes = {
   AuctionsSummary: ResolverTypeWrapper<AuctionsSummary>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
+  Beneficiary: ResolverTypeWrapper<PartialBeneficiary>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
-  Bounty: ResolverTypeWrapper<Bounty>;
-  BountyStatus: ResolverTypeWrapper<BountyStatus>;
+  Bounty: ResolverTypeWrapper<
+    Omit<Bounty, 'bountyStatus' | 'proposer'> & {
+      bountyStatus: ResolversTypes['BountyStatus'];
+      proposer: ResolversTypes['Proposer'];
+    }
+  >;
+  BountyStatus: ResolverTypeWrapper<
+    Omit<BountyStatus, 'beneficiary' | 'curator'> & {
+      beneficiary?: Maybe<ResolversTypes['Beneficiary']>;
+      curator?: Maybe<ResolversTypes['Curator']>;
+    }
+  >;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Contribution: ResolverTypeWrapper<PartialContribution>;
@@ -673,6 +729,7 @@ export type ResolversTypes = {
   >;
   CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
+  Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
@@ -707,7 +764,9 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Referendum: ResolverTypeWrapper<Omit<Referendum, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
+  RegistrarsSummary: ResolverTypeWrapper<Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversTypes['Registrar']>}>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
+  SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
@@ -738,10 +797,17 @@ export type ResolversParentTypes = {
   AuctionsSummary: AuctionsSummary;
   Balance: Balance;
   BalanceData: BalanceData;
+  Beneficiary: PartialBeneficiary;
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
-  Bounty: Bounty;
-  BountyStatus: BountyStatus;
+  Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & {
+    bountyStatus: ResolversParentTypes['BountyStatus'];
+    proposer: ResolversParentTypes['Proposer'];
+  };
+  BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & {
+    beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>;
+    curator?: Maybe<ResolversParentTypes['Curator']>;
+  };
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
   Contribution: PartialContribution;
@@ -761,6 +827,7 @@ export type ResolversParentTypes = {
   };
   CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
+  Curator: PartialCurator;
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
@@ -791,7 +858,9 @@ export type ResolversParentTypes = {
   Query: {};
   Referendum: Omit<Referendum, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   Registrar: PartialRegistrar;
+  RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversParentTypes['Registrar']>};
   RegistrationJudgement: RegistrationJudgement;
+  SpendPeriod: SpendPeriod;
   String: Scalars['String'];
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
@@ -910,15 +979,26 @@ export type BalanceDataResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type BeneficiaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Beneficiary'] = ResolversParentTypes['Beneficiary'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type BountiesSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary'],
 > = {
-  activeBounties?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pastBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  timeLeft?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   totalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  treasurySpendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -927,12 +1007,16 @@ export type BountyResolvers<
   ParentType extends ResolversParentTypes['Bounty'] = ResolversParentTypes['Bounty'],
 > = {
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  bountyStatus?: Resolver<Maybe<ResolversTypes['BountyStatus']>, ParentType, ContextType>;
+  bountyStatus?: Resolver<ResolversTypes['BountyStatus'], ParentType, ContextType>;
   curatorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedBond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedCuratorDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -941,11 +1025,13 @@ export type BountyStatusResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus'],
 > = {
-  beneficiary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  curator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  beneficiary?: Resolver<Maybe<ResolversTypes['Beneficiary']>, ParentType, ContextType>;
+  curator?: Resolver<Maybe<ResolversTypes['Curator']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   unlockAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  unlockAtTime?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   updateDue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updateDueTime?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -992,12 +1078,15 @@ export type CouncilResolvers<
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
 > = {
   candidates?: Resolver<Array<ResolversTypes['CouncilCandidate']>, ParentType, ContextType>;
-  desiredRunnersUp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  desiredSeats?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  desiredRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  desiredSeats?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   primeMember?: Resolver<Maybe<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   runnersUp?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   termProgress?: Resolver<ResolversTypes['TermProgress'], ParentType, ContextType>;
+  totalCandidates?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalMembers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1016,7 +1105,8 @@ export type CouncilMemberResolvers<
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  backing?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   voters?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1073,6 +1163,15 @@ export type CrowdloanSummaryResolvers<
   totalFunds?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalProgress?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   totalRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CuratorResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Curator'] = ResolversParentTypes['Curator'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1364,7 +1463,7 @@ export type QueryResolvers<
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
-  registrars?: Resolver<Maybe<Array<ResolversTypes['Registrar']>>, ParentType, ContextType>;
+  registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasury?: Resolver<ResolversTypes['Treasury'], ParentType, ContextType>;
@@ -1394,11 +1493,24 @@ export type RegistrarResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Registrar'] = ResolversParentTypes['Registrar'],
 > = {
-  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
-  address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  fee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  formattedFee?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RegistrarsSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['RegistrarsSummary'] = ResolversParentTypes['RegistrarsSummary'],
+> = {
+  formattedHighestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedLowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  highestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  list?: Resolver<Array<ResolversTypes['Registrar']>, ParentType, ContextType>;
+  lowestFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  registrarsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1411,13 +1523,26 @@ export type RegistrationJudgementResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SpendPeriodResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SpendPeriod'] = ResolversParentTypes['SpendPeriod'],
+> = {
+  percentage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  period?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termLeft?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termLeftParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TermProgressResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress'],
 > = {
-  percentage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  termDuration?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  termLeft?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  percentage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  termDuration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termDurationParts?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  termLeft?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  termLeftParts?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1488,9 +1613,9 @@ export type TreasurySummaryResolvers<
 > = {
   activeProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   approvedProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  burn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  proposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  spendPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nextBurn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  spendPeriod?: Resolver<ResolversTypes['SpendPeriod'], ParentType, ContextType>;
+  totalProposals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   treasuryBalance?: Resolver<ResolversTypes['TreasuryBalance'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1524,6 +1649,7 @@ export type Resolvers<ContextType = any> = {
   AuctionsSummary?: AuctionsSummaryResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
+  Beneficiary?: BeneficiaryResolvers<ContextType>;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
@@ -1538,6 +1664,7 @@ export type Resolvers<ContextType = any> = {
   Crowdloan?: CrowdloanResolvers<ContextType>;
   CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
+  Curator?: CuratorResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
@@ -1561,7 +1688,9 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Referendum?: ReferendumResolvers<ContextType>;
   Registrar?: RegistrarResolvers<ContextType>;
+  RegistrarsSummary?: RegistrarsSummaryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
+  SpendPeriod?: SpendPeriodResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
   Tipper?: TipperResolvers<ContextType>;
