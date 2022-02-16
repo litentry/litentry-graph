@@ -34,6 +34,48 @@ export type AccountInfo = {
   address: Scalars['String'];
 };
 
+export type Auction = {
+  __typename?: 'Auction';
+  endingPeriod?: Maybe<AuctionEndingPeriod>;
+  leasePeriod?: Maybe<AuctionLeasePeriod>;
+  raised: Scalars['String'];
+  raisedPercent: Scalars['Float'];
+  winningBid?: Maybe<AuctionBid>;
+};
+
+export type AuctionBid = {
+  __typename?: 'AuctionBid';
+  amount: Scalars['String'];
+  blockNumber: Scalars['String'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
+};
+
+export type AuctionEndingPeriod = {
+  __typename?: 'AuctionEndingPeriod';
+  endingIn: Scalars['String'];
+  remaining: Scalars['String'];
+  remainingPercent: Scalars['Float'];
+};
+
+export type AuctionLeasePeriod = {
+  __typename?: 'AuctionLeasePeriod';
+  first: Scalars['String'];
+  last: Scalars['String'];
+};
+
+export type AuctionsInfo = {
+  __typename?: 'AuctionsInfo';
+  active: Scalars['Boolean'];
+  numAuctions: Scalars['String'];
+};
+
+export type AuctionsSummary = {
+  __typename?: 'AuctionsSummary';
+  auctionsInfo: AuctionsInfo;
+  latestAuction: Auction;
+};
+
 export type Balance = {
   __typename?: 'Balance';
   consumers: Scalars['Int'];
@@ -372,6 +414,7 @@ export type Query = {
   __typename?: 'Query';
   account?: Maybe<Account>;
   activeCrowdloans: Array<Crowdloan>;
+  auctionsSummary: AuctionsSummary;
   balance: Balance;
   bounties: Array<Bounty>;
   bountiesSummary: BountiesSummary;
@@ -640,6 +683,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
   AccountInfo: ResolverTypeWrapper<AccountInfo>;
+  Auction: ResolverTypeWrapper<Auction>;
+  AuctionBid: ResolverTypeWrapper<AuctionBid>;
+  AuctionEndingPeriod: ResolverTypeWrapper<AuctionEndingPeriod>;
+  AuctionLeasePeriod: ResolverTypeWrapper<AuctionLeasePeriod>;
+  AuctionsInfo: ResolverTypeWrapper<AuctionsInfo>;
+  AuctionsSummary: ResolverTypeWrapper<AuctionsSummary>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
   Beneficiary: ResolverTypeWrapper<PartialBeneficiary>;
@@ -740,6 +789,12 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Account: Account;
   AccountInfo: AccountInfo;
+  Auction: Auction;
+  AuctionBid: AuctionBid;
+  AuctionEndingPeriod: AuctionEndingPeriod;
+  AuctionLeasePeriod: AuctionLeasePeriod;
+  AuctionsInfo: AuctionsInfo;
+  AuctionsSummary: AuctionsSummary;
   Balance: Balance;
   BalanceData: BalanceData;
   Beneficiary: PartialBeneficiary;
@@ -838,6 +893,66 @@ export type AccountInfoResolvers<
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Auction'] = ResolversParentTypes['Auction'],
+> = {
+  endingPeriod?: Resolver<Maybe<ResolversTypes['AuctionEndingPeriod']>, ParentType, ContextType>;
+  leasePeriod?: Resolver<Maybe<ResolversTypes['AuctionLeasePeriod']>, ParentType, ContextType>;
+  raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  raisedPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  winningBid?: Resolver<Maybe<ResolversTypes['AuctionBid']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionBidResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionBid'] = ResolversParentTypes['AuctionBid'],
+> = {
+  amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionEndingPeriodResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionEndingPeriod'] = ResolversParentTypes['AuctionEndingPeriod'],
+> = {
+  endingIn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  remaining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  remainingPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionLeasePeriodResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionLeasePeriod'] = ResolversParentTypes['AuctionLeasePeriod'],
+> = {
+  first?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  last?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionsInfoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionsInfo'] = ResolversParentTypes['AuctionsInfo'],
+> = {
+  active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  numAuctions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuctionsSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuctionsSummary'] = ResolversParentTypes['AuctionsSummary'],
+> = {
+  auctionsInfo?: Resolver<ResolversTypes['AuctionsInfo'], ParentType, ContextType>;
+  latestAuction?: Resolver<ResolversTypes['Auction'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1300,6 +1415,7 @@ export type QueryResolvers<
     RequireFields<QueryAccountArgs, 'address'>
   >;
   activeCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
+  auctionsSummary?: Resolver<ResolversTypes['AuctionsSummary'], ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['Balance'], ParentType, ContextType, RequireFields<QueryBalanceArgs, 'address'>>;
   bounties?: Resolver<Array<ResolversTypes['Bounty']>, ParentType, ContextType>;
   bountiesSummary?: Resolver<ResolversTypes['BountiesSummary'], ParentType, ContextType>;
@@ -1525,6 +1641,12 @@ export type WhoResolvers<
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   AccountInfo?: AccountInfoResolvers<ContextType>;
+  Auction?: AuctionResolvers<ContextType>;
+  AuctionBid?: AuctionBidResolvers<ContextType>;
+  AuctionEndingPeriod?: AuctionEndingPeriodResolvers<ContextType>;
+  AuctionLeasePeriod?: AuctionLeasePeriodResolvers<ContextType>;
+  AuctionsInfo?: AuctionsInfoResolvers<ContextType>;
+  AuctionsSummary?: AuctionsSummaryResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
   Beneficiary?: BeneficiaryResolvers<ContextType>;

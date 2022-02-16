@@ -1,4 +1,5 @@
 import account from './account';
+import auctions from './auctions';
 import balance from './balance';
 import bounties from './bounties';
 import chainInfo from './chainInfo';
@@ -16,6 +17,7 @@ import registrars from './registrars';
 
 export default [
   account,
+  auctions,
   balance,
   bounties,
   chainInfo,

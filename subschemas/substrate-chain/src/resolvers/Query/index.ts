@@ -1,4 +1,5 @@
 import {account} from './account';
+import {auctionsSummary} from './auctions';
 import balance from './balance';
 import {bountiesSummary, bounties, bounty} from './bounties';
 import chainInfo from './chainInfo';
@@ -23,6 +24,7 @@ import {registrarsSummary} from './registrars';
 
 export const Query = {
   account,
+  auctionsSummary,
   balance,
   bountiesSummary,
   bounties,
