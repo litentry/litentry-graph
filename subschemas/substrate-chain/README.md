@@ -1,4 +1,4 @@
-## Substrate API proxy (GraphQL API).
+## Substrate Chain (GraphQL API).
 
 ## Getting Started
 

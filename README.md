@@ -6,7 +6,7 @@ This repository contains the GraphQL server and the subschemas that are exposed 
 
 - [GraphQL Server](https://github.com/litentry/litentry-graph/blob/main/graphql-server/README.md)
 
-- [Substrate API Proxy](https://github.com/litentry/litentry-graph/blob/main/subschemas/substrate-api-proxy/README.md)
+- [Substrate Chain Wrapper](https://github.com/litentry/litentry-graph/blob/main/subschemas/substrate-chain/README.md)
 
 ## Getting Started
 
