@@ -1,7 +1,7 @@
 {
-  "name": "substrate-api-proxy",
+  "name": "substrate-chain",
   "version": "0.0.1",
-  "description": "GraphQL API as proxy for substrate networks",
+  "description": "GraphQL API as a wrapper for substrate networks",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

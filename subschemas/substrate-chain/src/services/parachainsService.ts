@@ -5,7 +5,7 @@ import type {LeasePeriod} from '../generated/resolvers-types';
 import type {Context} from '../types';
 
 import {BN_ZERO, formatNumber, BN_ONE, BN_HUNDRED} from '@polkadot/util';
-import {getBlockTime} from '../services/substrateChainService';
+import {getBlockTime} from './substrateChainService';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 
