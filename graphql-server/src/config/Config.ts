@@ -1,6 +1,6 @@
 export default interface Config {
   remoteSchemaConfig: {
-    name: 'eth' | 'bsc' | 'substrate';
+    name: string;
     url: string;
   }[];
   apiPort: number;
