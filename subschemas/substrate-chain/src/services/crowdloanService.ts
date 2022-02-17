@@ -31,8 +31,8 @@ interface Campaigns {
 
 export async function getFunds(paraIds: ParaId[], bestNumber: BlockNumber, api: ApiPromise): Promise<Campaigns> {
   const [rawFunds, rawLeases] = await Promise.all([
-    api.query.crowdloan?.funds?.multi<Option<FundInfo>>(paraIds),
-    api.query.slots?.leases?.multi(paraIds) as unknown as Option<ITuple<[AccountId, BalanceOf]>>[][],
+    api.query.crowdloan.funds.multi<Option<FundInfo>>(paraIds),
+    api.query.slots.leases.multi(paraIds) as unknown as Option<ITuple<[AccountId, BalanceOf]>>[][],
   ]);
   const funds = rawFunds ? optFundMulti.transform(paraIds, rawFunds, api.runtimeChain.toString()) : [];
   const leases = optLeaseMulti.transform(paraIds, rawLeases ?? []);
