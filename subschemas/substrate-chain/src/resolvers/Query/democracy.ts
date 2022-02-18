@@ -3,20 +3,20 @@ import type {DeriveProposal, DeriveReferendumExt} from '@polkadot/api-derive/typ
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {
   DemocracySummary,
-  Proposal,
-  Referendum,
+  DemocracyProposal,
+  DemocracyReferendum,
   LaunchPeriodInfo,
   Proposer,
   ProposalSecond,
 } from '../../generated/resolvers-types';
-
 import {Context} from '../../types';
 import {getCallParams, formatCallMeta} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
-import {BN_ONE, BN_HUNDRED} from '@polkadot/util';
-import {getBlockTime} from '../../services/substrateChainService';
+import {BN, BN_ONE, BN_HUNDRED} from '@polkadot/util';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {ApiPromise} from '@polkadot/api';
 
-interface ProposalInfo extends Omit<Proposal, 'seconds' | 'proposer'> {
+interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
   seconds: PartialProposalSecond[];
   proposer: PartialProposer;
 }
@@ -65,7 +65,7 @@ function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber:
   };
 }
 
-function formatProposalData(proposal: DeriveProposal): ProposalInfo | null {
+function formatProposalData(proposal: DeriveProposal, api: ApiPromise): ProposalInfo | null {
   const imageProposal = proposal.image?.proposal;
 
   if (imageProposal) {
@@ -73,6 +73,7 @@ function formatProposalData(proposal: DeriveProposal): ProposalInfo | null {
     return {
       meta,
       balance: proposal.balance?.toString(),
+      formattedBalance: proposal?.balance ? formatBalance(api, proposal.balance) : undefined,
       seconds: proposal.seconds.map((account) => ({
         address: account.toString(),
       })),
@@ -93,7 +94,7 @@ export async function democracyProposals(
 ): Promise<ProposalInfo[]> {
   const {api} = context;
   const activeProposals = await api.derive.democracy.proposals();
-  return activeProposals.map(formatProposalData).filter(notEmpty);
+  return activeProposals.map((proposal) => formatProposalData(proposal, api)).filter(notEmpty);
 }
 
 export async function democracyProposal(
@@ -105,7 +106,7 @@ export async function democracyProposal(
   const proposal = activeProposals.find((proposal) => proposal.index.toString() === index);
 
   if (proposal) {
-    return formatProposalData(proposal);
+    return formatProposalData(proposal, api);
   }
 
   return null;
@@ -115,7 +116,7 @@ function formatReferendumData(
   referendum: DeriveReferendumExt,
   api: Context['api'],
   bestNumber: BlockNumber,
-): Referendum | null {
+): DemocracyReferendum | null {
   const imageProposal = referendum.image?.proposal;
   if (imageProposal) {
     const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
@@ -124,15 +125,26 @@ function formatReferendumData(
     const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
     const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
 
+    const ayePercent = !referendum.votedTotal.isZero()
+      ? referendum.allAye
+          .reduce((total: BN, {balance}) => total.add(balance), new BN(0))
+          .muln(10000)
+          .div(referendum.votedTotal)
+          .toNumber() / 100
+      : 0;
+
     const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
     return {
       meta,
       endPeriod,
       activatePeriod,
       votedAye: referendum.votedAye.toString(),
+      formattedVotedAye: formatBalance(api, referendum.votedAye),
       votedNay: referendum.votedNay.toString(),
+      formattedVotedNay: formatBalance(api, referendum.votedNay),
       voteCountAye: referendum.voteCountAye.toString(),
       voteCountNay: referendum.voteCountNay.toString(),
+      ayePercent,
       index: referendum.index.toString(),
       hash: String(imageProposal.hash),
       ...getCallParams(imageProposal),
@@ -146,7 +158,7 @@ export async function democracyReferendums(
   _: Record<string, never>,
   __: Record<string, never>,
   context: Context,
-): Promise<Referendum[]> {
+): Promise<DemocracyReferendum[]> {
   const {api} = context;
   const [activeReferendums, bestNumber] = await Promise.all([
     api.derive.democracy.referendums(),
@@ -160,7 +172,7 @@ export async function democracyReferendum(
   _: Record<string, never>,
   {index}: {index: string},
   {api}: Context,
-): Promise<Referendum | null> {
+): Promise<DemocracyReferendum | null> {
   const [activeReferendums, bestNumber] = await Promise.all([
     api.derive.democracy.referendums(),
     api.derive.chain.bestNumber(),
