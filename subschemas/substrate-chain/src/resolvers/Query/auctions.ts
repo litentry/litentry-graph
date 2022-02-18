@@ -1,8 +1,7 @@
-
 import {ApiPromise} from '@polkadot/api';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
-import type {ITuple, Registry, Codec} from '@polkadot/types/types';
+import type {ITuple, Codec} from '@polkadot/types/types';
 import type {u32, u128, Option, StorageKey} from '@polkadot/types';
 import type {AuctionIndex, BlockNumber, LeasePeriodOf, WinningData} from '@polkadot/types/interfaces';
 import {BN, BN_ONE, BN_ZERO, formatNumber} from '@polkadot/util';
@@ -16,16 +15,17 @@ export async function auctionsSummary(
   __: Record<string, string>,
   {api}: Context,
 ): Promise<AuctionsSummary> {
-  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, genesisHash] = await Promise.all([
-    api.query.auctions?.auctionCounter?.<AuctionIndex>(),
-    api.query.auctions?.auctionInfo?.<Option<ITuple<[LeasePeriodOf, BlockNumber]>>>(),
-    api.consts.auctions?.leasePeriodsPerSlot,
-    api.consts.auctions?.endingPeriod as BlockNumber | undefined,
-    api.query.auctions?.winning?.entries() as Promise<[StorageKey<[BlockNumber]>, Option<WinningData>][]>,
-    api.query.balances.totalIssuance(),
-    api.derive.chain.bestNumber(),
-    api.genesisHash.toHex(),
-  ]);
+  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, genesisHash] =
+    await Promise.all([
+      api.query.auctions?.auctionCounter?.<AuctionIndex>(),
+      api.query.auctions?.auctionInfo?.<Option<ITuple<[LeasePeriodOf, BlockNumber]>>>(),
+      api.consts.auctions?.leasePeriodsPerSlot,
+      api.consts.auctions?.endingPeriod as BlockNumber | undefined,
+      api.query.auctions?.winning?.entries() as Promise<[StorageKey<[BlockNumber]>, Option<WinningData>][]>,
+      api.query.balances.totalIssuance(),
+      api.derive.chain.bestNumber(),
+      api.genesisHash.toHex(),
+    ]);
   const [leasePeriod, endBlock] = optInfo?.unwrapOr([null, null]) ?? [null, null];
   const winningData = extractWinningData({endBlock, leasePeriod, numAuctions, leasePeriodsPerSlot}, winners);
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
@@ -34,21 +34,31 @@ export async function auctionsSummary(
   return {
     auctionsInfo: {
       numAuctions: formatNumber(numAuctions) ?? 0,
-      active: Boolean(leasePeriod)
+      active: Boolean(leasePeriod),
     },
-    latestAuction: getLatestAuction(api, leasePeriod, leasePeriodsPerSlot, winningData, totalIssuance, bestNumber, endBlock, endingPeriod, endpoints)
-  }
+    latestAuction: getLatestAuction(
+      api,
+      leasePeriod,
+      leasePeriodsPerSlot,
+      winningData,
+      totalIssuance,
+      bestNumber,
+      endBlock,
+      endingPeriod,
+      endpoints,
+    ),
+  };
 }
 
 const getLatestAuction = (
   api: ApiPromise,
-  leasePeriod: LeasePeriodOf | null, 
-  leasePeriodsPerSlot: Codec, 
-  winningData: Winning[], 
-  totalIssuance: u128, 
-  bestNumber: BlockNumber, 
-  endBlock: BlockNumber | null, 
-  endingPeriod: BlockNumber | undefined, 
+  leasePeriod: LeasePeriodOf | null,
+  leasePeriodsPerSlot: Codec,
+  winningData: Winning[],
+  totalIssuance: u128,
+  bestNumber: BlockNumber,
+  endBlock: BlockNumber | null,
+  endingPeriod: BlockNumber | undefined,
   endpoints: LinkOption[],
 ): Auction => {
   const lastWinners = winningData && winningData[0];
@@ -73,11 +83,12 @@ const getLatestAuction = (
     winningBid: {
       blockNumber: String(formatNumber(lastWinners?.blockNumber)),
       projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
-      projectName: endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',
+      projectName:
+        endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',
       amount: String(formatBalance(api, lastWinners?.total)),
-    }
+    },
   };
-}
+};
 
 const getEndingPeriodValues = (bestNumber: BlockNumber, endBlock: any, endingPeriod: any): [BN, BN] => {
   if (endBlock && bestNumber) {
@@ -88,4 +99,4 @@ const getEndingPeriodValues = (bestNumber: BlockNumber, endBlock: any, endingPer
     }
   }
   return [BN_ZERO, BN_ZERO];
-}
+};

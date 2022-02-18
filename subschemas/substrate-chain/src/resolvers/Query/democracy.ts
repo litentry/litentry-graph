@@ -1,7 +1,14 @@
 import type {u32} from '@polkadot/types';
 import type {DeriveProposal, DeriveReferendumExt} from '@polkadot/api-derive/types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {DemocracySummary, Proposal, Referendum, LaunchPeriodInfo} from '../../generated/resolvers-types';
+import type {
+  DemocracySummary,
+  Proposal,
+  Referendum,
+  LaunchPeriodInfo,
+  Proposer,
+  ProposalSecond,
+} from '../../generated/resolvers-types';
 
 import {Context} from '../../types';
 import {getCallParams, formatCallMeta} from '../../utils/call';
@@ -14,13 +21,9 @@ interface ProposalInfo extends Omit<Proposal, 'seconds' | 'proposer'> {
   proposer: PartialProposer;
 }
 
-export type PartialProposalSecond = {
-  address: string;
-};
+export type PartialProposalSecond = Omit<ProposalSecond, 'account'>;
 
-export type PartialProposer = {
-  address: string;
-};
+export type PartialProposer = Omit<Proposer, 'account'>;
 
 export async function democracySummary(
   _: Record<string, never>,
