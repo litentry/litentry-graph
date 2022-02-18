@@ -21,9 +21,9 @@ export default /* GraphQL */ `
     callIndex: String!
   }
   type PalletProposal {
-    proposer: String!
+    proposer: Account!
     value: String!
-    beneficiary: String!
+    beneficiary: Account!
     bond: String!
   }
   type TreasuryProposal {
