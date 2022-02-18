@@ -24,6 +24,7 @@ export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> 
   const {formattedTime: remainder} = getBlockTime(api, periodRemainder);
 
   return {
+    currentPeriod: currentPeriod,
     currentLease: formatNumber(currentPeriod),
     totalPeriod,
     progressPercent,

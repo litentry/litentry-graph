@@ -1,11 +1,12 @@
 import {ApiPromise} from '@polkadot/api';
 import type {Option} from '@polkadot/types';
-import type {ParaId, ParaLifecycle} from '@polkadot/types/interfaces';
+import type {BlockNumber, ParaId, ParaLifecycle} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
+import type {LeasePeriod, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
 import {getLeasePeriod, getUpcomingParaIds} from '../../services/parachainsService';
+import {BN, BN_ONE, formatNumber, bnToBn, bnToHex} from '@polkadot/util';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -60,25 +61,55 @@ const extractParachainData = async (
 ): Promise<Parachain> => {
   const id = parachain!.paraId!;
 
-  const [leases, optLifecycle] = await Promise.all([
-    api.query.slots?.leases?.(id),
-    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id)
+  const [leases, optLifecycle, leasePeriod] = await Promise.all([
+    api.query.slots?.leases?.(id) as any,
+    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id),
+    getLeasePeriod(api),
   ]);
 
   console.log(optLifecycle?.unwrap());
   console.log(leases);
+
+  const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
+  const period = leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
+  
 
   console.dir(JSON.stringify(parachain));
   return {
     id: id.toString(),
     name: parachain!.text.toString(),
     lease: {
-      period: undefined,
-      blockTime: undefined,
+      period: period,
+      blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
     },
     lifecycle: "",
     lastIncludedBlock: "",
     lastBackedBlock: "",
     homepage: parachain!.homepage,
   };
+}
+
+function getBlocks(api: ApiPromise, leases: any, leasePeriod: LeasePeriod) {
+  const length = api.consts.slots.leasePeriod as BlockNumber;
+  const lastLease = leases ? leases[leases.length - 1] : null;
+  const leaseValue = lastLease ? lastLease + 1 : null;
+  return leasePeriod && leaseValue && bnToBn(leaseValue).sub(BN_ONE).imul(length).iadd(bnToBn(leasePeriod.remainder));
+}
+
+function getLeasePeriodString(currentPeriod: BN, leases: number[]): string {
+  return leases
+    .reduce((all: [BN, BN][], _period): [BN, BN][] => {
+      const bnp = currentPeriod.addn(_period);
+
+      if (!all.length || all[all.length - 1]?.[1].add(BN_ONE).lt(bnp)) {
+        all.push([bnp, bnp]);
+      } else {
+        const bn = all[all.length - 1];
+        bn ? (bn[1] = bnp) : null;
+      }
+
+      return all;
+    }, [])
+    .map(([a, b]) => (a.eq(b) ? formatNumber(a) : `${formatNumber(a)} - ${formatNumber(b)}`))
+    .join(', ');
 }
