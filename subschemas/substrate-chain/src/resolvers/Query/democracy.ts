@@ -14,7 +14,6 @@ import {getCallParams, formatCallMeta} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
 import {BN, BN_ONE, BN_HUNDRED} from '@polkadot/util';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {ApiPromise} from '@polkadot/api';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
   seconds: PartialProposalSecond[];
@@ -65,7 +64,7 @@ function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber:
   };
 }
 
-function formatProposalData(proposal: DeriveProposal, api: ApiPromise): ProposalInfo | null {
+function formatProposalData(proposal: DeriveProposal, api: Context['api']): ProposalInfo | null {
   const imageProposal = proposal.image?.proposal;
 
   if (imageProposal) {
