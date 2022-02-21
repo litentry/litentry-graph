@@ -341,9 +341,9 @@ export type MotionVotes = {
 
 export type PalletProposal = {
   __typename?: 'PalletProposal';
-  beneficiary: Scalars['String'];
+  beneficiary: Account;
   bond: Scalars['String'];
-  proposer: Scalars['String'];
+  proposer: Account;
   value: Scalars['String'];
 };
 
@@ -1313,9 +1313,9 @@ export type PalletProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['PalletProposal'] = ResolversParentTypes['PalletProposal'],
 > = {
-  beneficiary?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  beneficiary?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

@@ -1,9 +1,10 @@
 import type {Context} from '../../types';
+import type {TreasurySummary, Treasury, SpendPeriod} from '../../generated/resolvers-types';
 import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
-import type {TreasurySummary, Treasury, SpendPeriod} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {AccountsService} from '../../services/accountsService';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
@@ -82,17 +83,21 @@ function processTreasuryCouncils(councils: DeriveCollectiveProposal[]) {
   }));
 }
 
-function processProposals(proposals: DeriveTreasuryProposal[]) {
-  return proposals.map((data) => ({
-    id: data.id.toString(),
-    proposal: {
-      proposer: data.proposal.proposer.toString(),
-      value: data.proposal.value.toString(),
-      beneficiary: data.proposal.beneficiary.toString(),
-      bond: data.proposal.bond.toString(),
-    },
-    councils: processTreasuryCouncils(data.council),
-  }));
+async function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal[]) {
+  const accountsService = new AccountsService(api);
+
+  return Promise.all(
+    proposals.map(async (data) => ({
+      id: data.id.toString(),
+      proposal: {
+        proposer: await accountsService.getAccount(data.proposal.proposer.toString()),
+        value: formatBalance(api, data.proposal.value),
+        beneficiary: await accountsService.getAccount(data.proposal.beneficiary.toString()),
+        bond: formatBalance(api, data.proposal.bond),
+      },
+      councils: processTreasuryCouncils(data.council),
+    })),
+  );
 }
 
 export async function treasury(
@@ -100,10 +105,13 @@ export async function treasury(
   __: Record<string, string>,
   {api}: Context,
 ): Promise<Treasury> {
-  const proposals = await api.derive.treasury.proposals();
+  const treasuryProposals = await api.derive.treasury.proposals();
+
+  const approvals = await processProposals(api, treasuryProposals.approvals);
+  const proposals = await processProposals(api, treasuryProposals.proposals);
 
   return {
-    approvals: processProposals(proposals.approvals),
-    proposals: processProposals(proposals.proposals),
+    approvals,
+    proposals,
   };
 }
