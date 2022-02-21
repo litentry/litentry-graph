@@ -197,6 +197,7 @@ export type CouncilMotion = {
   hash: Scalars['String'];
   proposal: MotionProposal;
   votes?: Maybe<MotionVotes>;
+  votingStatus?: Maybe<VotingStatus>;
 };
 
 export type Crowdloan = {
@@ -365,10 +366,11 @@ export type MotionProposal = {
 
 export type MotionVotes = {
   __typename?: 'MotionVotes';
-  ayes: Array<Scalars['String']>;
+  ayes: Array<Account>;
   end: Scalars['String'];
+  endTime: Array<Scalars['String']>;
   index: Scalars['Int'];
-  nays: Array<Scalars['String']>;
+  nays: Array<Account>;
   threshold: Scalars['Int'];
 };
 
@@ -607,6 +609,17 @@ export type ValidatorsGroup = {
   validators?: Maybe<Array<AccountInfo>>;
 };
 
+export type VotingStatus = {
+  __typename?: 'VotingStatus';
+  hasFailed: Scalars['Boolean'];
+  hasPassed: Scalars['Boolean'];
+  isCloseable: Scalars['Boolean'];
+  isVoteable: Scalars['Boolean'];
+  remainingBlocks?: Maybe<Scalars['String']>;
+  remainingBlocksTime?: Maybe<Array<Scalars['String']>>;
+  status: Scalars['String'];
+};
+
 export type Who = {
   __typename?: 'Who';
   account: Account;
@@ -788,6 +801,7 @@ export type ResolversTypes = {
   TreasuryProposal: ResolverTypeWrapper<TreasuryProposal>;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
   ValidatorsGroup: ResolverTypeWrapper<ValidatorsGroup>;
+  VotingStatus: ResolverTypeWrapper<VotingStatus>;
   Who: ResolverTypeWrapper<PartialWho>;
 };
 
@@ -882,6 +896,7 @@ export type ResolversParentTypes = {
   TreasuryProposal: TreasuryProposal;
   TreasurySummary: TreasurySummary;
   ValidatorsGroup: ValidatorsGroup;
+  VotingStatus: VotingStatus;
   Who: PartialWho;
 };
 
@@ -1126,6 +1141,7 @@ export type CouncilMotionResolvers<
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposal?: Resolver<ResolversTypes['MotionProposal'], ParentType, ContextType>;
   votes?: Resolver<Maybe<ResolversTypes['MotionVotes']>, ParentType, ContextType>;
+  votingStatus?: Resolver<Maybe<ResolversTypes['VotingStatus']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1348,10 +1364,11 @@ export type MotionVotesResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['MotionVotes'] = ResolversParentTypes['MotionVotes'],
 > = {
-  ayes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  ayes?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   end?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  endTime?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  nays?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  nays?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   threshold?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1641,6 +1658,20 @@ export type ValidatorsGroupResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VotingStatusResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['VotingStatus'] = ResolversParentTypes['VotingStatus'],
+> = {
+  hasFailed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPassed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isCloseable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isVoteable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  remainingBlocks?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  remainingBlocksTime?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WhoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Who'] = ResolversParentTypes['Who'],
@@ -1711,5 +1742,6 @@ export type Resolvers<ContextType = any> = {
   TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
   ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
+  VotingStatus?: VotingStatusResolvers<ContextType>;
   Who?: WhoResolvers<ContextType>;
 };
