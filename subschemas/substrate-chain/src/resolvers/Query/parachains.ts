@@ -1,10 +1,10 @@
-import type {BlockNumber, ParaId} from '@polkadot/types/interfaces';
+import type {ParaId} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {LeasePeriod, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
-import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds} from '../../services/parachainsService';
-import {BN, BN_ONE, formatNumber, bnToBn, bnToHex} from '@polkadot/util';
+import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
+import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds, getBlocks, getLeasePeriodString} from '../../services/parachainsService';
+import {bnToBn, bnToHex} from '@polkadot/util';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -82,29 +82,4 @@ const extractParachainData = async (
     validators: undefined,
     nonVoters: undefined,
   };
-}
-
-function getBlocks(api: Context['api'], leases: any, leasePeriod: LeasePeriod) {
-  const length = api.consts.slots.leasePeriod as BlockNumber;
-  const lastLease = leases ? leases[leases.length - 1] : null;
-  const leaseValue = lastLease ? lastLease + 1 : null;
-  return leasePeriod && leaseValue && bnToBn(leaseValue).sub(BN_ONE).imul(length).iadd(bnToBn(leasePeriod.remainder));
-}
-
-function getLeasePeriodString(currentPeriod: BN, leases: number[]): string {
-  return leases
-    .reduce((all: [BN, BN][], _period): [BN, BN][] => {
-      const bnp = currentPeriod.addn(_period);
-
-      if (!all.length || all[all.length - 1]?.[1].add(BN_ONE).lt(bnp)) {
-        all.push([bnp, bnp]);
-      } else {
-        const bn = all[all.length - 1];
-        bn ? (bn[1] = bnp) : null;
-      }
-
-      return all;
-    }, [])
-    .map(([a, b]) => (a.eq(b) ? formatNumber(a) : `${formatNumber(a)} - ${formatNumber(b)}`))
-    .join(', ');
 }

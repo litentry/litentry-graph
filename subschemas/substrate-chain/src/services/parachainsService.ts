@@ -4,7 +4,7 @@ import type {Option, StorageKey} from '@polkadot/types';
 import type {LeasePeriod} from '../generated/resolvers-types';
 import type {Context} from '../types';
 
-import {BN_ZERO, formatNumber, BN, BN_ONE, BN_HUNDRED} from '@polkadot/util';
+import {BN_ZERO, formatNumber, BN, BN_ONE, BN_HUNDRED, bnToBn} from '@polkadot/util';
 import {getBlockTime} from './substrateChainService';
 import { IEvent } from '@polkadot/types/types';
 
@@ -22,8 +22,6 @@ export interface Result {
   lastIncluded: EventMap;
   lastTimeout: EventMap;
 }
-
-const EMPTY_EVENTS: Result = { lastBacked: {}, lastIncluded: {}, lastTimeout: {} };
 
 export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> {
   const bestNumber = await api.derive.chain.bestNumber();
@@ -51,6 +49,37 @@ export async function getUpcomingParaIds(api: Context['api']) {
   const paraIdEntries = (await api.query.paras?.paraLifecycles?.entries()) as ParaIdEntries | undefined;
 
   return extractUpcomingParaIds(paraIdEntries);
+}
+
+
+export function getBlocks(api: Context['api'], leases: number[], leasePeriod: LeasePeriod): BN | undefined {
+  const length = api.consts.slots.leasePeriod as BlockNumber;
+  const lastLease = leases ? leases[leases.length - 1] : null;
+  const leaseValue = lastLease ? lastLease + 1 : null;
+
+  if (!leasePeriod || !leaseValue) {
+    return undefined;
+  }
+
+  return bnToBn(leaseValue).sub(BN_ONE).imul(length).iadd(bnToBn(leasePeriod.remainder));
+}
+
+export function getLeasePeriodString(currentPeriod: BN, leases: number[]): string {
+  return leases
+    .reduce((all: [BN, BN][], _period): [BN, BN][] => {
+      const bnp = currentPeriod.addn(_period);
+
+      if (!all.length || all[all.length - 1]?.[1].add(BN_ONE).lt(bnp)) {
+        all.push([bnp, bnp]);
+      } else {
+        const bn = all[all.length - 1];
+        bn ? (bn[1] = bnp) : null;
+      }
+
+      return all;
+    }, [])
+    .map(([a, b]) => (a.eq(b) ? formatNumber(a) : `${formatNumber(a)} - ${formatNumber(b)}`))
+    .join(', ');
 }
 
 export async function getLastEvents(api: Context['api']): Promise<Result> {
