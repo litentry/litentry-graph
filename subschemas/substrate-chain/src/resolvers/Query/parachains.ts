@@ -1,11 +1,9 @@
-import {ApiPromise} from '@polkadot/api';
-import type {Option} from '@polkadot/types';
-import type {BlockNumber, ParaId, ParaLifecycle} from '@polkadot/types/interfaces';
+import type {BlockNumber, ParaId} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
 import type {LeasePeriod, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
-import {getLeasePeriod, getUpcomingParaIds} from '../../services/parachainsService';
+import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds} from '../../services/parachainsService';
 import {BN, BN_ONE, formatNumber, bnToBn, bnToHex} from '@polkadot/util';
 
 export async function parachainsInfo(
@@ -29,15 +27,15 @@ export async function parachainsInfo(
 }
 
 export async function parachains(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Promise<Parachain>[]> {
-  const [parachainIds, genesisHash] = await Promise.all([
+  const [parachainIds, genesisHash, lastEvents] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     api.genesisHash.toHex(),
+    getLastEvents(api),
   ]);
 
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
 
-  // return await enrichParachainArray(api, parachains, endpoints);
   const parachains = parachainIds.map(paraId => {
     const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
 
@@ -48,7 +46,7 @@ export async function parachains(_: Record<string, never>, __: Record<string, ne
     return parachain;
   }).filter((elem) => elem !== undefined) as LinkOption[];
 
-  return parachains.map((p) => extractParachainData(api, p));
+  return parachains.map((p) => extractParachainData(api, p, lastEvents));
 }
 
 export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
@@ -56,25 +54,20 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 }
 
 const extractParachainData = async (
-  api: ApiPromise,
+  api: Context['api'],
   parachain: LinkOption | undefined,
+  lastEvents: Result,
 ): Promise<Parachain> => {
   const id = parachain!.paraId!;
 
-  const [leases, optLifecycle, leasePeriod] = await Promise.all([
+  const [leases, leasePeriod] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
-    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id),
     getLeasePeriod(api),
   ]);
 
-  console.log(optLifecycle?.unwrap());
-  console.log(leases);
-
   const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
   const period = leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
-  
 
-  console.dir(JSON.stringify(parachain));
   return {
     id: id.toString(),
     name: parachain!.text.toString(),
@@ -83,13 +76,15 @@ const extractParachainData = async (
       blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
     },
     lifecycle: "",
-    lastIncludedBlock: "",
-    lastBackedBlock: "",
+    lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? "",
+    lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? "",
     homepage: parachain!.homepage,
+    validators: undefined,
+    nonVoters: undefined,
   };
 }
 
-function getBlocks(api: ApiPromise, leases: any, leasePeriod: LeasePeriod) {
+function getBlocks(api: Context['api'], leases: any, leasePeriod: LeasePeriod) {
   const length = api.consts.slots.leasePeriod as BlockNumber;
   const lastLease = leases ? leases[leases.length - 1] : null;
   const leaseValue = lastLease ? lastLease + 1 : null;
