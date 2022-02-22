@@ -19,7 +19,7 @@ export async function councilMotions(
   ]);
 
   const accountService = new AccountsService(api);
-  const councilMembers = electionsInfo.members
+  const councilMembers = electionsInfo.members;
 
   return await Promise.all(
     motions.map(async (motion) => {
