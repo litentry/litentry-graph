@@ -36,9 +36,10 @@ export default /* GraphQL */ `
   type MotionVotes {
     index: Int!
     threshold: Int!
-    ayes: [String!]!
-    nays: [String!]!
+    ayes: [Account!]!
+    nays: [Account!]!
     end: String!
+    endTime: [String!]!
   }
 
   type MotionProposal {
@@ -48,10 +49,21 @@ export default /* GraphQL */ `
     hash: String!
   }
 
+  type VotingStatus {
+    hasFailed: Boolean!
+    hasPassed: Boolean!
+    isCloseable: Boolean!
+    isVoteable: Boolean!
+    remainingBlocks: String
+    remainingBlocksTime: [String!]
+    status: String!
+  }
+
   type CouncilMotion {
     hash: String!
     proposal: MotionProposal!
     votes: MotionVotes
+    votingStatus: VotingStatus
   }
 
   type Query {
