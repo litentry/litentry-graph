@@ -12,13 +12,14 @@ export async function councilMotions(
   __: Record<string, never>,
   {api}: Context,
 ): Promise<CouncilMotion[]> {
-  const [motions, councilMembers, bestNumber] = await Promise.all([
+  const [motions, electionsInfo, bestNumber] = await Promise.all([
     api.derive.council.proposals(),
-    api.query.council.members(),
+    api.derive.elections.info(),
     api.derive.chain.bestNumber(),
   ]);
 
   const accountService = new AccountsService(api);
+  const councilMembers = electionsInfo.members
 
   return await Promise.all(
     motions.map(async (motion) => {
