@@ -66,7 +66,7 @@ const extractParachainData = async (
   const [leases, leasePeriod, optLifecycle] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
-    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id)
+    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id),
   ]);
 
   const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
