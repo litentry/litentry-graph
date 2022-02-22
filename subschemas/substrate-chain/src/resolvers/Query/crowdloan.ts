@@ -1,5 +1,5 @@
 import type {Context} from '../../types';
-import type {CrowdloanSummary, Crowdloan} from '../../generated/resolvers-types';
+import type {CrowdloanSummary, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
 import type {ParaId} from '@polkadot/types/interfaces';
 import {getFunds, extractActiveFunds, extractEndedFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
@@ -54,13 +54,9 @@ interface CrowdloanInfo extends Omit<Crowdloan, 'depositor' | 'contribution'> {
   contribution: PartialContribution;
 }
 
-export type PartialDepositor = {
-  address: string;
-};
+export type PartialDepositor = Omit<Depositor, 'account'>;
 
-export type PartialContribution = {
-  paraId: string;
-};
+export type PartialContribution = Omit<Contribution, 'contribution'>;
 
 export async function activeCrowdloans(
   _: Record<string, never>,

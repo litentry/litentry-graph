@@ -1,7 +1,7 @@
 import type {Context} from '../../types';
 import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Council, TermProgress} from '../../generated/resolvers-types';
+import type {Council, TermProgress, CouncilCandidate, CouncilMember} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
@@ -116,13 +116,6 @@ function getTermLeft(termDuration: BN, bestNumber: BlockNumber) {
   };
 }
 
-export type PartialCouncilCandidate = {
-  address: string;
-};
+export type PartialCouncilCandidate = Omit<CouncilCandidate, 'account'>;
 
-export type PartialCouncilMember = {
-  address: string;
-  backing: string;
-  formattedBacking: string;
-  voters: string[];
-};
+export type PartialCouncilMember = Omit<CouncilMember, 'account'>;

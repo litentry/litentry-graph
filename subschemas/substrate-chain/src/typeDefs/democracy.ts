@@ -17,7 +17,7 @@ export default /* GraphQL */ `
     name: String
     type: String
     value: String
-    subCalls: [Proposal]
+    subCalls: [DemocracyProposal]
   }
 
   type Proposer {
@@ -30,9 +30,10 @@ export default /* GraphQL */ `
     account: Account!
   }
 
-  type Proposal {
+  type DemocracyProposal {
     index: String!
     balance: String
+    formattedBalance: String
     seconds: [ProposalSecond!]!
     meta: String!
     method: String!
@@ -42,7 +43,7 @@ export default /* GraphQL */ `
     proposer: Proposer!
   }
 
-  type Referendum {
+  type DemocracyReferendum {
     index: String!
     meta: String!
     method: String!
@@ -52,16 +53,19 @@ export default /* GraphQL */ `
     endPeriod: [String!]!
     activatePeriod: [String!]!
     votedAye: String!
+    formattedVotedAye: String!
     votedNay: String!
+    formattedVotedNay: String!
     voteCountAye: String!
     voteCountNay: String!
+    ayePercent: Float!
   }
 
   type Query {
     democracySummary: DemocracySummary!
-    democracyProposals: [Proposal!]!
-    democracyReferendums: [Referendum!]!
-    democracyProposal(index: String!): Proposal
-    democracyReferendum(index: String!): Referendum
+    democracyProposals: [DemocracyProposal!]!
+    democracyReferendums: [DemocracyReferendum!]!
+    democracyProposal(index: String!): DemocracyProposal
+    democracyReferendum(index: String!): DemocracyReferendum
   }
 `;
