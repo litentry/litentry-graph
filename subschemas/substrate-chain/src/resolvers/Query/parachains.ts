@@ -1,10 +1,13 @@
-import type {ParaId} from '@polkadot/types/interfaces';
+import type {ParaId, ParaLifecycle} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
 import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
 import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds, getBlocks, getLeasePeriodString} from '../../services/parachainsService';
 import {bnToBn, bnToHex} from '@polkadot/util';
+import type {Option} from '@polkadot/types';
+
+// import type {ParaId, , CandidatePendingAvailability} from '@polkadot/types/interfaces';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -55,30 +58,31 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 
 const extractParachainData = async (
   api: Context['api'],
-  parachain: LinkOption | undefined,
+  parachain: LinkOption,
   lastEvents: Result,
 ): Promise<Parachain> => {
-  const id = parachain!.paraId!;
+  const id = parachain.paraId!;
 
-  const [leases, leasePeriod] = await Promise.all([
+  const [leases, leasePeriod, optLifecycle] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
+    api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id)
   ]);
 
   const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
   const period = leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
-
+  
   return {
     id: id.toString(),
-    name: parachain!.text.toString(),
+    name: parachain.text?.toString() ?? `#${id.toString()}`,
     lease: {
       period: period,
       blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
     },
-    lifecycle: "",
+    lifecycle: optLifecycle?.unwrap().toString() ?? "",
     lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? "",
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? "",
-    homepage: parachain!.homepage,
+    homepage: parachain.homepage ?? undefined,
     validators: undefined,
     nonVoters: undefined,
   };
