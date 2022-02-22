@@ -1,8 +1,8 @@
-import type {ParaId, ParaLifecycle} from '@polkadot/types/interfaces';
+import type {ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
+import type {AccountInfo, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
 import {
   ValidatorsInfo,
   getParachainValidators,
@@ -13,6 +13,7 @@ import {
   getBlocks,
   getLeasePeriodString,
   getNonVoters,
+  getValidatorInfo,
 } from '../../services/parachainsService';
 import {bnToBn, bnToHex} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
@@ -79,10 +80,13 @@ const extractParachainData = async (
 ): Promise<Parachain> => {
   const id = parachain.paraId!;
 
-  const [leases, leasePeriod, optLifecycle] = await Promise.all([
+  const [leases, leasePeriod, optLifecycle, optPending] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
     api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id),
+    (api.query.parasInclusion || api.query.paraInclusion || api.query.inclusion)?.pendingAvailability?.<
+      Option<CandidatePendingAvailability>
+    >(id),
   ]);
 
   const filteredLeases = leases
@@ -90,6 +94,7 @@ const extractParachainData = async (
     .filter((period: number) => period !== -1);
   const period =
     leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
+  const validatorInfo = getValidatorInfo(id.toString(), validators);
 
   return {
     id: id.toString(),
@@ -102,7 +107,14 @@ const extractParachainData = async (
     lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? '',
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
     homepage: parachain.homepage ?? undefined,
-    validators: undefined,
-    nonVoters: getNonVoters(validators.validators),
+    validators: {
+      groupIndex: validatorInfo?.groupIndex?.toString(),
+      validators: validatorInfo?.validators?.map((e) => {
+        return e.toString();
+      }),
+    },
+    nonVoters: getNonVoters(validators.validators, optPending?.unwrapOr(undefined)).map((e) => {
+      return e.toString();
+    }),
   };
 };
