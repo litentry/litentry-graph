@@ -1,4 +1,13 @@
-import type {BlockNumber, Event, ParaId, CandidateReceipt} from '@polkadot/types/interfaces';
+import type {
+  BlockNumber,
+  Event,
+  ParaId,
+  CandidateReceipt,
+  AccountId,
+  CoreAssignment,
+  ParaValidatorIndex,
+  CandidatePendingAvailability,
+} from '@polkadot/types/interfaces';
 import type {PolkadotRuntimeParachainsParasParaLifecycle} from '@polkadot/types/lookup';
 import type {Option, StorageKey} from '@polkadot/types';
 import type {LeasePeriod} from '../generated/resolvers-types';
@@ -6,7 +15,8 @@ import type {Context} from '../types';
 
 import {BN_ZERO, formatNumber, BN, BN_ONE, BN_HUNDRED, bnToBn} from '@polkadot/util';
 import {getBlockTime} from './substrateChainService';
-import { IEvent } from '@polkadot/types/types';
+import {IEvent} from '@polkadot/types/types';
+import {notEmpty} from '../utils/notEmpty';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 interface EventMapInfo {
@@ -17,10 +27,16 @@ interface EventMapInfo {
 
 type EventMap = Record<string, EventMapInfo>;
 
-export interface Result {
+export interface LastEvents {
   lastBacked: EventMap;
   lastIncluded: EventMap;
   lastTimeout: EventMap;
+}
+export interface ValidatorsInfo {
+  validators: AccountId[];
+  assignments: CoreAssignment[];
+  validatorGroups: ParaValidatorIndex[][];
+  validatorIndices: ParaValidatorIndex[];
 }
 
 export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> {
@@ -50,7 +66,6 @@ export async function getUpcomingParaIds(api: Context['api']) {
 
   return extractUpcomingParaIds(paraIdEntries);
 }
-
 
 export function getBlocks(api: Context['api'], leases: number[], leasePeriod: LeasePeriod): BN | undefined {
   const length = api.consts.slots.leasePeriod as BlockNumber;
@@ -82,32 +97,87 @@ export function getLeasePeriodString(currentPeriod: BN, leases: number[]): strin
     .join(', ');
 }
 
-export async function getLastEvents(api: Context['api']): Promise<Result> {
+export async function getLastEvents(api: Context['api']): Promise<LastEvents> {
   const lastBlock = await api.derive.chain.subscribeNewBlocks();
   const lastBacked: EventMap = {};
   const lastIncluded: EventMap = {};
   const lastTimeout: EventMap = {};
   const blockNumber = lastBlock.block.header.number.unwrap();
   const blockHash = lastBlock.block.header.hash.toHex();
-  const paraEvents = (api.events.paraInclusion || api.events.parasInclusion || api.events.inclusion);
+  const paraEvents = api.events.paraInclusion || api.events.parasInclusion || api.events.inclusion;
 
-  paraEvents && lastBlock.events.forEach(({ event, phase }) => {
-    if (phase.isApplyExtrinsic) {
-      if (paraEvents.CandidateBacked.is(event)) {
-        includeEntry(lastBacked, event, blockHash, blockNumber);
-      } else if (paraEvents.CandidateIncluded.is(event)) {
-        includeEntry(lastIncluded, event, blockHash, blockNumber);
-      } else if (paraEvents.CandidateTimedOut.is(event)) {
-        includeEntry(lastTimeout, event, blockHash, blockNumber);
+  paraEvents &&
+    lastBlock.events.forEach(({event, phase}) => {
+      if (phase.isApplyExtrinsic) {
+        if (paraEvents.CandidateBacked.is(event)) {
+          includeEntry(lastBacked, event, blockHash, blockNumber);
+        } else if (paraEvents.CandidateIncluded.is(event)) {
+          includeEntry(lastIncluded, event, blockHash, blockNumber);
+        } else if (paraEvents.CandidateTimedOut.is(event)) {
+          includeEntry(lastTimeout, event, blockHash, blockNumber);
+        }
       }
-    }
-  });
+    });
 
   return {
-      lastBacked,
-      lastIncluded,
-      lastTimeout,
-    };
+    lastBacked,
+    lastIncluded,
+    lastTimeout,
+  };
+}
+
+export async function getParachainValidators(api: Context['api']): Promise<ValidatorsInfo> {
+  const scheduler = api.query.parasScheduler || api.query.paraScheduler || api.query.scheduler;
+  const shared = api.query.parasShared || api.query.paraShared || api.query.shared;
+
+  const [validators, assignments, validatorGroups, validatorIndices] = await Promise.all([
+    api.query.session.validators<AccountId[]>(),
+    scheduler?.scheduled?.<CoreAssignment[]>(),
+    scheduler?.validatorGroups?.() as unknown as ParaValidatorIndex[][],
+    shared?.activeValidatorIndices?.<ParaValidatorIndex[]>(),
+  ]);
+
+  return {
+    validators,
+    assignments,
+    validatorGroups,
+    validatorIndices,
+  };
+}
+
+export function getNonVoters(validators?: AccountId[], pendingAvail?: CandidatePendingAvailability) {
+  let list: AccountId[] = [];
+
+  if (validators && pendingAvail) {
+    list = pendingAvail.availabilityVotes
+      .toHuman()
+      .slice(2)
+      .replace(/_/g, '')
+      .split('')
+      .map((c, index) => (c === '0' ? validators[index] : null))
+      .filter((v, index): v is AccountId => !!v && index < validators.length);
+  }
+
+  return list;
+}
+
+export function getValidatorInfo(id: string, parachainValidators?: ValidatorsInfo) {
+  const assignment = parachainValidators?.assignments?.find(({paraId}) => paraId.eq(id));
+
+  if (!assignment) {
+    return undefined;
+  }
+
+  return {
+    groupIndex: assignment.groupIdx,
+    validators: parachainValidators?.validatorGroups[assignment.groupIdx.toNumber()]
+      ?.map((indexActive) => [indexActive, parachainValidators?.validatorIndices?.[indexActive.toNumber()]])
+      .filter(([, a]) => a)
+      .map(([, indexValidator]) =>
+        indexValidator ? parachainValidators.validators[indexValidator?.toNumber()] : undefined,
+      )
+      .filter(notEmpty),
+  };
 }
 
 function extractUpcomingParaIds(entries: ParaIdEntries = []): ParaId[] {

@@ -3,11 +3,19 @@ import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
 import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
-import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds, getBlocks, getLeasePeriodString} from '../../services/parachainsService';
+import {
+  ValidatorsInfo,
+  getParachainValidators,
+  LastEvents,
+  getLastEvents,
+  getLeasePeriod,
+  getUpcomingParaIds,
+  getBlocks,
+  getLeasePeriodString,
+  getNonVoters,
+} from '../../services/parachainsService';
 import {bnToBn, bnToHex} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
-
-// import type {ParaId, , CandidatePendingAvailability} from '@polkadot/types/interfaces';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -29,27 +37,34 @@ export async function parachainsInfo(
   };
 }
 
-export async function parachains(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Promise<Parachain>[]> {
-  const [parachainIds, genesisHash, lastEvents] = await Promise.all([
+export async function parachains(
+  _: Record<string, never>,
+  __: Record<string, never>,
+  {api}: Context,
+): Promise<Promise<Parachain>[]> {
+  const [parachainIds, genesisHash, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     api.genesisHash.toHex(),
     getLastEvents(api),
+    getParachainValidators(api),
   ]);
 
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
 
-  const parachains = parachainIds.map(paraId => {
-    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+  const parachains = parachainIds
+    .map((paraId) => {
+      const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
 
-    if (!parachain) {
-      return undefined;
-    }
+      if (!parachain) {
+        return undefined;
+      }
 
-    return parachain;
-  }).filter((elem) => elem !== undefined) as LinkOption[];
+      return parachain;
+    })
+    .filter((elem) => elem !== undefined) as LinkOption[];
 
-  return parachains.map((p) => extractParachainData(api, p, lastEvents));
+  return parachains.map((p) => extractParachainData(api, p, lastEvents, validators));
 }
 
 export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
@@ -59,7 +74,8 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 const extractParachainData = async (
   api: Context['api'],
   parachain: LinkOption,
-  lastEvents: Result,
+  lastEvents: LastEvents,
+  validators: ValidatorsInfo,
 ): Promise<Parachain> => {
   const id = parachain.paraId!;
 
@@ -69,9 +85,12 @@ const extractParachainData = async (
     api.query.paras?.paraLifecycles?.<Option<ParaLifecycle>>(id),
   ]);
 
-  const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
-  const period = leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
-  
+  const filteredLeases = leases
+    .map((opt: {isSome: any}, index: any) => (opt.isSome ? index : -1))
+    .filter((period: number) => period !== -1);
+  const period =
+    leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
+
   return {
     id: id.toString(),
     name: parachain.text?.toString() ?? `#${id.toString()}`,
@@ -79,11 +98,11 @@ const extractParachainData = async (
       period: period,
       blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
     },
-    lifecycle: optLifecycle?.unwrap().toString() ?? "",
-    lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? "",
-    lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? "",
+    lifecycle: optLifecycle?.unwrap().toString() ?? '',
+    lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? '',
+    lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
     homepage: parachain.homepage ?? undefined,
     validators: undefined,
-    nonVoters: undefined,
+    nonVoters: getNonVoters(validators.validators),
   };
-}
+};
