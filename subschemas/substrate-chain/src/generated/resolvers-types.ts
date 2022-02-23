@@ -53,8 +53,8 @@ export type AuctionBid = {
 
 export type AuctionEndingPeriod = {
   __typename?: 'AuctionEndingPeriod';
-  endingIn: Scalars['String'];
-  remaining: Scalars['String'];
+  endingIn: Array<Scalars['String']>;
+  remaining: Array<Scalars['String']>;
   remainingPercent: Scalars['Float'];
 };
 
@@ -946,8 +946,8 @@ export type AuctionEndingPeriodResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AuctionEndingPeriod'] = ResolversParentTypes['AuctionEndingPeriod'],
 > = {
-  endingIn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  remaining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  endingIn?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  remaining?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   remainingPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
