@@ -24,7 +24,7 @@ export default /* GraphQL */ `
   }
   type Lease {
     period: String
-    blockTime: String
+    blockTime: [String]!
   }
   type ValidatorsGroup {
     groupIndex: String

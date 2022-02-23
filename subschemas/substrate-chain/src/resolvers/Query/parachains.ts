@@ -16,7 +16,8 @@ import {
   getValidatorInfo,
 } from '../../services/parachainsService';
 import {AccountsService} from '../../services/accountsService';
-import {bnToBn, bnToHex} from '@polkadot/util';
+import {getBlockTime} from '../../services/substrateChainService';
+import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
 
 export async function parachainsInfo(
@@ -55,19 +56,10 @@ export async function parachains(
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
   const accountsService = new AccountsService(api);
 
-  const parachains = parachainIds
-    .map((paraId) => {
-      const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-
-      if (!parachain) {
-        return undefined;
-      }
-
-      return parachain;
-    })
-    .filter((elem) => elem !== undefined) as LinkOption[];
-
-  return await parachains.map((p) => extractParachainData(api, accountsService, p, lastEvents, validators));
+  return parachainIds.map((paraId) => {
+    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+    return extractParachainData(api, accountsService, paraId.toString(), parachain, lastEvents, validators);
+  });
 }
 
 export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
@@ -77,12 +69,11 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 const extractParachainData = async (
   api: Context['api'],
   accountsService: AccountsService,
-  parachain: LinkOption,
+  id: string,
+  parachain: LinkOption | undefined,
   lastEvents: LastEvents,
   validators: ValidatorsInfo,
 ): Promise<Parachain> => {
-  const id = parachain.paraId!;
-
   const [leases, leasePeriod, optLifecycle, optPending] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
@@ -102,15 +93,15 @@ const extractParachainData = async (
 
   return {
     id: id.toString(),
-    name: parachain.text?.toString() ?? `#${id.toString()}`,
+    name: parachain?.text?.toString() ?? `#${id.toString()}`,
     lease: {
       period: period,
-      blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
+      blockTime: getBlockTime(api, getBlocks(api, filteredLeases, leasePeriod)).timeStringParts,
     },
     lifecycle: optLifecycle?.unwrap().toString() ?? '',
     lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? '',
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
-    homepage: parachain.homepage ?? undefined,
+    homepage: parachain?.homepage,
     validators: {
       groupIndex: validatorInfo?.groupIndex?.toString(),
       validators: validatorInfo?.validators?.map((v): AccountInfo => {
