@@ -30,7 +30,6 @@ export type Account = {
 
 export type AccountInfo = {
   __typename?: 'AccountInfo';
-  account: Account;
   address: Scalars['String'];
 };
 
@@ -914,7 +913,6 @@ export type AccountInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo'],
 > = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

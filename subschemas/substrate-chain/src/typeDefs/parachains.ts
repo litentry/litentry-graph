@@ -32,7 +32,6 @@ export default /* GraphQL */ `
   }
   type AccountInfo {
     address: String!
-    account: Account!
   }
   type Query {
     parachainsInfo: ParachainsInfo!

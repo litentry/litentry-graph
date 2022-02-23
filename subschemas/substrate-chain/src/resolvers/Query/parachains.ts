@@ -98,6 +98,7 @@ const extractParachainData = async (
   const period =
     leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
   const validatorInfo = getValidatorInfo(id.toString(), validators);
+  const nonVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
 
   return {
     id: id.toString(),
@@ -112,26 +113,16 @@ const extractParachainData = async (
     homepage: parachain.homepage ?? undefined,
     validators: {
       groupIndex: validatorInfo?.groupIndex?.toString(),
-      validators: validatorInfo?.validators?.map(async (v) => {
+      validators: validatorInfo?.validators?.map((v): AccountInfo => {
         return {
           address: v.toString(),
-          account: await accountsService.getAccount(v.toString()),
         };
       }),
     },
-    nonVoters: await getNonVotersAccounts(validators, optPending, accountsService),
+    nonVoters: nonVoters?.map((v): AccountInfo => {
+      return {
+        address: v.toString(),
+      };
+    }),
   };
 };
-
-function getNonVotersAccounts(
-  validators: ValidatorsInfo,
-  optPending: Option<CandidatePendingAvailability>,
-  accountsService: AccountsService,
-): Maybe<AccountInfo>[] | undefined {
-  return getNonVoters(validators.validators, optPending?.unwrapOr(undefined)).map(async (v): Promise<AccountInfo> => {
-    return {
-      address: v.toString(),
-      account: await accountsService.getAccount(v.toString()),
-    } as AccountInfo;
-  });
-}
