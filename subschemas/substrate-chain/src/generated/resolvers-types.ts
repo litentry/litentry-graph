@@ -47,14 +47,17 @@ export type AuctionBid = {
   __typename?: 'AuctionBid';
   amount: Scalars['String'];
   blockNumber: Scalars['String'];
+  firstSlot: Scalars['String'];
+  isCrowdloan: Scalars['Boolean'];
+  lastSlot: Scalars['String'];
   projectId: Scalars['String'];
   projectName: Scalars['String'];
 };
 
 export type AuctionEndingPeriod = {
   __typename?: 'AuctionEndingPeriod';
-  endingIn: Scalars['String'];
-  remaining: Scalars['String'];
+  endingIn: Array<Scalars['String']>;
+  remaining: Array<Scalars['String']>;
   remainingPercent: Scalars['Float'];
 };
 
@@ -937,6 +940,9 @@ export type AuctionBidResolvers<
 > = {
   amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isCrowdloan?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lastSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -946,8 +952,8 @@ export type AuctionEndingPeriodResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AuctionEndingPeriod'] = ResolversParentTypes['AuctionEndingPeriod'],
 > = {
-  endingIn?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  remaining?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  endingIn?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  remaining?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   remainingPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

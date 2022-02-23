@@ -8,7 +8,7 @@ import {BN, BN_ONE, BN_ZERO, formatNumber} from '@polkadot/util';
 import type {Context} from '../../types';
 import type {AuctionsSummary, Auction} from '../../generated/resolvers-types';
 import {extractWinningData, Winning} from '../../utils/winners';
-import {formatBalance} from '../../services/substrateChainService';
+import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 export async function auctionsSummary(
   _: Record<string, string>,
@@ -62,11 +62,12 @@ const getLatestAuction = (
   endpoints: LinkOption[],
 ): Auction => {
   const lastWinners = winningData && winningData[0];
+  const latestWinningBid = lastWinners.winners[0]
   const raised = lastWinners?.total ?? BN_ZERO;
   const total = totalIssuance ?? BN_ZERO;
-  const raisedPercent = total.isZero() ? 0 : raised.muln(10000).div(total).toNumber() / 10000;
+  const raisedPercent = total.isZero() ? 0 : raised.muln(10000).div(total).toNumber() / 100;
   const [endingIn, currentPosition] = getEndingPeriodValues(bestNumber, endBlock, endingPeriod);
-  const remainingPercent = endingIn.isZero() ? 0 : currentPosition.muln(10000).div(endingIn).toNumber() / 10000;
+  const remainingPercent = endingIn.isZero() ? 0 : currentPosition.muln(10000).div(endingIn).toNumber() / 100;
 
   return {
     leasePeriod: {
@@ -74,15 +75,18 @@ const getLatestAuction = (
       last: formatNumber(leasePeriod?.add((leasePeriodsPerSlot as u32) ?? BN_ONE).isub(BN_ONE)),
     },
     endingPeriod: {
-      endingIn: formatNumber(endingIn),
-      remaining: formatNumber(endingIn.sub(currentPosition)),
+      endingIn: getBlockTime(api, endingIn).timeStringParts,
+      remaining: getBlockTime(api, endingIn.sub(currentPosition)).timeStringParts,
       remainingPercent,
     },
-    raised: formatNumber(raised),
+    raised: formatBalance(api, raised),
     raisedPercent,
     winningBid: {
-      blockNumber: String(formatNumber(lastWinners?.blockNumber)),
-      projectId: String(formatNumber(lastWinners?.winners[0].paraId)),
+      isCrowdloan: latestWinningBid.isCrowdloan,
+      firstSlot: formatNumber(latestWinningBid.firstSlot),
+      lastSlot: formatNumber(latestWinningBid.lastSlot),
+      blockNumber: lastWinners?.blockNumber.toString(),
+      projectId: lastWinners?.winners[0].paraId.toString(),
       projectName:
         endpoints?.find((e) => e.paraId === lastWinners?.winners[0]?.paraId.toNumber())?.text?.toString() || '',
       amount: String(formatBalance(api, lastWinners?.total)),

@@ -15,8 +15,8 @@ export default /* GraphQL */ `
   }
 
   type AuctionEndingPeriod {
-    endingIn: String!
-    remaining: String!
+    endingIn: [String!]!
+    remaining: [String!]!
     remainingPercent: Float!
   }
 
@@ -25,6 +25,9 @@ export default /* GraphQL */ `
     projectId: String!
     projectName: String!
     amount: String!
+    isCrowdloan: Boolean!
+    firstSlot: String!
+    lastSlot: String!
   }
 
   type Auction {
