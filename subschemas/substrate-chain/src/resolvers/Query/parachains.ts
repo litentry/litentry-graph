@@ -3,8 +3,16 @@ import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
 import type {Parachain, ParachainsInfo} from '../../generated/resolvers-types';
-import {Result, getLastEvents, getLeasePeriod, getUpcomingParaIds, getBlocks, getLeasePeriodString} from '../../services/parachainsService';
+import {
+  Result,
+  getLastEvents,
+  getLeasePeriod,
+  getUpcomingParaIds,
+  getBlocks,
+  getLeasePeriodString,
+} from '../../services/parachainsService';
 import {bnToBn, bnToHex} from '@polkadot/util';
+import {getBlockTime} from '../../services/substrateChainService';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -26,7 +34,11 @@ export async function parachainsInfo(
   };
 }
 
-export async function parachains(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Promise<Parachain>[]> {
+export async function parachains(
+  _: Record<string, never>,
+  __: Record<string, never>,
+  {api}: Context,
+): Promise<Promise<Parachain>[]> {
   const [parachainIds, genesisHash, lastEvents] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     api.genesisHash.toHex(),
@@ -36,17 +48,10 @@ export async function parachains(_: Record<string, never>, __: Record<string, ne
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
 
-  const parachains = parachainIds.map(paraId => {
+  return parachainIds.map((paraId) => {
     const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-
-    if (!parachain) {
-      return undefined;
-    }
-
-    return parachain;
-  }).filter((elem) => elem !== undefined) as LinkOption[];
-
-  return parachains.map((p) => extractParachainData(api, p, lastEvents));
+    return extractParachainData(api, paraId.toString(), parachain, lastEvents);
+  });
 }
 
 export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
@@ -55,31 +60,30 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 
 const extractParachainData = async (
   api: Context['api'],
+  id: string,
   parachain: LinkOption | undefined,
   lastEvents: Result,
 ): Promise<Parachain> => {
-  const id = parachain!.paraId!;
+  const [leases, leasePeriod] = await Promise.all([api.query.slots?.leases?.(id) as any, getLeasePeriod(api)]);
 
-  const [leases, leasePeriod] = await Promise.all([
-    api.query.slots?.leases?.(id) as any,
-    getLeasePeriod(api),
-  ]);
-
-  const filteredLeases = leases.map((opt: { isSome: any; }, index: any) => (opt.isSome ? index : -1)).filter((period: number) => period !== -1);
-  const period = leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
+  const filteredLeases = leases
+    .map((opt: {isSome: any}, index: any) => (opt.isSome ? index : -1))
+    .filter((period: number) => period !== -1);
+  const period =
+    leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
 
   return {
-    id: id.toString(),
-    name: parachain!.text.toString(),
+    id: id,
+    name: parachain?.text.toString(),
     lease: {
       period: period,
-      blockTime: bnToHex(getBlocks(api, filteredLeases, leasePeriod)),
+      blockTime: getBlockTime(api, getBlocks(api, filteredLeases, leasePeriod)).timeStringParts,
     },
-    lifecycle: "",
-    lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? "",
-    lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? "",
-    homepage: parachain!.homepage,
+    lifecycle: '',
+    lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? '',
+    lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
+    homepage: parachain?.homepage,
     validators: undefined,
     nonVoters: undefined,
   };
-}
+};
