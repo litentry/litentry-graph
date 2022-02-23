@@ -92,10 +92,10 @@ const extractParachainData = async (
   const nonVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
 
   return {
-    id: id.toString(),
+    id,
     name: parachain?.text?.toString() ?? `#${id.toString()}`,
     lease: {
-      period: period,
+      period,
       blockTime: getBlockTime(api, getBlocks(api, filteredLeases, leasePeriod)).timeStringParts,
     },
     lifecycle: optLifecycle?.unwrap().toString() ?? '',
