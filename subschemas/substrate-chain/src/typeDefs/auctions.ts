@@ -25,6 +25,9 @@ export default /* GraphQL */ `
     projectId: String!
     projectName: String!
     amount: String!
+    isCrowdloan: Boolean!
+    firstSlot: String!
+    lastSlot: String!
   }
 
   type Auction {

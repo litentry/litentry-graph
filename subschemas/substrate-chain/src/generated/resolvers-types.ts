@@ -47,6 +47,9 @@ export type AuctionBid = {
   __typename?: 'AuctionBid';
   amount: Scalars['String'];
   blockNumber: Scalars['String'];
+  firstSlot: Scalars['String'];
+  isCrowdloan: Scalars['Boolean'];
+  lastSlot: Scalars['String'];
   projectId: Scalars['String'];
   projectName: Scalars['String'];
 };
@@ -937,6 +940,9 @@ export type AuctionBidResolvers<
 > = {
   amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isCrowdloan?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lastSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

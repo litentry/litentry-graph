@@ -62,6 +62,7 @@ const getLatestAuction = (
   endpoints: LinkOption[],
 ): Auction => {
   const lastWinners = winningData && winningData[0];
+  const latestWinningBid = lastWinners.winners[0]
   const raised = lastWinners?.total ?? BN_ZERO;
   const total = totalIssuance ?? BN_ZERO;
   const raisedPercent = total.isZero() ? 0 : raised.muln(10000).div(total).toNumber() / 100;
@@ -81,6 +82,9 @@ const getLatestAuction = (
     raised: formatBalance(api, raised),
     raisedPercent,
     winningBid: {
+      isCrowdloan: latestWinningBid.isCrowdloan,
+      firstSlot: formatNumber(latestWinningBid.firstSlot),
+      lastSlot: formatNumber(latestWinningBid.lastSlot),
       blockNumber: lastWinners?.blockNumber.toString(),
       projectId: lastWinners?.winners[0].paraId.toString(),
       projectName:
