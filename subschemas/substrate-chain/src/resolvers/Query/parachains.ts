@@ -15,6 +15,7 @@ import {
   getNonVoters,
   getValidatorInfo,
 } from '../../services/parachainsService';
+import {AccountsService} from '../../services/accountsService';
 import {bnToBn, bnToHex} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
 
@@ -52,6 +53,7 @@ export async function parachains(
 
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const accountsService = new AccountsService(api);
 
   const parachains = parachainIds
     .map((paraId) => {
@@ -65,7 +67,7 @@ export async function parachains(
     })
     .filter((elem) => elem !== undefined) as LinkOption[];
 
-  return parachains.map((p) => extractParachainData(api, p, lastEvents, validators));
+  return await parachains.map((p) => extractParachainData(api, accountsService, p, lastEvents, validators));
 }
 
 export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
@@ -74,6 +76,7 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 
 const extractParachainData = async (
   api: Context['api'],
+  accountsService: AccountsService,
   parachain: LinkOption,
   lastEvents: LastEvents,
   validators: ValidatorsInfo,
@@ -109,12 +112,26 @@ const extractParachainData = async (
     homepage: parachain.homepage ?? undefined,
     validators: {
       groupIndex: validatorInfo?.groupIndex?.toString(),
-      validators: validatorInfo?.validators?.map((e) => {
-        return e.toString();
+      validators: validatorInfo?.validators?.map(async (v) => {
+        return {
+          address: v.toString(),
+          account: await accountsService.getAccount(v.toString()),
+        };
       }),
     },
-    nonVoters: getNonVoters(validators.validators, optPending?.unwrapOr(undefined)).map((e) => {
-      return e.toString();
-    }),
+    nonVoters: await getNonVotersAccounts(validators, optPending, accountsService),
   };
 };
+
+function getNonVotersAccounts(
+  validators: ValidatorsInfo,
+  optPending: Option<CandidatePendingAvailability>,
+  accountsService: AccountsService,
+): Maybe<AccountInfo>[] | undefined {
+  return getNonVoters(validators.validators, optPending?.unwrapOr(undefined)).map(async (v): Promise<AccountInfo> => {
+    return {
+      address: v.toString(),
+      account: await accountsService.getAccount(v.toString()),
+    } as AccountInfo;
+  });
+}

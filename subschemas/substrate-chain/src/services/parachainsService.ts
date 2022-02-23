@@ -10,7 +10,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type {PolkadotRuntimeParachainsParasParaLifecycle} from '@polkadot/types/lookup';
 import type {Option, StorageKey} from '@polkadot/types';
-import type {AuctionLeasePeriod} from '../generated/resolvers-types';
+import type {LeasePeriod} from '../generated/resolvers-types';
 import type {Context} from '../types';
 
 import {BN_ZERO, formatNumber, BN, BN_ONE, BN_HUNDRED, bnToBn} from '@polkadot/util';
@@ -39,7 +39,7 @@ export interface ValidatorsInfo {
   validatorIndices: ParaValidatorIndex[];
 }
 
-export async function getLeasePeriod(api: Context['api']): Promise<AuctionLeasePeriod> {
+export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> {
   const bestNumber = await api.derive.chain.bestNumber();
   const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
   const {formattedTime: totalPeriod} = getBlockTime(api, leasePeriodLength);
@@ -67,7 +67,7 @@ export async function getUpcomingParaIds(api: Context['api']) {
   return extractUpcomingParaIds(paraIdEntries);
 }
 
-export function getBlocks(api: Context['api'], leases: number[], leasePeriod: AuctionLeasePeriod): BN | undefined {
+export function getBlocks(api: Context['api'], leases: number[], leasePeriod: LeasePeriod): BN | undefined {
   const length = api.consts.slots.leasePeriod as BlockNumber;
   const lastLease = leases ? leases[leases.length - 1] : null;
   const leaseValue = lastLease ? lastLease + 1 : null;
