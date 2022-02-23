@@ -11,7 +11,7 @@ export default /* GraphQL */ `
 
   type AuctionLeasePeriod {
     first: String!
-    last: String! 
+    last: String!
   }
 
   type AuctionEndingPeriod {

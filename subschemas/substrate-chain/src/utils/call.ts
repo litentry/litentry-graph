@@ -2,16 +2,16 @@ import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
 import {IExtrinsic, IMethod} from '@polkadot/types/types';
 import {FunctionMetadataLatest} from '@polkadot/types/interfaces';
 
-export function getCallParams(c: IExtrinsic | IMethod) {
-  const {method, section} = c?.registry.findMetaCall(c.callIndex) ?? {};
+export function getCallParams(call: IExtrinsic | IMethod) {
+  const {method, section} = call?.registry.findMetaCall(call.callIndex) ?? {};
 
   return {
     method,
     section,
-    args: c.meta.args.map((a, index) => {
+    args: call.meta.args.map((a, index) => {
       let subCalls: any[] = [];
 
-      let value: unknown = c.args?.[index];
+      let value: unknown = call.args?.[index];
 
       if (value) {
         if (Array.isArray(value) && a.type.toString() === 'Vec<Call>') {

@@ -5,7 +5,7 @@ import type {Hash, AccountId, Balance, OpenTipTo225} from '@polkadot/types/inter
 import type {ApiPromise} from '@polkadot/api';
 import {hexToString} from '@polkadot/util';
 import type {Context} from '../../types';
-import type {Tip} from '../../generated/resolvers-types';
+import type {Tip, Finder, Who, Tipper} from '../../generated/resolvers-types';
 import {formatBalance} from '../../services/substrateChainService';
 
 interface TipInfo extends Omit<Tip, 'finder' | 'who' | 'tippers'> {
@@ -14,19 +14,11 @@ interface TipInfo extends Omit<Tip, 'finder' | 'who' | 'tippers'> {
   tippers: PartialTipper[];
 }
 
-export type PartialFinder = {
-  address: string;
-};
+export type PartialFinder = Omit<Finder, 'account'>;
 
-export type PartialWho = {
-  address: string;
-};
+export type PartialWho = Omit<Who, 'account'>;
 
-export type PartialTipper = {
-  address: string;
-  balance: string;
-  formattedBalance: string;
-};
+export type PartialTipper = Omit<Tipper, 'account'>;
 
 function extractTippers(tip: PalletTipsOpenTip, api: ApiPromise): PartialTipper[] {
   return tip.tips.map(([tipper, balance]) => ({
