@@ -15,7 +15,6 @@ import {
   getNonVoters,
   getValidatorInfo,
 } from '../../services/parachainsService';
-import {AccountsService} from '../../services/accountsService';
 import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
@@ -54,11 +53,10 @@ export async function parachains(
 
   const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
   const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
-  const accountsService = new AccountsService(api);
 
   return parachainIds.map((paraId) => {
     const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-    return extractParachainData(api, accountsService, paraId.toString(), parachain, lastEvents, validators);
+    return extractParachainData(api, paraId.toString(), parachain, lastEvents, validators);
   });
 }
 
@@ -68,7 +66,6 @@ export function parachain(_: Record<string, never>, params: {id: string}, {api}:
 
 const extractParachainData = async (
   api: Context['api'],
-  accountsService: AccountsService,
   id: string,
   parachain: LinkOption | undefined,
   lastEvents: LastEvents,
