@@ -338,7 +338,7 @@ export type LaunchPeriodInfo = {
 
 export type Lease = {
   __typename?: 'Lease';
-  blockTime: Array<Maybe<Scalars['String']>>;
+  blockTime: Array<Scalars['String']>;
   period?: Maybe<Scalars['String']>;
 };
 
@@ -1324,7 +1324,7 @@ export type LeaseResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Lease'] = ResolversParentTypes['Lease'],
 > = {
-  blockTime?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  blockTime?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   period?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
