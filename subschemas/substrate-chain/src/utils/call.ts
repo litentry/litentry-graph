@@ -1,13 +1,18 @@
 import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
-import {IExtrinsic, IMethod} from '@polkadot/types/types';
-import {FunctionMetadataLatest} from '@polkadot/types/interfaces';
+import type {Compact, Option} from '@polkadot/types';
+import type {FunctionMetadataLatest, ProposalIndex, TreasuryProposal, Proposal} from '@polkadot/types/interfaces';
+import {ApiPromise} from '@polkadot/api';
+import {AccountsService} from '../services/accountsService';
+import {formatBalance} from '../services/substrateChainService';
 
-export function getCallParams(call: IExtrinsic | IMethod) {
+export function getCallParams(call: Proposal) {
   const {method, section} = call?.registry.findMetaCall(call.callIndex) ?? {};
+  const meta = formatCallMeta(call.registry.findMetaCall(call.callIndex).meta);
 
   return {
     method,
     section,
+    meta,
     args: call.meta.args.map((a, index) => {
       let subCalls: any[] = [];
 
@@ -28,13 +33,36 @@ export function getCallParams(call: IExtrinsic | IMethod) {
       }
 
       return {
-        name: String(a.name),
-        type: String(a.type),
+        name: a.name.toString(),
+        type: a.type.toString(),
         value: String(value),
         subCalls,
       };
     }),
   };
+}
+
+const METHOD_TREA = ['approveProposal', 'rejectProposal'];
+
+export async function getMotionProposalTreasuryInfo(
+  proposal: Proposal,
+  api: ApiPromise,
+  accountsService: AccountsService,
+) {
+  const {method, section} = proposal.registry.findMetaCall(proposal.callIndex) ?? {};
+  const isTreasury = section === 'treasury' && METHOD_TREA.includes(method);
+  if (isTreasury) {
+    const proposalId = (proposal.args[0] as Compact<ProposalIndex>).unwrap();
+    const treasuryProposal = (await api.query.treasury.proposals(proposalId)).unwrap();
+
+    return {
+      beneficiary: await accountsService.getAccount(treasuryProposal.beneficiary.toString()),
+      proposer: await accountsService.getAccount(treasuryProposal.proposer.toString()),
+      payout: formatBalance(api, treasuryProposal.value),
+    };
+  }
+
+  return {};
 }
 
 export function formatCallMeta(meta?: FunctionMetadataLatest): string {
