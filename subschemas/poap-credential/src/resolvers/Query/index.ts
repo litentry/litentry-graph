@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {request, gql} from 'graphql-request';
 import {Account} from '../../types/interface';
 
