@@ -1,8 +1,8 @@
-import type {ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
+import type {AccountId, ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {AccountInfo, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
+import type {Account, AccountInfo, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
 import {
   ValidatorsInfo,
   getParachainValidators,
@@ -18,6 +18,7 @@ import {
 import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
+import {AccountsService} from '../../services/accountsService';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -108,6 +109,9 @@ const extractParachainData = async (
   const validatorInfo = getValidatorInfo(id.toString(), validators);
   const nonVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
 
+  const validatorsAccounts = await Promise.all(getAccountsInfoFromValidators(api, validatorInfo?.validators) ?? []);
+  const nonVotersAccounts = await Promise.all(getAccountsInfoFromValidators(api, nonVoters) ?? []);
+
   return {
     id,
     name: parachain?.text?.toString() ?? `#${id.toString()}`,
@@ -120,17 +124,23 @@ const extractParachainData = async (
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
     homepage: parachain?.homepage,
     validators: {
-      groupIndex: validatorInfo?.groupIndex?.toString(),
-      validators: validatorInfo?.validators?.map((v): AccountInfo => {
-        return {
-          address: v.toString(),
-        };
-      }),
+      groupIndex: validatorInfo?.groupIndex.toString(),
+      validators: validatorsAccounts,
     },
-    nonVoters: nonVoters?.map((v): AccountInfo => {
-      return {
-        address: v.toString(),
-      };
-    }),
+    nonVoters: nonVotersAccounts,
   };
+};
+
+const getAccountsInfoFromValidators = (
+  api: Context['api'],
+  validators: AccountId[] | undefined,
+): Promise<AccountInfo>[] | undefined => {
+  const accountsService = new AccountsService(api);
+
+  return validators?.map(async (v): Promise<AccountInfo> => {
+    return {
+      address: v.toString(),
+      account: accountsService.getAccount(v.toString()) as unknown as Account,
+    };
+  });
 };

@@ -30,6 +30,7 @@ export type Account = {
 
 export type AccountInfo = {
   __typename?: 'AccountInfo';
+  account: Account;
   address: Scalars['String'];
 };
 
@@ -393,7 +394,7 @@ export type Parachain = {
   lease?: Maybe<Lease>;
   lifecycle: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-  nonVoters?: Maybe<Array<AccountInfo>>;
+  nonVoters: Array<AccountInfo>;
   validators?: Maybe<ValidatorsGroup>;
 };
 
@@ -608,7 +609,7 @@ export type TreasurySummary = {
 export type ValidatorsGroup = {
   __typename?: 'ValidatorsGroup';
   groupIndex?: Maybe<Scalars['String']>;
-  validators?: Maybe<Array<AccountInfo>>;
+  validators: Array<AccountInfo>;
 };
 
 export type VotingStatus = {
@@ -916,6 +917,7 @@ export type AccountInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo'],
 > = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1399,7 +1401,7 @@ export type ParachainResolvers<
   lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
   lifecycle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  nonVoters?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
+  nonVoters?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
   validators?: Resolver<Maybe<ResolversTypes['ValidatorsGroup']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1658,7 +1660,7 @@ export type ValidatorsGroupResolvers<
   ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup'],
 > = {
   groupIndex?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  validators?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
+  validators?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
