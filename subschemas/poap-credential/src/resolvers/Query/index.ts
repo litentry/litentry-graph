@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from 'axios';
 import {Account} from '../../types/interface';
 
@@ -34,22 +33,28 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
         },
       };
 
-      const {data} = await axios.post(endpoint, {
+      const response = await axios.post(endpoint, {
         headers: {
           'Content-Type': 'application/json',
         },
         data: graphqlQuery,
       });
 
-      if (data.errors) {
-        throw new Error(data.errors[0].message);
+      console.log(response);
+
+      if (!response.data) {
+        throw new Error(`Error calling ${endpoint}`);
       }
 
-      if (!data.account) {
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+
+      if (!response.data.account) {
         return {};
       }
 
-      return data.account;
+      return response.data.account;
     }),
   );
 

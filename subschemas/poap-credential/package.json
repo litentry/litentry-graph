@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
+    "@types/got": "^9.6.12",
     "axios": "^0.26.0",
-    "bignumber.js": "^9.0.2",
     "graphql": "^16.0.1"
   },
   "devDependencies": {
