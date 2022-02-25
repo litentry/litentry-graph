@@ -60,8 +60,28 @@ export async function parachains(
   });
 }
 
-export function parachain(_: Record<string, never>, params: {id: string}, {api}: Context) {
-  throw new Error('Not implemented yet');
+export async function parachain(
+  _: Record<string, never>,
+  params: {id: string},
+  {api}: Context,
+): Promise<Parachain | null> {
+  const [parachainIds, genesisHash, lastEvents, validators] = await Promise.all([
+    api.query.paras?.parachains?.<ParaId[]>(),
+    api.genesisHash.toHex(),
+    getLastEvents(api),
+    getParachainValidators(api),
+  ]);
+
+  const paraId = parachainIds.find((p) => p.toString() === params.id);
+  if (!paraId) {
+    return null;
+  }
+
+  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
+  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+
+  return extractParachainData(api, paraId.toString(), parachain, lastEvents, validators);
 }
 
 const extractParachainData = async (
@@ -95,7 +115,7 @@ const extractParachainData = async (
       period,
       blockTime: getBlockTime(api, getBlocks(api, filteredLeases, leasePeriod)).timeStringParts,
     },
-    lifecycle: optLifecycle?.unwrap().toString() ?? '',
+    lifecycle: optLifecycle?.unwrapOr(undefined)?.toString() ?? '',
     lastIncludedBlock: lastEvents.lastIncluded[id]?.blockNumber?.toString() ?? '',
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
     homepage: parachain?.homepage,
