@@ -1,9 +1,8 @@
-import axios from 'axios';
 import {Account} from '../../types/interface';
-import query from '../Query';
 import {queryPoapGraphQL, sortPoapData} from './index';
+import {request} from 'graphql-request';
 
-jest.mock('axios');
+jest.mock('graphql-request');
 
 describe('POAP GraphQL', () => {
   beforeEach(() => {
@@ -14,7 +13,7 @@ describe('POAP GraphQL', () => {
       const address = '0x000001f568875f378bf6d170b790967fe429c81a';
       const endpoint = ['https://api.thegraph.com/subgraphs/name/poap-xyz/poap'];
 
-      (axios.post as jest.Mock).mockResolvedValueOnce({
+      (request as jest.Mock).mockResolvedValueOnce({
         data: {
           errors: [
             {
@@ -39,7 +38,7 @@ describe('POAP GraphQL', () => {
         'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-sokol',
       ];
 
-      (axios.post as jest.Mock).mockResolvedValueOnce({
+      (request as jest.Mock).mockResolvedValueOnce({
         data: {
           account: {
             id: address,
@@ -64,7 +63,7 @@ describe('POAP GraphQL', () => {
         },
       });
 
-      (axios.post as jest.Mock).mockResolvedValueOnce({
+      (request as jest.Mock).mockResolvedValueOnce({
         data: {
           account: {
             id: address,
@@ -82,7 +81,7 @@ describe('POAP GraphQL', () => {
         },
       });
 
-      (axios.post as jest.Mock).mockResolvedValueOnce({
+      (request as jest.Mock).mockResolvedValueOnce({
         data: {
           account: null,
         },
@@ -176,11 +175,5 @@ describe('POAP GraphQL', () => {
         ],
       });
     });
-  });
-
-  fit('should return', async () => {
-    const result = await query('0x000001f568875f378bf6d170b790967fe429c81a');
-
-    console.log(result);
   });
 });

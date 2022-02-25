@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
+import {request, gql} from 'graphql-request';
 import {Account} from '../../types/interface';
 
 const subgraphEndpoints = [
@@ -11,54 +11,51 @@ const subgraphEndpoints = [
 ];
 
 export async function queryPoapGraphQL(address: string, endpoints: string[]) {
-  const result = await Promise.all(
-    endpoints.map(async (endpoint) => {
-      const graphqlQuery = {
-        query: `
-        query Account($id: String!) {
-          account(id: $id) {
-            id
-            tokensOwned
-            tokens(orderBy: created orderDirection: desc) {
+  try {
+    const result = await Promise.all(
+      endpoints.map(async (endpoint) => {
+        const graphqlQuery = gql`
+          query Account($id: String!) {
+            account(id: $id) {
               id
-              event {
+              tokensOwned
+              tokens(orderBy: created, orderDirection: desc) {
                 id
+                event {
+                  id
+                }
+                created
               }
-              created
             }
           }
-        }`,
-        variables: {
+        `;
+
+        const variables = {
           id: address,
-        },
-      };
+        };
 
-      const response = await axios.post(endpoint, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: graphqlQuery,
-      });
+        const {data} = await request(endpoint, graphqlQuery, variables);
 
-      console.log(response);
+        if (!data) {
+          throw new Error(`Error calling ${endpoint}`);
+        }
 
-      if (!response.data) {
-        throw new Error(`Error calling ${endpoint}`);
-      }
+        if (data.errors) {
+          throw new Error(data.errors[0].message);
+        }
 
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
-      }
+        if (!data.account) {
+          return {};
+        }
 
-      if (!response.data.account) {
-        return {};
-      }
+        return data.account;
+      }),
+    );
 
-      return response.data.account;
-    }),
-  );
-
-  return result as Account[];
+    return result as Account[];
+  } catch ({message}) {
+    throw new Error(message as string);
+  }
 }
 
 export function sortPoapData(data: Account[]) {
