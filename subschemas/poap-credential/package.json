@@ -1,0 +1,46 @@
+{
+  "name": "poap-credential",
+  "version": "0.0.1",
+  "description": "GraphQL API as a wrapper for Proof Of Attendance Protocol (POAP)",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:litentry/web3-indexer.git",
+  "contributors": [
+    "Ben Mason <ben@wattmason.co.uk>",
+    "Francisco Silva <franjs.francisco@gmail.com>",
+    "Nathan Walton <nathan@waltonwebservices.com>"
+  ],
+  "scripts": {
+    "prettier": "node_modules/.bin/prettier --write '**/*.ts'",
+    "build": "rm -rf dist && tsc",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "typecheck": "yarn tsc --noEmit",
+    "postinstall": "yarn run build",
+    "test": "tsc && jest",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@graphql-tools/schema": "^8.3.1",
+    "@types/got": "^9.6.12",
+    "axios": "^0.26.0",
+    "graphql": "^16.0.1",
+    "graphql-request": "^4.0.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.3.0",
+    "@graphql-codegen/typescript": "2.4.1",
+    "@graphql-codegen/typescript-resolvers": "2.4.2",
+    "@types/graphql": "^14.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16.11.11",
+    "@typescript-eslint/eslint-plugin": "4.22.1",
+    "@typescript-eslint/parser": "4.22.1",
+    "eslint": "7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.4.7",
+    "prettier": "2.5.0",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5"
+  }
+}

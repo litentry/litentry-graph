@@ -28,6 +28,7 @@
     "graphql": "^16.0.1",
     "graphql-type-json": "^0.3.2",
     "substrate-chain": "0.0.1",
+    "poap-credential": "0.0.1",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
