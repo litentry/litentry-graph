@@ -16,6 +16,6 @@ export default /* GraphQL */ `
   type TokenData {
     id: String!
     tokensOwned: String!
-    tokens: Tokens!
+    tokens: [Tokens!]!
   }
 `;
