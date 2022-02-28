@@ -212,9 +212,12 @@ export type Crowdloan = {
   firstPeriod: Scalars['String'];
   formattedCap: Scalars['String'];
   formattedRaised: Scalars['String'];
+  homepage?: Maybe<Scalars['String']>;
   lastPeriod: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   paraId: Scalars['String'];
   raised: Scalars['String'];
+  raisedPercentage: Scalars['String'];
   status: Scalars['String'];
 };
 
@@ -1162,9 +1165,12 @@ export type CrowdloanResolvers<
   firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  raisedPercentage?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
