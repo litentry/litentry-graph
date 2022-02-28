@@ -5,8 +5,6 @@ const subgraphEndpoints = [
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap',
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-xdai',
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-sokol',
-  // 'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-ropsten',
-  'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-kovan',
 ];
 
 export async function queryPoapGraphQL(address: string, endpoints: string[]) {
@@ -33,7 +31,7 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
           id: address,
         };
 
-        const {data} = await request(endpoint, graphqlQuery, variables);
+        const data = await request(endpoint, graphqlQuery, variables);
 
         if (!data) {
           throw new Error(`Error calling ${endpoint}`);
@@ -70,7 +68,7 @@ export function sortPoapData(data: Account[]) {
 }
 
 /* Query poap and return data */
-export default async function poapToken(address: string) {
+export async function tokensByAddress(parent: unknown, {address}: {address: string}) {
   try {
     const poapData = await queryPoapGraphQL(address, subgraphEndpoints);
     return sortPoapData(poapData);
@@ -78,3 +76,7 @@ export default async function poapToken(address: string) {
     throw new Error(message as string);
   }
 }
+
+export default {
+  tokensByAddress,
+};

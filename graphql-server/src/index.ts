@@ -5,7 +5,7 @@ import { stitchSchemas } from '@graphql-tools/stitch';
 import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as substrateChainSchema } from 'substrate-chain';
-// import { schema as poapSchema } from 'poap-credential';
+import { schema as poapSchema } from 'poap-credential';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
@@ -34,18 +34,18 @@ async function makeAggregatedSchema() {
     ],
   });
 
-  // const wrappedPoapSchema = wrapSchema({
-  //   schema: poapSchema,
-  //   transforms: [
-  //     new RenameTypes((name) => `PoapCredential${capitalize(name)}`),
-  //     new RenameRootFields((_, name) => `PoapCredential${capitalize(name)}`),
-  //   ],
-  // });
+  const wrappedPoapSchema = wrapSchema({
+    schema: poapSchema,
+    transforms: [
+      new RenameTypes((name) => `PoapCredential${capitalize(name)}`),
+      new RenameRootFields((_, name) => `PoapCredential${capitalize(name)}`),
+    ],
+  });
 
   return stitchSchemas({
     subschemas: [
       wrappedSubstrateChainSchema,
-      // wrappedPoapSchema,
+      wrappedPoapSchema,
       ...remoteSchemas,
     ],
   });
