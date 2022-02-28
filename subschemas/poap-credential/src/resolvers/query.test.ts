@@ -39,52 +39,46 @@ describe('POAP GraphQL', () => {
       ];
 
       (request as jest.Mock).mockResolvedValueOnce({
-        data: {
-          account: {
-            id: address,
-            tokensOwned: '2',
-            tokens: [
-              {
-                id: '1677705',
-                event: {
-                  id: '9016',
-                },
-                created: '1632964873',
+        account: {
+          id: address,
+          tokensOwned: '2',
+          tokens: [
+            {
+              id: '1677705',
+              event: {
+                id: '9016',
               },
-              {
-                id: '1668075',
-                event: {
-                  id: '8975',
-                },
-                created: '1632938735',
+              created: '1632964873',
+            },
+            {
+              id: '1668075',
+              event: {
+                id: '8975',
               },
-            ],
-          },
+              created: '1632938735',
+            },
+          ],
         },
       });
 
       (request as jest.Mock).mockResolvedValueOnce({
-        data: {
-          account: {
-            id: address,
-            tokensOwned: '1',
-            tokens: [
-              {
-                id: '705819',
-                event: {
-                  id: '5146',
-                },
-                created: '1628167308',
+        account: {
+          id: address,
+          tokensOwned: '1',
+          tokens: [
+            {
+              id: '705819',
+              event: {
+                id: '5146',
               },
-            ],
-          },
+              created: '1628167308',
+            },
+          ],
         },
       });
 
       (request as jest.Mock).mockResolvedValueOnce({
-        data: {
-          account: null,
-        },
+        account: null,
       });
 
       expect(await queryPoapGraphQL(address, endpoints)).toEqual([
