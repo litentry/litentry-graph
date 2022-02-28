@@ -56,13 +56,15 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
 }
 
 export function sortPoapData(data: Account[]) {
-  const result = data
-    .filter((obj) => Object.keys(obj).length !== 0)
-    .reduce((prev: Account, acc: Account) => ({
-      id: acc.id,
-      tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
-      tokens: [...prev.tokens, ...acc.tokens],
-    }));
+  const filteredData = data.filter((obj) => Object.keys(obj).length !== 0);
+
+  if (filteredData.length === 0) return new Error('User has no tokens');
+
+  const result = filteredData.reduce((prev: Account, acc: Account) => ({
+    id: acc.id,
+    tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
+    tokens: [...prev.tokens, ...acc.tokens],
+  }));
 
   return result;
 }
