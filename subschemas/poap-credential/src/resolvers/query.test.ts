@@ -1,5 +1,5 @@
-import {Account} from '../../types/interface';
-import {queryPoapGraphQL, sortPoapData} from './index';
+import {Account} from '../types/interface';
+import {queryPoapGraphQL, sortPoapData} from './query';
 import {request} from 'graphql-request';
 
 jest.mock('graphql-request');

@@ -1,5 +1,5 @@
 import {request, gql} from 'graphql-request';
-import {Account} from '../../types/interface';
+import {Account} from '../types/interface';
 
 const subgraphEndpoints = [
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap',
@@ -62,7 +62,7 @@ export function sortPoapData(data: Account[]) {
     .filter((obj) => Object.keys(obj).length !== 0)
     .reduce((prev: Account, acc: Account) => ({
       id: acc.id,
-      tokensOwned: (parseFloat(prev.tokensOwned) + parseFloat(acc.tokensOwned)).toString(),
+      tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
       tokens: [...prev.tokens, ...acc.tokens],
     }));
 
