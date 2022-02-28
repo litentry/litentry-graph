@@ -45,13 +45,13 @@ export type Auction = {
 
 export type AuctionBid = {
   __typename?: 'AuctionBid';
-  amount?: Maybe<Scalars['String']>;
-  blockNumber?: Maybe<Scalars['String']>;
-  firstSlot?: Maybe<Scalars['String']>;
+  amount: Scalars['String'];
+  blockNumber: Scalars['String'];
+  firstSlot: Scalars['String'];
   isCrowdloan: Scalars['Boolean'];
-  lastSlot?: Maybe<Scalars['String']>;
-  projectId?: Maybe<Scalars['String']>;
-  projectName?: Maybe<Scalars['String']>;
+  lastSlot: Scalars['String'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
 };
 
 export type AuctionEndingPeriod = {
@@ -938,13 +938,13 @@ export type AuctionBidResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AuctionBid'] = ResolversParentTypes['AuctionBid'],
 > = {
-  amount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  blockNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  firstSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isCrowdloan?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  lastSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  projectName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  lastSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
