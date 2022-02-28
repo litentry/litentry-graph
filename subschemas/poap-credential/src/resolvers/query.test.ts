@@ -159,7 +159,7 @@ describe('POAP GraphQL', () => {
         {},
       ] as Account[];
 
-      expect(sortPoapData(data)).toEqual({
+      expect(sortPoapData(data, '0x000001f568875f378bf6d170b790967fe429c81a')).toEqual({
         id: '0x000001f568875f378bf6d170b790967fe429c81a',
         tokensOwned: '3',
         tokens: [
