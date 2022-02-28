@@ -25,6 +25,7 @@ export default /* GraphQL */ `
 
   type Crowdloan {
     paraId: String!
+    name: String
     depositor: Depositor!
     ending: [String!]!
     status: String!
@@ -34,7 +35,9 @@ export default /* GraphQL */ `
     formattedRaised: String!
     cap: String!
     formattedCap: String!
+    raisedPercentage: String!
     contribution: Contribution!
+    homepage: String
   }
 
   type Query {
