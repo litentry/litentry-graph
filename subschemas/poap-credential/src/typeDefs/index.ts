@@ -1,21 +1,21 @@
 export default /* GraphQL */ `
-type Query {
-    poapTokensByAddress(address: String!): TokenData!
-}
+  type Query {
+    tokensByAddress(address: String!): TokenData!
+  }
 
-type Tokens {
+  type Tokens {
     id: String!
     event: Event!
     created: String!
-}
+  }
 
-type Event {
+  type Event {
     id: String!
-}
+  }
 
-type TokenData {
+  type TokenData {
     id: String!
     tokensOwned: String!
-    tokens: Tokens!
-}
+    tokens: [Tokens]!
+  }
 `;

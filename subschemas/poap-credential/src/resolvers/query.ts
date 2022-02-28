@@ -5,8 +5,6 @@ const subgraphEndpoints = [
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap',
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-xdai',
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-sokol',
-  // 'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-ropsten',
-  'https://api.thegraph.com/subgraphs/name/poap-xyz/poap-kovan',
 ];
 
 export async function queryPoapGraphQL(address: string, endpoints: string[]) {
@@ -33,7 +31,7 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
           id: address,
         };
 
-        const {data} = await request(endpoint, graphqlQuery, variables);
+        const data = await request(endpoint, graphqlQuery, variables);
 
         if (!data) {
           throw new Error(`Error calling ${endpoint}`);
@@ -57,24 +55,35 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
   }
 }
 
-export function sortPoapData(data: Account[]) {
-  const result = data
-    .filter((obj) => Object.keys(obj).length !== 0)
-    .reduce((prev: Account, acc: Account) => ({
+export function sortPoapData(data: Account[], address: string) {
+  const filteredData = data.filter((obj) => Object.keys(obj).length !== 0);
+
+  if (filteredData.length === 0)
+    return {
+      id: address,
+      tokensOwned: 0,
+      tokens: [],
+    };
+
+  return filteredData.reduce((prev: Account, acc: Account) => {
+    return {
       id: acc.id,
       tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
       tokens: [...prev.tokens, ...acc.tokens],
-    }));
-
-  return result;
+    };
+  });
 }
 
 /* Query poap and return data */
-export default async function poapToken(address: string) {
+export async function tokensByAddress(parent: unknown, {address}: {address: string}) {
   try {
     const poapData = await queryPoapGraphQL(address, subgraphEndpoints);
-    return sortPoapData(poapData);
+    return sortPoapData(poapData, address);
   } catch ({message}) {
     throw new Error(message as string);
   }
 }
+
+export default {
+  tokensByAddress,
+};
