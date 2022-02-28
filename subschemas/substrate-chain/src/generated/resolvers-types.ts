@@ -24,8 +24,21 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: AccountBalance;
   display: Scalars['String'];
   registration: DeriveAccountRegistration;
+};
+
+export type AccountBalance = {
+  __typename?: 'AccountBalance';
+  formattedFree: Scalars['String'];
+  formattedFreeFrozen: Scalars['String'];
+  formattedReserved: Scalars['String'];
+  formattedTotal: Scalars['String'];
+  free: Scalars['String'];
+  freeFrozen: Scalars['String'];
+  reserved: Scalars['String'];
+  total: Scalars['String'];
 };
 
 export type AccountInfo = {
@@ -702,6 +715,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
+  AccountBalance: ResolverTypeWrapper<AccountBalance>;
   AccountInfo: ResolverTypeWrapper<AccountInfo>;
   Auction: ResolverTypeWrapper<Auction>;
   AuctionBid: ResolverTypeWrapper<AuctionBid>;
@@ -811,6 +825,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Account: Account;
+  AccountBalance: AccountBalance;
   AccountInfo: AccountInfo;
   Auction: Auction;
   AuctionBid: AuctionBid;
@@ -908,8 +923,24 @@ export type AccountResolvers<
   ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account'],
 > = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AccountBalanceResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AccountBalance'] = ResolversParentTypes['AccountBalance'],
+> = {
+  formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1689,6 +1720,7 @@ export type WhoResolvers<
 
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
+  AccountBalance?: AccountBalanceResolvers<ContextType>;
   AccountInfo?: AccountInfoResolvers<ContextType>;
   Auction?: AuctionResolvers<ContextType>;
   AuctionBid?: AuctionBidResolvers<ContextType>;
