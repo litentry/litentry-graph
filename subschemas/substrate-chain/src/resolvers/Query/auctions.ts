@@ -81,16 +81,17 @@ const getLatestAuction = (
     },
     raised: formatBalance(api, raised),
     raisedPercent,
-    winningBid: latestWinningBid ? {
-      isCrowdloan: Boolean(latestWinningBid.isCrowdloan),
-      firstSlot: formatNumber(latestWinningBid.firstSlot),
-      lastSlot: formatNumber(latestWinningBid.lastSlot),
-      blockNumber: lastWinners.blockNumber.toString(),
-      projectId: latestWinningBid.paraId.toString(),
-      projectName:
-        endpoints?.find((e) => e.paraId === latestWinningBid.paraId.toNumber())?.text?.toString() || '',
-      amount: formatBalance(api, lastWinners.total),
-    } : null,
+    winningBid: latestWinningBid
+      ? {
+          isCrowdloan: Boolean(latestWinningBid.isCrowdloan),
+          firstSlot: formatNumber(latestWinningBid.firstSlot),
+          lastSlot: formatNumber(latestWinningBid.lastSlot),
+          blockNumber: lastWinners.blockNumber.toString(),
+          projectId: latestWinningBid.paraId.toString(),
+          projectName: endpoints?.find((e) => e.paraId === latestWinningBid.paraId.toNumber())?.text?.toString() || '',
+          amount: formatBalance(api, lastWinners.total),
+        }
+      : null,
   };
 };
 
