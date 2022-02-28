@@ -55,25 +55,30 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
   }
 }
 
-export function sortPoapData(data: Account[]) {
+export function sortPoapData(data: Account[], address: string) {
   const filteredData = data.filter((obj) => Object.keys(obj).length !== 0);
 
-  if (filteredData.length === 0) return new Error('User has no tokens');
+  if (filteredData.length === 0)
+    return {
+      id: address,
+      tokensOwned: 0,
+      tokens: [],
+    };
 
-  const result = filteredData.reduce((prev: Account, acc: Account) => ({
-    id: acc.id,
-    tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
-    tokens: [...prev.tokens, ...acc.tokens],
-  }));
-
-  return result;
+  return filteredData.reduce((prev: Account, acc: Account) => {
+    return {
+      id: acc.id,
+      tokensOwned: (parseInt(prev.tokensOwned) + parseInt(acc.tokensOwned)).toString(),
+      tokens: [...prev.tokens, ...acc.tokens],
+    };
+  });
 }
 
 /* Query poap and return data */
 export async function tokensByAddress(parent: unknown, {address}: {address: string}) {
   try {
     const poapData = await queryPoapGraphQL(address, subgraphEndpoints);
-    return sortPoapData(poapData);
+    return sortPoapData(poapData, address);
   } catch ({message}) {
     throw new Error(message as string);
   }
