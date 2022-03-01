@@ -43,6 +43,7 @@ export default /* GraphQL */ `
     display: String!
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
+    subAccounts: [Account!]!
   }
 
   type Query {

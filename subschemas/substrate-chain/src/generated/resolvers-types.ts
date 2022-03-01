@@ -27,6 +27,7 @@ export type Account = {
   balance: AccountBalance;
   display: Scalars['String'];
   registration: DeriveAccountRegistration;
+  subAccounts: Array<Account>;
 };
 
 export type AccountBalance = {
@@ -926,6 +927,7 @@ export type AccountResolvers<
   balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  subAccounts?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
