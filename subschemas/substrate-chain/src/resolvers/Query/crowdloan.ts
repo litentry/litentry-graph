@@ -1,5 +1,6 @@
 import {BN, BN_ZERO} from '@polkadot/util';
 import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
+import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
 import type {CrowdloanSummary, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
@@ -168,12 +169,15 @@ export async function crowdloan(
     const data = await getFunds([paraId], bestNumber, api);
     const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
     const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+    const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
+    const currentPeriod = bestNumber.div(leasePeriodLength);
 
     return data.funds.reduce((_, fund) => {
-      const {info, isWinner} = fund;
+      const {info, isWinner, isCapped, isEnded, firstSlot} = fund;
       const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
       const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
-      const status = isWinner ? 'Winner' : 'Ended';
+      const isOngoing = !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot);
+      const status = isWinner ? 'Winner' : blocksLeft ? (isCapped ? 'Capped' : isOngoing ? 'Active' : 'Past') : 'Ended';
       const ending = getBlockTime(api, blocksLeft);
       const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
       const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
