@@ -544,8 +544,8 @@ export type RegistrarsSummary = {
 
 export type RegistrationJudgement = {
   __typename?: 'RegistrationJudgement';
-  index?: Maybe<Scalars['Int']>;
   judgement?: Maybe<IdentityJudgement>;
+  registrarIndex?: Maybe<Scalars['Int']>;
 };
 
 export type SpendPeriod = {
@@ -1643,8 +1643,8 @@ export type RegistrationJudgementResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['RegistrationJudgement'] = ResolversParentTypes['RegistrationJudgement'],
 > = {
-  index?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   judgement?: Resolver<Maybe<ResolversTypes['IdentityJudgement']>, ParentType, ContextType>;
+  registrarIndex?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

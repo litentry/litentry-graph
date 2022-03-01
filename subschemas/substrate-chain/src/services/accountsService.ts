@@ -27,7 +27,7 @@ export class AccountsService {
       registration: {
         ...accountInfo.identity,
         judgements: accountInfo.identity.judgements.map<RegistrationJudgement>(([index, judgement]) => ({
-          index: index.toNumber(),
+          registrarIndex: index.toNumber(),
           judgement: {
             isErroneous: judgement.isErroneous,
             isFeePaid: judgement.isFeePaid,

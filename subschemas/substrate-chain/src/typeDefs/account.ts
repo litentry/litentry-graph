@@ -10,7 +10,7 @@ export default /* GraphQL */ `
   }
 
   type RegistrationJudgement {
-    index: Int
+    registrarIndex: Int
     judgement: IdentityJudgement
   }
 
