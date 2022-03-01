@@ -27,10 +27,22 @@ export default /* GraphQL */ `
     judgements: [RegistrationJudgement]
   }
 
+  type AccountBalance {
+    total: String!
+    formattedTotal: String!
+    reserved: String!
+    formattedReserved: String!
+    free: String!
+    formattedFree: String!
+    freeFrozen: String!
+    formattedFreeFrozen: String!
+  }
+
   type Account {
     address: String!
     display: String!
     registration: DeriveAccountRegistration!
+    balance: AccountBalance!
   }
 
   type Query {
