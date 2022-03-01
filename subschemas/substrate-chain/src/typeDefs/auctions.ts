@@ -21,13 +21,13 @@ export default /* GraphQL */ `
   }
 
   type AuctionBid {
-    blockNumber: String
-    projectId: String
-    projectName: String
-    amount: String
+    blockNumber: String!
+    projectId: String!
+    projectName: String!
+    amount: String!
     isCrowdloan: Boolean!
-    firstSlot: String
-    lastSlot: String
+    firstSlot: String!
+    lastSlot: String!
   }
 
   type Auction {
