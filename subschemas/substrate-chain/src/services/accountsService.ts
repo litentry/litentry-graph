@@ -12,8 +12,6 @@ export class AccountsService {
   public async getAccount(address: string): Promise<Account> {
     const accountInfo = await this.#api.derive.accounts.info(address);
     const {data: accountData} = await this.#api.query.system.account(address);
-    const subAccountsData = await this.#api.query.identity.subsOf(address);
-    const subAccounts = await Promise.all(subAccountsData[1].map((accountId) => this.getAccount(accountId.toString())));
 
     const total = accountData.free.add(accountData.reserved);
     const reserved = accountData.reserved;
@@ -52,7 +50,6 @@ export class AccountsService {
         freeFrozen: freeFrozen.toString(),
         formattedFreeFrozen: formatBalance(this.#api, freeFrozen),
       },
-      subAccounts,
     };
   }
 }

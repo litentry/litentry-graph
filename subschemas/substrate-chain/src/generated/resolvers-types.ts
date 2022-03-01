@@ -5,6 +5,7 @@ import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democra
 import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
 import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
 import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
+import {PartialSubAccount} from '../resolvers/Query/account';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -27,7 +28,7 @@ export type Account = {
   balance: AccountBalance;
   display: Scalars['String'];
   registration: DeriveAccountRegistration;
-  subAccounts: Array<Account>;
+  subAccounts?: Maybe<Array<SubAccount>>;
 };
 
 export type AccountBalance = {
@@ -554,6 +555,12 @@ export type SpendPeriod = {
   termLeftParts: Array<Scalars['String']>;
 };
 
+export type SubAccount = {
+  __typename?: 'SubAccount';
+  account: Account;
+  address: Scalars['String'];
+};
+
 export type TermProgress = {
   __typename?: 'TermProgress';
   percentage: Scalars['Int'];
@@ -715,9 +722,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Account: ResolverTypeWrapper<Account>;
+  Account: ResolverTypeWrapper<
+    Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversTypes['SubAccount']>>}
+  >;
   AccountBalance: ResolverTypeWrapper<AccountBalance>;
-  AccountInfo: ResolverTypeWrapper<AccountInfo>;
+  AccountInfo: ResolverTypeWrapper<Omit<AccountInfo, 'account'> & {account: ResolversTypes['Account']}>;
   Auction: ResolverTypeWrapper<Auction>;
   AuctionBid: ResolverTypeWrapper<AuctionBid>;
   AuctionEndingPeriod: ResolverTypeWrapper<AuctionEndingPeriod>;
@@ -755,7 +764,12 @@ export type ResolversTypes = {
   >;
   CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
-  CouncilMotion: ResolverTypeWrapper<Omit<CouncilMotion, 'proposal'> & {proposal: ResolversTypes['MotionProposal']}>;
+  CouncilMotion: ResolverTypeWrapper<
+    Omit<CouncilMotion, 'proposal' | 'votes'> & {
+      proposal: ResolversTypes['MotionProposal'];
+      votes?: Maybe<ResolversTypes['MotionVotes']>;
+    }
+  >;
   Crowdloan: ResolverTypeWrapper<
     Omit<Crowdloan, 'contribution' | 'depositor'> & {
       contribution: ResolversTypes['Contribution'];
@@ -789,9 +803,24 @@ export type ResolversTypes = {
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
   MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
-  MotionVotes: ResolverTypeWrapper<MotionVotes>;
-  PalletProposal: ResolverTypeWrapper<PalletProposal>;
-  Parachain: ResolverTypeWrapper<Parachain>;
+  MotionVotes: ResolverTypeWrapper<
+    Omit<MotionVotes, 'ayes' | 'nays'> & {
+      ayes: Array<ResolversTypes['Account']>;
+      nays: Array<ResolversTypes['Account']>;
+    }
+  >;
+  PalletProposal: ResolverTypeWrapper<
+    Omit<PalletProposal, 'beneficiary' | 'proposer'> & {
+      beneficiary: ResolversTypes['Account'];
+      proposer: ResolversTypes['Account'];
+    }
+  >;
+  Parachain: ResolverTypeWrapper<
+    Omit<Parachain, 'nonVoters' | 'validators'> & {
+      nonVoters: Array<ResolversTypes['AccountInfo']>;
+      validators?: Maybe<ResolversTypes['ValidatorsGroup']>;
+    }
+  >;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   ProposalArg: ResolverTypeWrapper<
     Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['DemocracyProposal']>>>}
@@ -805,6 +834,7 @@ export type ResolversTypes = {
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  SubAccount: ResolverTypeWrapper<PartialSubAccount>;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
     Omit<Tip, 'finder' | 'tippers' | 'who'> & {
@@ -814,20 +844,29 @@ export type ResolversTypes = {
     }
   >;
   Tipper: ResolverTypeWrapper<PartialTipper>;
-  Treasury: ResolverTypeWrapper<Treasury>;
+  Treasury: ResolverTypeWrapper<
+    Omit<Treasury, 'approvals' | 'proposals'> & {
+      approvals: Array<ResolversTypes['TreasuryProposal']>;
+      proposals: Array<ResolversTypes['TreasuryProposal']>;
+    }
+  >;
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
-  TreasuryProposal: ResolverTypeWrapper<TreasuryProposal>;
+  TreasuryProposal: ResolverTypeWrapper<
+    Omit<TreasuryProposal, 'proposal'> & {proposal: ResolversTypes['PalletProposal']}
+  >;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
-  ValidatorsGroup: ResolverTypeWrapper<ValidatorsGroup>;
+  ValidatorsGroup: ResolverTypeWrapper<
+    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['AccountInfo']>}
+  >;
   VotingStatus: ResolverTypeWrapper<VotingStatus>;
   Who: ResolverTypeWrapper<PartialWho>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Account: Account;
+  Account: Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversParentTypes['SubAccount']>>};
   AccountBalance: AccountBalance;
-  AccountInfo: AccountInfo;
+  AccountInfo: Omit<AccountInfo, 'account'> & {account: ResolversParentTypes['Account']};
   Auction: Auction;
   AuctionBid: AuctionBid;
   AuctionEndingPeriod: AuctionEndingPeriod;
@@ -859,7 +898,10 @@ export type ResolversParentTypes = {
   };
   CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
-  CouncilMotion: Omit<CouncilMotion, 'proposal'> & {proposal: ResolversParentTypes['MotionProposal']};
+  CouncilMotion: Omit<CouncilMotion, 'proposal' | 'votes'> & {
+    proposal: ResolversParentTypes['MotionProposal'];
+    votes?: Maybe<ResolversParentTypes['MotionVotes']>;
+  };
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
     contribution: ResolversParentTypes['Contribution'];
     depositor: ResolversParentTypes['Depositor'];
@@ -887,9 +929,18 @@ export type ResolversParentTypes = {
   LeasePeriod: LeasePeriod;
   ModuleElection: ModuleElection;
   MotionProposal: Omit<MotionProposal, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
-  MotionVotes: MotionVotes;
-  PalletProposal: PalletProposal;
-  Parachain: Parachain;
+  MotionVotes: Omit<MotionVotes, 'ayes' | 'nays'> & {
+    ayes: Array<ResolversParentTypes['Account']>;
+    nays: Array<ResolversParentTypes['Account']>;
+  };
+  PalletProposal: Omit<PalletProposal, 'beneficiary' | 'proposer'> & {
+    beneficiary: ResolversParentTypes['Account'];
+    proposer: ResolversParentTypes['Account'];
+  };
+  Parachain: Omit<Parachain, 'nonVoters' | 'validators'> & {
+    nonVoters: Array<ResolversParentTypes['AccountInfo']>;
+    validators?: Maybe<ResolversParentTypes['ValidatorsGroup']>;
+  };
   ParachainsInfo: ParachainsInfo;
   ProposalArg: Omit<ProposalArg, 'subCalls'> & {
     subCalls?: Maybe<Array<Maybe<ResolversParentTypes['DemocracyProposal']>>>;
@@ -903,6 +954,7 @@ export type ResolversParentTypes = {
   RegistrationJudgement: RegistrationJudgement;
   SpendPeriod: SpendPeriod;
   String: Scalars['String'];
+  SubAccount: PartialSubAccount;
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
     finder?: Maybe<ResolversParentTypes['Finder']>;
@@ -910,11 +962,14 @@ export type ResolversParentTypes = {
     who: ResolversParentTypes['Who'];
   };
   Tipper: PartialTipper;
-  Treasury: Treasury;
+  Treasury: Omit<Treasury, 'approvals' | 'proposals'> & {
+    approvals: Array<ResolversParentTypes['TreasuryProposal']>;
+    proposals: Array<ResolversParentTypes['TreasuryProposal']>;
+  };
   TreasuryBalance: TreasuryBalance;
-  TreasuryProposal: TreasuryProposal;
+  TreasuryProposal: Omit<TreasuryProposal, 'proposal'> & {proposal: ResolversParentTypes['PalletProposal']};
   TreasurySummary: TreasurySummary;
-  ValidatorsGroup: ValidatorsGroup;
+  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['AccountInfo']>};
   VotingStatus: VotingStatus;
   Who: PartialWho;
 };
@@ -927,7 +982,7 @@ export type AccountResolvers<
   balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
-  subAccounts?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  subAccounts?: Resolver<Maybe<Array<ResolversTypes['SubAccount']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1602,6 +1657,15 @@ export type SpendPeriodResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubAccountResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SubAccount'] = ResolversParentTypes['SubAccount'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TermProgressResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TermProgress'] = ResolversParentTypes['TermProgress'],
@@ -1774,6 +1838,7 @@ export type Resolvers<ContextType = any> = {
   RegistrarsSummary?: RegistrarsSummaryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   SpendPeriod?: SpendPeriodResolvers<ContextType>;
+  SubAccount?: SubAccountResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
   Tipper?: TipperResolvers<ContextType>;
