@@ -1,9 +1,11 @@
+import {BN, BN_ZERO} from '@polkadot/util';
+import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
+import type {BlockNumber} from '@polkadot/types/interfaces';
+import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
 import type {CrowdloanSummary, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
-import type {ParaId} from '@polkadot/types/interfaces';
 import {getFunds, extractActiveFunds, extractEndedFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
-import {BN, BN_ZERO} from '@polkadot/util';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 
 export async function crowdloanSummary(
@@ -41,7 +43,7 @@ export async function crowdloanSummary(
     formattedActiveRaised: formatBalance(api, activeRaised),
     activeProgress,
     totalCap: data.totalCap.toString(),
-    formattedTotalCap: formatBalance(api, data.totalRaised),
+    formattedTotalCap: formatBalance(api, data.totalCap),
     totalRaised: data.totalRaised.toString(),
     formattedTotalRaised: formatBalance(api, data.totalRaised),
     totalProgress,
@@ -68,10 +70,13 @@ export async function activeCrowdloans(
     api.derive.chain.bestNumber(),
   ]);
 
+  const genesisHash = api.genesisHash.toHex();
   const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
+  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
+  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
 
   return activeFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
@@ -79,15 +84,20 @@ export async function activeCrowdloans(
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
     const status = isWinner ? 'Winner' : 'Active';
     const ending = getBlockTime(api, blocksLeft);
+    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+    const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
 
     return {
       paraId: paraId.toString(),
+      name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
+      homepage: parachain?.homepage ?? null,
       depositor: {address: depositor.toString()},
       status,
       ending: ending.timeStringParts,
       firstPeriod: firstPeriod.toString(),
       lastPeriod: lastPeriod.toString(),
       raised: raised.toString(),
+      raisedPercentage: String(raisedPercentage),
       formattedRaised: formatBalance(api, raised),
       cap: cap.toString(),
       formattedCap: formatBalance(api, cap),
@@ -106,10 +116,13 @@ export async function endedCrowdloans(
     api.derive.chain.bestNumber(),
   ]);
 
+  const genesisHash = api.genesisHash.toHex();
   const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
   const endedFunds = extractEndedFunds(data.funds, leasePeriod);
+  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
+  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
 
   return endedFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
@@ -117,9 +130,13 @@ export async function endedCrowdloans(
     const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
     const status = isWinner ? 'Winner' : 'Ended';
     const ending = getBlockTime(api, blocksLeft);
+    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+    const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
 
     return {
       paraId: paraId.toString(),
+      name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
+      homepage: parachain?.homepage ?? null,
       depositor: {address: depositor.toString()},
       status,
       ending: ending.timeStringParts,
@@ -127,6 +144,7 @@ export async function endedCrowdloans(
       lastPeriod: lastPeriod.toString(),
       raised: raised.toString(),
       formattedRaised: formatBalance(api, raised),
+      raisedPercentage: String(raisedPercentage),
       cap: cap.toString(),
       formattedCap: formatBalance(api, cap),
       contribution: {paraId: paraId.toString()},
@@ -147,17 +165,27 @@ export async function crowdloan(
       args: [paraId],
     } = paraIdKey;
     const bestNumber = await api.derive.chain.bestNumber();
+    const genesisHash = api.genesisHash.toHex();
     const data = await getFunds([paraId], bestNumber, api);
+    const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
+    const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+    const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
+    const currentPeriod = bestNumber.div(leasePeriodLength);
 
     return data.funds.reduce((_, fund) => {
-      const {info, isWinner} = fund;
+      const {info, isWinner, isCapped, isEnded, firstSlot} = fund;
       const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
       const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
-      const status = isWinner ? 'Winner' : 'Ended';
+      const isOngoing = !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot);
+      const status = isWinner ? 'Winner' : blocksLeft ? (isCapped ? 'Capped' : isOngoing ? 'Active' : 'Past') : 'Ended';
       const ending = getBlockTime(api, blocksLeft);
+      const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+      const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
 
       return {
         paraId: paraId.toString(),
+        name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
+        homepage: parachain?.homepage ?? null,
         depositor: {address: depositor.toString()},
         status,
         ending: ending.timeStringParts,
@@ -168,6 +196,7 @@ export async function crowdloan(
         cap: cap.toString(),
         formattedCap: formatBalance(api, cap),
         contribution: {paraId: paraId.toString()},
+        raisedPercentage: String(raisedPercentage),
       };
     }, {} as CrowdloanInfo);
   }

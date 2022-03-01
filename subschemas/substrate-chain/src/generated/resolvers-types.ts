@@ -24,8 +24,21 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: AccountBalance;
   display: Scalars['String'];
   registration: DeriveAccountRegistration;
+};
+
+export type AccountBalance = {
+  __typename?: 'AccountBalance';
+  formattedFree: Scalars['String'];
+  formattedFreeFrozen: Scalars['String'];
+  formattedReserved: Scalars['String'];
+  formattedTotal: Scalars['String'];
+  free: Scalars['String'];
+  freeFrozen: Scalars['String'];
+  reserved: Scalars['String'];
+  total: Scalars['String'];
 };
 
 export type AccountInfo = {
@@ -45,13 +58,13 @@ export type Auction = {
 
 export type AuctionBid = {
   __typename?: 'AuctionBid';
-  amount?: Maybe<Scalars['String']>;
-  blockNumber?: Maybe<Scalars['String']>;
-  firstSlot?: Maybe<Scalars['String']>;
+  amount: Scalars['String'];
+  blockNumber: Scalars['String'];
+  firstSlot: Scalars['String'];
   isCrowdloan: Scalars['Boolean'];
-  lastSlot?: Maybe<Scalars['String']>;
-  projectId?: Maybe<Scalars['String']>;
-  projectName?: Maybe<Scalars['String']>;
+  lastSlot: Scalars['String'];
+  projectId: Scalars['String'];
+  projectName: Scalars['String'];
 };
 
 export type AuctionEndingPeriod = {
@@ -212,9 +225,12 @@ export type Crowdloan = {
   firstPeriod: Scalars['String'];
   formattedCap: Scalars['String'];
   formattedRaised: Scalars['String'];
+  homepage?: Maybe<Scalars['String']>;
   lastPeriod: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   paraId: Scalars['String'];
   raised: Scalars['String'];
+  raisedPercentage: Scalars['String'];
   status: Scalars['String'];
 };
 
@@ -703,6 +719,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<Account>;
+  AccountBalance: ResolverTypeWrapper<AccountBalance>;
   AccountInfo: ResolverTypeWrapper<AccountInfo>;
   Auction: ResolverTypeWrapper<Auction>;
   AuctionBid: ResolverTypeWrapper<AuctionBid>;
@@ -812,6 +829,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Account: Account;
+  AccountBalance: AccountBalance;
   AccountInfo: AccountInfo;
   Auction: Auction;
   AuctionBid: AuctionBid;
@@ -909,8 +927,24 @@ export type AccountResolvers<
   ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account'],
 > = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AccountBalanceResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AccountBalance'] = ResolversParentTypes['AccountBalance'],
+> = {
+  formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -939,13 +973,13 @@ export type AuctionBidResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AuctionBid'] = ResolversParentTypes['AuctionBid'],
 > = {
-  amount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  blockNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  firstSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  amount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isCrowdloan?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  lastSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  projectId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  projectName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  lastSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  projectName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1163,9 +1197,12 @@ export type CrowdloanResolvers<
   firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  raisedPercentage?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1691,6 +1728,7 @@ export type WhoResolvers<
 
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
+  AccountBalance?: AccountBalanceResolvers<ContextType>;
   AccountInfo?: AccountInfoResolvers<ContextType>;
   Auction?: AuctionResolvers<ContextType>;
   AuctionBid?: AuctionBidResolvers<ContextType>;
