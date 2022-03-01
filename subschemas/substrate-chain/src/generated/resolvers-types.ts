@@ -27,6 +27,7 @@ export type Account = {
   address: Scalars['String'];
   balance: AccountBalance;
   display: Scalars['String'];
+  hasIdentity: Scalars['Boolean'];
   registration: DeriveAccountRegistration;
   subAccounts?: Maybe<Array<SubAccount>>;
 };
@@ -981,6 +982,7 @@ export type AccountResolvers<
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hasIdentity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
   subAccounts?: Resolver<Maybe<Array<ResolversTypes['SubAccount']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

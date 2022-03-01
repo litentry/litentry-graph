@@ -46,6 +46,7 @@ export default /* GraphQL */ `
   type Account {
     address: String!
     display: String!
+    hasIdentity: Boolean!
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
     subAccounts: [SubAccount!]

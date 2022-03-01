@@ -20,7 +20,7 @@ export class AccountsService {
 
     const display = accountInfo.identity.displayParent
       ? `${accountInfo.identity.displayParent}/${accountInfo.identity.display || accountInfo.identity.displayParent}`
-      : accountInfo.identity.display ?? address;
+      : accountInfo.identity.display;
 
     return {
       address: address,
@@ -39,7 +39,8 @@ export class AccountsService {
           },
         })),
       },
-      display: display.toUpperCase(),
+      display: display ?? address.toUpperCase(),
+      hasIdentity: Boolean(display),
       balance: {
         total: total.toString(),
         formattedTotal: formatBalance(this.#api, total),
