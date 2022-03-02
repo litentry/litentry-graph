@@ -10,7 +10,7 @@ export default /* GraphQL */ `
   }
 
   type RegistrationJudgement {
-    index: Int
+    registrarIndex: Int
     judgement: IdentityJudgement
   }
 
@@ -38,11 +38,18 @@ export default /* GraphQL */ `
     formattedFreeFrozen: String!
   }
 
+  type SubAccount {
+    address: String!
+    account: Account!
+  }
+
   type Account {
     address: String!
     display: String!
+    hasIdentity: Boolean!
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
+    subAccounts: [SubAccount!]
   }
 
   type Query {

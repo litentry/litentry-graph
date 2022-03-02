@@ -20,6 +20,7 @@ generates:
         Tipper: ../resolvers/Query/tips#PartialTipper
         Curator: ../resolvers/Query/bounties#PartialCurator
         Beneficiary: ../resolvers/Query/bounties#PartialBeneficiary
+        SubAccount: ../resolvers/Query/account#PartialSubAccount
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
