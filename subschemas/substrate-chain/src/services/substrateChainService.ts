@@ -19,7 +19,7 @@ const M_LENGTH = 6 + 1;
 
 const DEFAULT_TIME = new Bn(6000);
 
-export function getBlockTime(api: Context['api'], blockNumber: BlockNumber | BN = BN_ONE): BlockTimeResult {
+export function getBlockTime(api: Context['api'], blockNumber: BlockNumber | 0 | BN = BN_ONE): BlockTimeResult {
   if (!blockNumber) {
     return {
       blockTime: DEFAULT_TIME.toNumber(),
