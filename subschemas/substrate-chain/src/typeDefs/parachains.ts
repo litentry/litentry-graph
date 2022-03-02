@@ -10,6 +10,7 @@ export default /* GraphQL */ `
     totalPeriod: String!
     progressPercent: Int!
     remainder: String!
+    remainderBlockTime: String!
   }
   type Parachain {
     id: String!

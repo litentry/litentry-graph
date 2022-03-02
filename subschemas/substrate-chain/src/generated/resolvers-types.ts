@@ -369,6 +369,7 @@ export type LeasePeriod = {
   currentLease: Scalars['String'];
   progressPercent: Scalars['Int'];
   remainder: Scalars['String'];
+  remainderBlockTime: Scalars['String'];
   totalPeriod: Scalars['String'];
 };
 
@@ -1438,6 +1439,7 @@ export type LeasePeriodResolvers<
   currentLease?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   remainder?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  remainderBlockTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   totalPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
