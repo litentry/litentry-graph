@@ -11,6 +11,7 @@ import democracy from './democracy';
 import events from './events';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
+import parathreads from './parathreads';
 import tips from './tips';
 import treasury from './treasury';
 import registrars from './registrars';
@@ -30,6 +31,7 @@ export default [
   events,
   moduleElection,
   parachains,
+  parathreads,
   registrars,
   tips,
   treasury,

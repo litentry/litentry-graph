@@ -6,6 +6,7 @@ import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloa
 import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
 import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
 import {PartialSubAccount} from '../resolvers/Query/account';
+import {PartialManager} from '../resolvers/Query/parathreads';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -372,6 +373,12 @@ export type LeasePeriod = {
   totalPeriod: Scalars['String'];
 };
 
+export type Manager = {
+  __typename?: 'Manager';
+  account: Account;
+  address: Scalars['String'];
+};
+
 export type ModuleElection = {
   __typename?: 'ModuleElection';
   hasElections: Scalars['Boolean'];
@@ -423,6 +430,15 @@ export type ParachainsInfo = {
   parachainsCount: Scalars['Int'];
   parathreadsCount: Scalars['Int'];
   proposalsCount: Scalars['Int'];
+};
+
+export type Parathread = {
+  __typename?: 'Parathread';
+  homepage?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lease?: Maybe<Lease>;
+  manager?: Maybe<Manager>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type ProposalArg = {
@@ -481,6 +497,7 @@ export type Query = {
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
+  parathreads?: Maybe<Array<Parathread>>;
   registrarsSummary: RegistrarsSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
@@ -805,6 +822,7 @@ export type ResolversTypes = {
   LaunchPeriodInfo: ResolverTypeWrapper<LaunchPeriodInfo>;
   Lease: ResolverTypeWrapper<Lease>;
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
+  Manager: ResolverTypeWrapper<PartialManager>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
   MotionProposal: ResolverTypeWrapper<Omit<MotionProposal, 'args'> & {args: Array<ResolversTypes['ProposalArg']>}>;
   MotionVotes: ResolverTypeWrapper<
@@ -826,6 +844,7 @@ export type ResolversTypes = {
     }
   >;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
+  Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['Manager']>}>;
   ProposalArg: ResolverTypeWrapper<
     Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['DemocracyProposal']>>>}
   >;
@@ -931,6 +950,7 @@ export type ResolversParentTypes = {
   LaunchPeriodInfo: LaunchPeriodInfo;
   Lease: Lease;
   LeasePeriod: LeasePeriod;
+  Manager: PartialManager;
   ModuleElection: ModuleElection;
   MotionProposal: Omit<MotionProposal, 'args'> & {args: Array<ResolversParentTypes['ProposalArg']>};
   MotionVotes: Omit<MotionVotes, 'ayes' | 'nays'> & {
@@ -946,6 +966,7 @@ export type ResolversParentTypes = {
     validators?: Maybe<ResolversParentTypes['ValidatorsGroup']>;
   };
   ParachainsInfo: ParachainsInfo;
+  Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['Manager']>};
   ProposalArg: Omit<ProposalArg, 'subCalls'> & {
     subCalls?: Maybe<Array<Maybe<ResolversParentTypes['DemocracyProposal']>>>;
   };
@@ -1442,6 +1463,15 @@ export type LeasePeriodResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ManagerResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Manager'] = ResolversParentTypes['Manager'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ModuleElectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection'],
@@ -1510,6 +1540,18 @@ export type ParachainsInfoResolvers<
   parachainsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   parathreadsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   proposalsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ParathreadResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Parathread'] = ResolversParentTypes['Parathread'],
+> = {
+  homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
+  manager?: Resolver<Maybe<ResolversTypes['Manager']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1613,6 +1655,7 @@ export type QueryResolvers<
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
+  parathreads?: Resolver<Maybe<Array<ResolversTypes['Parathread']>>, ParentType, ContextType>;
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
@@ -1831,12 +1874,14 @@ export type Resolvers<ContextType = any> = {
   LaunchPeriodInfo?: LaunchPeriodInfoResolvers<ContextType>;
   Lease?: LeaseResolvers<ContextType>;
   LeasePeriod?: LeasePeriodResolvers<ContextType>;
+  Manager?: ManagerResolvers<ContextType>;
   ModuleElection?: ModuleElectionResolvers<ContextType>;
   MotionProposal?: MotionProposalResolvers<ContextType>;
   MotionVotes?: MotionVotesResolvers<ContextType>;
   PalletProposal?: PalletProposalResolvers<ContextType>;
   Parachain?: ParachainResolvers<ContextType>;
   ParachainsInfo?: ParachainsInfoResolvers<ContextType>;
+  Parathread?: ParathreadResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
   ProposalSecond?: ProposalSecondResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
