@@ -61,8 +61,8 @@ const getLatestAuction = (
   endingPeriod: BlockNumber | undefined,
   endpoints: LinkOption[],
 ): Auction => {
-  const lastWinners = winningData && winningData[0];
-  const latestWinningBid = lastWinners.winners[0];
+  const lastWinners = winningData[0];
+  const latestWinningBid = lastWinners ? lastWinners.winners[0] : undefined;
   const raised = lastWinners?.total ?? BN_ZERO;
   const total = totalIssuance ?? BN_ZERO;
   const raisedPercent = total.isZero() ? 0 : raised.muln(10000).div(total).toNumber() / 100;
