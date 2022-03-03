@@ -4,15 +4,15 @@ import {request} from 'graphql-request';
 
 jest.mock('graphql-request');
 
-describe('POAP GraphQL', () => {
+describe('Galaxy GraphQL', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
   describe('dataByAddress', () => {
-    it('should throw error if request fails', async () => {
+    it('should return error if request fails', async () => {
       const address = '0x111AE6Fe1ad173def8dC36e9dff5144c713F2880';
 
-      (request as jest.Mock).mockRejectedValueOnce({
+      (request as jest.Mock).mockResolvedValue({
         errors: [
           {
             message: 'something went wrong',
@@ -23,7 +23,7 @@ describe('POAP GraphQL', () => {
       try {
         await queryGalaxyGraphQL(address);
       } catch (err) {
-        expect(err).toEqual('something went wrong');
+        expect(err).toEqual(new Error('something went wrong'));
       }
     });
   });

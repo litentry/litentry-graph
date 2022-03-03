@@ -90,7 +90,7 @@ export default /* GraphQL */ `
   }
 
   type RecentParticipationList {
-    id: ID!
+    id: ID
     tx: String!
     address: RecentParticipationListAddress!
     status: ParticipationStatus!
