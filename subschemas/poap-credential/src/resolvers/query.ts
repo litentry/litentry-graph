@@ -78,7 +78,9 @@ export function sortPoapData(data: Account[], address: string) {
 export async function tokensByAddress(parent: unknown, {address}: {address: string}) {
   try {
     const poapData = await queryPoapGraphQL(address, subgraphEndpoints);
-    return sortPoapData(poapData, address);
+    const result = sortPoapData(poapData, address);
+
+    return result;
   } catch ({message}) {
     throw new Error(message as string);
   }
