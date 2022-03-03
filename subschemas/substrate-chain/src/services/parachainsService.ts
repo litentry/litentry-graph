@@ -58,6 +58,7 @@ export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> 
     totalPeriod,
     progressPercent,
     remainder,
+    remainderBlockTime: periodRemainder.toString(),
   };
 }
 
@@ -76,7 +77,7 @@ export function getBlocks(api: Context['api'], leases: number[], leasePeriod: Le
     return undefined;
   }
 
-  return bnToBn(leaseValue).sub(BN_ONE).imul(length).iadd(bnToBn(leasePeriod.remainder));
+  return bnToBn(leaseValue).sub(BN_ONE).imul(length).iadd(bnToBn(leasePeriod.remainderBlockTime));
 }
 
 export function getLeasePeriodString(currentPeriod: BN, leases: number[]): string {
