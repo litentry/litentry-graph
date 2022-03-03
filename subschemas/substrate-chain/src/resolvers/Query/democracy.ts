@@ -1,19 +1,19 @@
-import type {u32} from '@polkadot/types';
 import type {DeriveProposal, DeriveReferendumExt} from '@polkadot/api-derive/types';
+import type {u32} from '@polkadot/types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
+import {BN, BN_HUNDRED, BN_ONE} from '@polkadot/util';
 import type {
-  DemocracySummary,
   DemocracyProposal,
   DemocracyReferendum,
+  DemocracySummary,
   LaunchPeriodInfo,
-  Proposer,
   ProposalSecond,
+  Proposer,
 } from '../../generated/resolvers-types';
-import {Context} from '../../types';
-import {getCallParams, formatCallMeta} from '../../utils/call';
-import {notEmpty} from '../../utils/notEmpty';
-import {BN, BN_ONE, BN_HUNDRED} from '@polkadot/util';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {Context} from '../../types';
+import {formatCallMeta, getCallParams} from '../../utils/call';
+import {notEmpty} from '../../utils/notEmpty';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
   seconds: PartialProposalSecond[];
@@ -117,40 +117,40 @@ function formatReferendumData(
   bestNumber: BlockNumber,
 ): DemocracyReferendum | null {
   const imageProposal = referendum.image?.proposal;
+  const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
+  const {timeStringParts: endPeriod} = getBlockTime(api, remainBlock);
+
+  const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
+  const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
+
+  const ayePercent = !referendum.votedTotal.isZero()
+    ? referendum.allAye
+        .reduce((total: BN, {balance}) => total.add(balance), new BN(0))
+        .muln(10000)
+        .div(referendum.votedTotal)
+        .toNumber() / 100
+    : 0;
+
+  const meta = imageProposal ? formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta) : '';
+  let formatedReferendum = {
+    meta,
+    endPeriod,
+    activatePeriod,
+    votedAye: referendum.votedAye.toString(),
+    formattedVotedAye: formatBalance(api, referendum.votedAye),
+    votedNay: referendum.votedNay.toString(),
+    formattedVotedNay: formatBalance(api, referendum.votedNay),
+    voteCountAye: referendum.voteCountAye.toString(),
+    voteCountNay: referendum.voteCountNay.toString(),
+    ayePercent,
+    index: referendum.index.toString(),
+    hash: String(referendum.imageHash),
+  };
   if (imageProposal) {
-    const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
-    const {timeStringParts: endPeriod} = getBlockTime(api, remainBlock);
-
-    const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
-    const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
-
-    const ayePercent = !referendum.votedTotal.isZero()
-      ? referendum.allAye
-          .reduce((total: BN, {balance}) => total.add(balance), new BN(0))
-          .muln(10000)
-          .div(referendum.votedTotal)
-          .toNumber() / 100
-      : 0;
-
-    const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
-    return {
-      meta,
-      endPeriod,
-      activatePeriod,
-      votedAye: referendum.votedAye.toString(),
-      formattedVotedAye: formatBalance(api, referendum.votedAye),
-      votedNay: referendum.votedNay.toString(),
-      formattedVotedNay: formatBalance(api, referendum.votedNay),
-      voteCountAye: referendum.voteCountAye.toString(),
-      voteCountNay: referendum.voteCountNay.toString(),
-      ayePercent,
-      index: referendum.index.toString(),
-      hash: String(imageProposal.hash),
-      ...getCallParams(imageProposal),
-    };
+    return {...formatedReferendum, ...getCallParams(imageProposal)};
+  } else {
+    return formatedReferendum;
   }
-
-  return null;
 }
 
 export async function democracyReferendums(

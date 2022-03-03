@@ -46,9 +46,9 @@ export default /* GraphQL */ `
   type DemocracyReferendum {
     index: String!
     meta: String!
-    method: String!
-    section: String!
-    args: [ProposalArg!]!
+    method: String
+    section: String
+    args: [ProposalArg]
     hash: String!
     endPeriod: [String!]!
     activatePeriod: [String!]!
