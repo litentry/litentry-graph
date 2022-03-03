@@ -36,9 +36,9 @@ export default /* GraphQL */ `
     formattedBalance: String
     seconds: [ProposalSecond!]!
     meta: String!
-    method: String!
-    section: String!
-    args: [ProposalArg!]!
+    method: String
+    section: String
+    args: [ProposalArg]
     hash: String!
     proposer: Proposer!
   }

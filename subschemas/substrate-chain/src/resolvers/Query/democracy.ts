@@ -66,24 +66,19 @@ function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber:
 
 function formatProposalData(proposal: DeriveProposal, api: Context['api']): ProposalInfo | null {
   const imageProposal = proposal.image?.proposal;
-
-  if (imageProposal) {
-    const meta = formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta);
-    return {
-      meta,
-      balance: proposal.balance?.toString(),
-      formattedBalance: proposal?.balance ? formatBalance(api, proposal.balance) : undefined,
-      seconds: proposal.seconds.map((account) => ({
-        address: account.toString(),
-      })),
-      index: proposal.index.toString(),
-      proposer: {address: String(proposal.proposer)},
-      hash: String(imageProposal.hash),
-      ...getCallParams(imageProposal),
-    };
-  }
-
-  return null;
+  const meta = imageProposal ? formatCallMeta(imageProposal?.registry.findMetaCall(imageProposal.callIndex).meta) : '';
+  return {
+    meta,
+    balance: proposal.balance?.toString(),
+    formattedBalance: proposal?.balance ? formatBalance(api, proposal.balance) : undefined,
+    seconds: proposal.seconds.map((account) => ({
+      address: account.toString(),
+    })),
+    index: proposal.index.toString(),
+    proposer: {address: String(proposal.proposer)},
+    hash: String(proposal.imageHash),
+    ...(imageProposal ? getCallParams(imageProposal) : {}),
+  };
 }
 
 export async function democracyProposals(
@@ -145,12 +140,9 @@ function formatReferendumData(
     ayePercent,
     index: referendum.index.toString(),
     hash: String(referendum.imageHash),
+    ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
-  if (imageProposal) {
-    return {...formatedReferendum, ...getCallParams(imageProposal)};
-  } else {
-    return formatedReferendum;
-  }
+  return formatedReferendum;
 }
 
 export async function democracyReferendums(

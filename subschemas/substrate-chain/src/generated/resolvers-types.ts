@@ -266,16 +266,16 @@ export type Curator = {
 
 export type DemocracyProposal = {
   __typename?: 'DemocracyProposal';
-  args: Array<ProposalArg>;
+  args?: Maybe<Array<Maybe<ProposalArg>>>;
   balance?: Maybe<Scalars['String']>;
   formattedBalance?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   index: Scalars['String'];
   meta: Scalars['String'];
-  method: Scalars['String'];
+  method?: Maybe<Scalars['String']>;
   proposer: Proposer;
   seconds: Array<ProposalSecond>;
-  section: Scalars['String'];
+  section?: Maybe<Scalars['String']>;
 };
 
 export type DemocracyReferendum = {
@@ -786,7 +786,7 @@ export type ResolversTypes = {
   Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
     Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-      args: Array<ResolversTypes['ProposalArg']>;
+      args?: Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>;
       proposer: ResolversTypes['Proposer'];
       seconds: Array<ResolversTypes['ProposalSecond']>;
     }
@@ -915,7 +915,7 @@ export type ResolversParentTypes = {
   CrowdloanSummary: CrowdloanSummary;
   Curator: PartialCurator;
   DemocracyProposal: Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-    args: Array<ResolversParentTypes['ProposalArg']>;
+    args?: Maybe<Array<Maybe<ResolversParentTypes['ProposalArg']>>>;
     proposer: ResolversParentTypes['Proposer'];
     seconds: Array<ResolversParentTypes['ProposalSecond']>;
   };
@@ -1308,16 +1308,16 @@ export type DemocracyProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DemocracyProposal'] = ResolversParentTypes['DemocracyProposal'],
 > = {
-  args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
+  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   formattedBalance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
   seconds?: Resolver<Array<ResolversTypes['ProposalSecond']>, ParentType, ContextType>;
-  section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  section?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
