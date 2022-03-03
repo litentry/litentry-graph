@@ -7,6 +7,10 @@ const galaxyEndpoint = 'https://graphigo.prd.galaxy.eco/query';
 
 export async function queryGalaxyGraphQL(address: string) {
   try {
+    /**
+     * Chain option for nfts is hardcoded to ETHEREUM
+     * To do: look at if we need to add this as a variable
+     */
     const query = gql`
       query Address($id: String!) {
         addressInfo(address: $id) {
