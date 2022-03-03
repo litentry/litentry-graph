@@ -1,18 +1,12 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {request, gql} from 'graphql-request';
-import {GalaxyResponse, GalaxyData} from '../types/interface';
+import {GalaxyResponse, GalaxyData, Chain} from '../types/interface';
 
 const galaxyEndpoint = 'https://graphigo.prd.galaxy.eco/query';
 
-export async function queryGalaxyGraphQL(address: string) {
+export async function queryGalaxyGraphQL(address: string, chain: Chain) {
   try {
-    /**
-     * Chain option for nfts is hardcoded to ETHEREUM
-     * To do: look at if we need to add this as a variable
-     */
     const query = gql`
-      query Address($id: String!) {
+      query Address($id: String!, $chain: Chain!) {
         addressInfo(address: $id) {
           id
           address
@@ -52,7 +46,7 @@ export async function queryGalaxyGraphQL(address: string) {
               description
             }
           }
-          nfts(option: {chain: ETHEREUM, order: DESC, orderBy: CreateTime}) {
+          nfts(option: {chain: $chain, order: DESC, orderBy: CreateTime}) {
             totalCount
             list {
               id
@@ -70,6 +64,7 @@ export async function queryGalaxyGraphQL(address: string) {
 
     const variables = {
       id: address,
+      chain,
     };
 
     const response = (await request(galaxyEndpoint, query, variables)) as GalaxyResponse;
@@ -88,11 +83,9 @@ export async function queryGalaxyGraphQL(address: string) {
   }
 }
 
-/* Query poap and return data */
-export async function dataByAddress(parent: unknown, {address}: {address: string}) {
+export async function dataByAddress(parent: unknown, {address, chain}: {address: string; chain: Chain}) {
   try {
-    const result = await queryGalaxyGraphQL(address);
-
+    const result = await queryGalaxyGraphQL(address, chain);
     return {
       id: result.id,
       address: result.address,

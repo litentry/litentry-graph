@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {queryGalaxyGraphQL, dataByAddress} from './query';
 import {request} from 'graphql-request';
+import {Chain} from '../types/interface';
 
 jest.mock('graphql-request');
 
@@ -14,7 +15,7 @@ describe('Galaxy GraphQL', () => {
 
       (request as jest.Mock).mockResolvedValue(null);
       try {
-        await queryGalaxyGraphQL(address);
+        await queryGalaxyGraphQL(address, Chain.ETHEREUM);
       } catch (err) {
         expect(err).toEqual(new Error('Error calling https://graphigo.prd.galaxy.eco/query'));
       }
@@ -32,7 +33,7 @@ describe('Galaxy GraphQL', () => {
       });
 
       try {
-        await queryGalaxyGraphQL(address);
+        await queryGalaxyGraphQL(address, Chain.ETHEREUM);
       } catch (err) {
         expect(err).toEqual(new Error('something went wrong'));
       }
@@ -66,7 +67,7 @@ describe('Galaxy GraphQL', () => {
 
       (request as jest.Mock).mockResolvedValue(response);
 
-      expect(await dataByAddress({}, {address})).toEqual({
+      expect(await dataByAddress({}, {address, chain: Chain.ETHEREUM})).toEqual({
         id: 'vygsfZAoYqt7R4a7vxhgvc',
         address: '0xba375954a95685a1af259c838846b84e560983ec',
         username: '',
@@ -93,7 +94,7 @@ describe('Galaxy GraphQL', () => {
       (request as jest.Mock).mockResolvedValue(null);
 
       try {
-        await dataByAddress({}, {address});
+        await dataByAddress({}, {address, chain: Chain.ETHEREUM});
       } catch (err) {
         expect(err).toEqual(new Error('Error calling https://graphigo.prd.galaxy.eco/query'));
       }

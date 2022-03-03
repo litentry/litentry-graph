@@ -99,3 +99,26 @@ enum CampaignStatus {
   PrivateActive,
   Expired,
 }
+
+export enum Chain {
+  ETHEREUM,
+  ROPSTEN,
+  KOVAN,
+  RINKEBY,
+  GOERLI,
+  BSC,
+  BSC_TESTNET,
+  MATIC,
+  MUMBAI,
+  XDAI,
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  HECO,
+  HECO_TESTNET,
+  FANTOM,
+  FANTOM_TESTNET,
+  AVALANCHE,
+  AVALANCHE_TESTNET,
+  SOLANA,
+  SOLANA_DEVNET,
+}

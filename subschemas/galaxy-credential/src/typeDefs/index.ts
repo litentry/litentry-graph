@@ -1,6 +1,6 @@
 export default /* GraphQL */ `
   type Query {
-    dataByAddress(address: String!): UserData!
+    dataByAddress(address: String!, chain: Chain!): UserData!
   }
 
   type UserData {
