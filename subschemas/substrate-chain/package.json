@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.1",
-    "@polkadot/api": "^7.6.1",
-    "@polkadot/apps-config": "^0.105.1",
+    "@polkadot/api": "^7.10.1",
+    "@polkadot/apps-config": "^0.107.1",
     "bignumber.js": "^9.0.2",
     "graphql": "^16.0.1"
   },
