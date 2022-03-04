@@ -275,7 +275,7 @@ export type Curator = {
 
 export type DemocracyProposal = {
   __typename?: 'DemocracyProposal';
-  args?: Maybe<Array<Maybe<ProposalArg>>>;
+  args?: Maybe<Array<ProposalArg>>;
   balance?: Maybe<Scalars['String']>;
   formattedBalance?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
@@ -290,7 +290,7 @@ export type DemocracyProposal = {
 export type DemocracyReferendum = {
   __typename?: 'DemocracyReferendum';
   activatePeriod: Array<Scalars['String']>;
-  args?: Maybe<Array<Maybe<ProposalArg>>>;
+  args?: Maybe<Array<ProposalArg>>;
   ayePercent: Scalars['Float'];
   endPeriod: Array<Scalars['String']>;
   formattedVotedAye: Scalars['String'];
@@ -788,13 +788,13 @@ export type ResolversTypes = {
   Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
     Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-      args?: Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>;
+      args?: Maybe<Array<ResolversTypes['ProposalArg']>>;
       proposer: ResolversTypes['Proposer'];
       seconds: Array<ResolversTypes['ProposalSecond']>;
     }
   >;
   DemocracyReferendum: ResolverTypeWrapper<
-    Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>}
+    Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversTypes['ProposalArg']>>}
   >;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
@@ -917,13 +917,11 @@ export type ResolversParentTypes = {
   CrowdloanSummary: CrowdloanSummary;
   Curator: PartialCurator;
   DemocracyProposal: Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-    args?: Maybe<Array<Maybe<ResolversParentTypes['ProposalArg']>>>;
+    args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>;
     proposer: ResolversParentTypes['Proposer'];
     seconds: Array<ResolversParentTypes['ProposalSecond']>;
   };
-  DemocracyReferendum: Omit<DemocracyReferendum, 'args'> & {
-    args?: Maybe<Array<Maybe<ResolversParentTypes['ProposalArg']>>>;
-  };
+  DemocracyReferendum: Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>};
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
@@ -1321,7 +1319,7 @@ export type DemocracyProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DemocracyProposal'] = ResolversParentTypes['DemocracyProposal'],
 > = {
-  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
+  args?: Resolver<Maybe<Array<ResolversTypes['ProposalArg']>>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   formattedBalance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1339,7 +1337,7 @@ export type DemocracyReferendumResolvers<
   ParentType extends ResolversParentTypes['DemocracyReferendum'] = ResolversParentTypes['DemocracyReferendum'],
 > = {
   activatePeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
+  args?: Resolver<Maybe<Array<ResolversTypes['ProposalArg']>>, ParentType, ContextType>;
   ayePercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   formattedVotedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
