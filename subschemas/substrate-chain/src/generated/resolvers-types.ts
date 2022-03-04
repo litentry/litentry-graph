@@ -497,7 +497,7 @@ export type Query = {
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
   parachainsInfo: ParachainsInfo;
-  parathreads?: Maybe<Array<Parathread>>;
+  parathreads: Array<Parathread>;
   registrarsSummary: RegistrarsSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
@@ -1655,7 +1655,7 @@ export type QueryResolvers<
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
-  parathreads?: Resolver<Maybe<Array<ResolversTypes['Parathread']>>, ParentType, ContextType>;
+  parathreads?: Resolver<Array<ResolversTypes['Parathread']>, ParentType, ContextType>;
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;

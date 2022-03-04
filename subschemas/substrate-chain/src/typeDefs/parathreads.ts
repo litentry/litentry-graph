@@ -11,6 +11,6 @@ export default /* GraphQL */ `
     homepage: String
   }
   type Query {
-    parathreads: [Parathread!]
+    parathreads: [Parathread!]!
   }
 `;
