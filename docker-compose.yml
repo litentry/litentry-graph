@@ -1,0 +1,16 @@
+version: '3'
+networks:
+  web_network:
+    name: web_network
+    driver: bridge
+
+services:
+  graphql-server:
+    build: .
+    ports:
+      - '3379:3377'
+    restart: unless-stopped
+    environment:
+      - 'STAGE=dev'
+    networks:
+      - web_network
