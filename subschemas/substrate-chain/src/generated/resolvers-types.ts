@@ -156,6 +156,15 @@ export type BountyStatus = {
   updateDueTime?: Maybe<Array<Scalars['String']>>;
 };
 
+export type CalendarEvent = {
+  __typename?: 'CalendarEvent';
+  blockNumber: Scalars['String'];
+  date: Scalars['String'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  via: Scalars['String'];
+};
+
 export type ChainInfo = {
   __typename?: 'ChainInfo';
   chain: Scalars['String'];
@@ -266,7 +275,7 @@ export type Curator = {
 
 export type DemocracyProposal = {
   __typename?: 'DemocracyProposal';
-  args?: Maybe<Array<Maybe<ProposalArg>>>;
+  args?: Maybe<Array<ProposalArg>>;
   balance?: Maybe<Scalars['String']>;
   formattedBalance?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
@@ -281,7 +290,7 @@ export type DemocracyProposal = {
 export type DemocracyReferendum = {
   __typename?: 'DemocracyReferendum';
   activatePeriod: Array<Scalars['String']>;
-  args?: Maybe<Array<Maybe<ProposalArg>>>;
+  args?: Maybe<Array<ProposalArg>>;
   ayePercent: Scalars['Float'];
   endPeriod: Array<Scalars['String']>;
   formattedVotedAye: Scalars['String'];
@@ -324,14 +333,6 @@ export type DeriveAccountRegistration = {
   riot?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   web?: Maybe<Scalars['String']>;
-};
-
-export type Event = {
-  __typename?: 'Event';
-  blockNumber: Scalars['String'];
-  date: Scalars['String'];
-  id: Scalars['ID'];
-  title: Scalars['String'];
 };
 
 export type Finder = {
@@ -464,6 +465,7 @@ export type Query = {
   bounties: Array<Bounty>;
   bountiesSummary: BountiesSummary;
   bounty?: Maybe<Bounty>;
+  calendarEvents: Array<CalendarEvent>;
   chainInfo: ChainInfo;
   convictions?: Maybe<Array<Conviction>>;
   council: Council;
@@ -477,7 +479,6 @@ export type Query = {
   democracyReferendums: Array<DemocracyReferendum>;
   democracySummary: DemocracySummary;
   endedCrowdloans: Array<Crowdloan>;
-  events: Array<Event>;
   moduleElection: ModuleElection;
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
@@ -755,6 +756,7 @@ export type ResolversTypes = {
       curator?: Maybe<ResolversTypes['Curator']>;
     }
   >;
+  CalendarEvent: ResolverTypeWrapper<CalendarEvent>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
   Contribution: ResolverTypeWrapper<PartialContribution>;
@@ -786,18 +788,17 @@ export type ResolversTypes = {
   Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
     Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-      args?: Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>;
+      args?: Maybe<Array<ResolversTypes['ProposalArg']>>;
       proposer: ResolversTypes['Proposer'];
       seconds: Array<ResolversTypes['ProposalSecond']>;
     }
   >;
   DemocracyReferendum: ResolverTypeWrapper<
-    Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>}
+    Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversTypes['ProposalArg']>>}
   >;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
-  Event: ResolverTypeWrapper<Event>;
   Finder: ResolverTypeWrapper<PartialFinder>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
@@ -891,6 +892,7 @@ export type ResolversParentTypes = {
     beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>;
     curator?: Maybe<ResolversParentTypes['Curator']>;
   };
+  CalendarEvent: CalendarEvent;
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
   Contribution: PartialContribution;
@@ -915,17 +917,14 @@ export type ResolversParentTypes = {
   CrowdloanSummary: CrowdloanSummary;
   Curator: PartialCurator;
   DemocracyProposal: Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-    args?: Maybe<Array<Maybe<ResolversParentTypes['ProposalArg']>>>;
+    args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>;
     proposer: ResolversParentTypes['Proposer'];
     seconds: Array<ResolversParentTypes['ProposalSecond']>;
   };
-  DemocracyReferendum: Omit<DemocracyReferendum, 'args'> & {
-    args?: Maybe<Array<Maybe<ResolversParentTypes['ProposalArg']>>>;
-  };
+  DemocracyReferendum: Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>};
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
-  Event: Event;
   Finder: PartialFinder;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
@@ -1160,6 +1159,18 @@ export type BountyStatusResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CalendarEventResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CalendarEvent'] = ResolversParentTypes['CalendarEvent'],
+> = {
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  via?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ChainInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo'],
@@ -1308,7 +1319,7 @@ export type DemocracyProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DemocracyProposal'] = ResolversParentTypes['DemocracyProposal'],
 > = {
-  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
+  args?: Resolver<Maybe<Array<ResolversTypes['ProposalArg']>>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   formattedBalance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1326,7 +1337,7 @@ export type DemocracyReferendumResolvers<
   ParentType extends ResolversParentTypes['DemocracyReferendum'] = ResolversParentTypes['DemocracyReferendum'],
 > = {
   activatePeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
+  args?: Resolver<Maybe<Array<ResolversTypes['ProposalArg']>>, ParentType, ContextType>;
   ayePercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   formattedVotedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1378,17 +1389,6 @@ export type DeriveAccountRegistrationResolvers<
   riot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   twitter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   web?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type EventResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event'],
-> = {
-  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1574,6 +1574,7 @@ export type QueryResolvers<
   bounties?: Resolver<Array<ResolversTypes['Bounty']>, ParentType, ContextType>;
   bountiesSummary?: Resolver<ResolversTypes['BountiesSummary'], ParentType, ContextType>;
   bounty?: Resolver<Maybe<ResolversTypes['Bounty']>, ParentType, ContextType, RequireFields<QueryBountyArgs, 'index'>>;
+  calendarEvents?: Resolver<Array<ResolversTypes['CalendarEvent']>, ParentType, ContextType>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
@@ -1607,7 +1608,6 @@ export type QueryResolvers<
   democracyReferendums?: Resolver<Array<ResolversTypes['DemocracyReferendum']>, ParentType, ContextType>;
   democracySummary?: Resolver<ResolversTypes['DemocracySummary'], ParentType, ContextType>;
   endedCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
-  events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>;
   moduleElection?: Resolver<ResolversTypes['ModuleElection'], ParentType, ContextType>;
   parachain?: Resolver<
     Maybe<ResolversTypes['Parachain']>,
@@ -1812,6 +1812,7 @@ export type Resolvers<ContextType = any> = {
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
+  CalendarEvent?: CalendarEventResolvers<ContextType>;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
   Contribution?: ContributionResolvers<ContextType>;
@@ -1829,7 +1830,6 @@ export type Resolvers<ContextType = any> = {
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
-  Event?: EventResolvers<ContextType>;
   Finder?: FinderResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
   LaunchPeriodInfo?: LaunchPeriodInfoResolvers<ContextType>;

@@ -6,13 +6,16 @@ import {u32} from '@polkadot/types';
 import type {Option} from '@polkadot/types';
 import {notEmpty} from '../../utils/notEmpty';
 import type {ITuple} from '@polkadot/types/types';
-import type {Event} from '../../generated/resolvers-types';
+import type {CalendarEvent} from '../../generated/resolvers-types';
 
-export async function events(_: Record<string, never>, __: Record<string, never>, context: Context): Promise<Event[]> {
+export async function calendarEvents(
+  _: Record<string, never>,
+  __: Record<string, never>,
+  context: Context,
+): Promise<CalendarEvent[]> {
   const {api} = context;
   const bestNumber = await api.derive.chain.bestNumber();
   const {blockTime} = getBlockTime(api);
-
   const getterContext = {api, bestNumber, blockTime};
 
   const constEvents = [
@@ -51,6 +54,7 @@ type EVENT = {
   blockNumber: string;
   date: Date;
   title: string;
+  via: string;
 };
 
 type CouncilElectionContext = {
@@ -74,6 +78,7 @@ function getCouncilElection(context: CouncilElectionContext): EVENT | undefined 
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: 'Election of new council candidates',
+    via: 'via Council',
   };
 }
 
@@ -92,6 +97,7 @@ function getDemocracyLaunch(context: CouncilElectionContext): EVENT | undefined 
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: 'Start of the next referendum voting period',
+    via: 'via Democracy',
   };
 }
 
@@ -112,6 +118,7 @@ function getParachainLease(context: CouncilElectionContext): EVENT | undefined {
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: `Start of the next parachain lease period ${id}`,
+    via: 'via Parachains',
   };
 }
 
@@ -130,6 +137,7 @@ function getSocietyChallenge(context: CouncilElectionContext): EVENT | undefined
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: 'Start of next membership challenge period',
+    via: 'via Society',
   };
 }
 
@@ -148,6 +156,7 @@ function getSocietyRotate(context: CouncilElectionContext): EVENT | undefined {
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: 'Acceptance of new members and bids',
+    via: 'via Society',
   };
 }
 
@@ -166,6 +175,7 @@ function getTreasurySpend(context: CouncilElectionContext): EVENT | undefined {
     blockNumber: bestNumber.add(blocks).toString(),
     date: newDate(blocks, blockTime),
     title: 'Start of the next treasury spend period',
+    via: 'via Treasury',
   };
 }
 
@@ -185,6 +195,7 @@ async function getDemocracyDispatches(context: CouncilElectionContext): Promise<
       blockNumber: at.toString(),
       date: newDate(blocks, blockTime),
       title: `Enactment of the result of referendum ${index}`,
+      via: 'via Democracy/Dispatch',
     };
   });
 }
@@ -206,13 +217,14 @@ async function getCouncilMotions(context: CouncilElectionContext): Promise<EVENT
       const hashStr = hash.toHex();
       const blocks = votes.end.sub(bestNumber);
 
-      const id = `${hashStr.substr(0, 6)}…${hashStr.substr(-4)}`;
+      const id = `${hashStr.substring(0, 7)}…${hashStr.substring(hashStr.length - 4)}`;
 
       return {
         id: `councilMotion_${id}`,
         blockNumber: votes.end.toString(),
         date: newDate(blocks, blockTime),
         title: `Voting ends on council motion ${id}`,
+        via: 'via Council/Motions',
       };
     })
     .filter(notEmpty);
@@ -238,12 +250,14 @@ async function getReferendums(context: CouncilElectionContext): Promise<EVENT[]>
         blockNumber: bestNumber.add(voteBlocks).toString(),
         date: newDate(voteBlocks, blockTime),
         title: `Voting ends for referendum ${id}`,
+        via: 'via Democracy',
       },
       {
         id: `referendumDispatch_${id}`,
         blockNumber: bestNumber.add(enactBlocks).toString(),
         date: newDate(enactBlocks, blockTime),
         title: `Potential dispatch of referendum ${id} (if passed)`,
+        via: 'via Democracy',
       },
     ];
   });
@@ -288,7 +302,7 @@ async function getAuctionInfo(context: CouncilElectionContext): Promise<EVENT | 
 
   const auctionInfo = (await api.query.auctions.auctionInfo()) as Option<ITuple<[LeasePeriodOf, BlockNumber]>>;
 
-  if (auctionInfo === undefined) {
+  if (!auctionInfo || auctionInfo.isNone) {
     return;
   }
 
@@ -302,6 +316,7 @@ async function getAuctionInfo(context: CouncilElectionContext): Promise<EVENT | 
     blockNumber: endBlock.toString(),
     date: newDate(blocks, blockTime),
     title: `End of the current parachain auction ${id}`,
+    via: 'via Parachains/Auction',
   };
 }
 
@@ -331,6 +346,7 @@ async function getSchedule(context: CouncilElectionContext): Promise<EVENT[] | u
             blockNumber: blockNumber.toString(),
             date: newDate(blocks, blockTime),
             title: id ? `Execute named scheduled task ${id}` : 'Execute anonymous scheduled task',
+            via: 'via Democracy/Dispatch',
           });
 
           return items;
@@ -366,6 +382,7 @@ async function getStackingInfo(context: CouncilElectionContext): Promise<EVENT[]
             date: newDate(blocks, blockTime),
             blockNumber: bestNumber.add(blocks).toString(),
             title: `Application of slashes from era ${id}`,
+            via: 'via Staking/Slashed',
           };
         })
     : [];
@@ -376,12 +393,14 @@ async function getStackingInfo(context: CouncilElectionContext): Promise<EVENT[]
       date: newDate(blocksSes, blockTime),
       blockNumber: bestNumber.add(blocksSes).toString(),
       title: `Start of a new staking session ${formatNumber(sessionInfo.currentIndex.add(BN_ONE))}`,
+      via: 'via Staking',
     },
     {
       id: 'stakingEra',
       blockNumber: bestNumber.add(blocksEra).toString(),
       date: newDate(blocksEra, blockTime),
       title: `Start of a new staking era ${formatNumber(sessionInfo.activeEra.add(BN_ONE))}`,
+      via: 'via Staking',
     },
     ...slashEras,
   ];

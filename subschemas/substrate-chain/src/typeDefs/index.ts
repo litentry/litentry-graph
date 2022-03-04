@@ -8,7 +8,7 @@ import crowdLoan from './crowdloan';
 import CrowdloanContribution from './CrowdloanContribution';
 import convictions from './convictions';
 import democracy from './democracy';
-import events from './events';
+import calendarEvents from './calendarEvents';
 import moduleElection from './moduleElection';
 import parachains from './parachains';
 import tips from './tips';
@@ -27,7 +27,7 @@ export default [
   crowdLoan,
   CrowdloanContribution,
   democracy,
-  events,
+  calendarEvents,
   moduleElection,
   parachains,
   registrars,

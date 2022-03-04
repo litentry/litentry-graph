@@ -38,7 +38,7 @@ export default /* GraphQL */ `
     meta: String!
     method: String
     section: String
-    args: [ProposalArg]
+    args: [ProposalArg!]
     hash: String!
     proposer: Proposer!
   }
@@ -48,7 +48,7 @@ export default /* GraphQL */ `
     meta: String!
     method: String
     section: String
-    args: [ProposalArg]
+    args: [ProposalArg!]
     hash: String!
     endPeriod: [String!]!
     activatePeriod: [String!]!
