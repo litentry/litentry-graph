@@ -21,6 +21,7 @@ import {parachainsInfo, parachains, parachain} from './parachains';
 import {tips, tip} from './tips';
 import {treasurySummary, treasury} from './treasury';
 import {registrarsSummary} from './registrars';
+import {parathreads} from './parathreads';
 
 export const Query = {
   account,
@@ -48,6 +49,7 @@ export const Query = {
   parachainsInfo,
   parachains,
   parachain,
+  parathreads,
   registrarsSummary,
   tip,
   tips,

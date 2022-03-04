@@ -43,4 +43,7 @@ export const resolvers: Resolvers<Context> = {
   SubAccount: {
     account: Query.account,
   },
+  Manager: {
+    account: Query.account,
+  },
 };
