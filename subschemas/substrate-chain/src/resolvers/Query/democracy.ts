@@ -76,7 +76,7 @@ function formatProposalData(proposal: DeriveProposal, api: Context['api']): Prop
     })),
     index: proposal.index.toString(),
     proposer: {address: String(proposal.proposer)},
-    hash: String(proposal.imageHash),
+    hash: String(imageProposal?.hash),
     ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
 }
@@ -139,7 +139,7 @@ function formatReferendumData(
     voteCountNay: referendum.voteCountNay.toString(),
     ayePercent,
     index: referendum.index.toString(),
-    hash: String(referendum.imageHash),
+    hash: String(imageProposal?.hash),
     ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
   return formatedReferendum;
