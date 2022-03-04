@@ -127,7 +127,7 @@ function formatReferendumData(
     : 0;
 
   const meta = imageProposal ? formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta) : '';
-  let formatedReferendum = {
+  return {
     meta,
     endPeriod,
     activatePeriod,
@@ -142,7 +142,6 @@ function formatReferendumData(
     hash: String(imageProposal?.hash),
     ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
-  return formatedReferendum;
 }
 
 export async function democracyReferendums(
