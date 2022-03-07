@@ -1,7 +1,7 @@
 {
-  "name": "poap-credential",
+  "name": "galaxy-credential",
   "version": "0.0.1",
-  "description": "GraphQL API as a wrapper for Proof Of Attendance Protocol (POAP)",
+  "description": "GraphQL API as a wrapper for Galaxy Credentials",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -6,6 +6,7 @@ import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as substrateChainSchema } from 'substrate-chain';
 import { schema as poapSchema } from 'poap-credential';
+import { schema as galaxySchema } from 'galaxy-credential';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
@@ -42,10 +43,19 @@ async function makeAggregatedSchema() {
     ],
   });
 
+  const wrappedGalaxySchema = wrapSchema({
+    schema: galaxySchema,
+    transforms: [
+      new RenameTypes((name) => `GalaxyCredential${capitalize(name)}`),
+      new RenameRootFields((_, name) => `GalaxyCredential${capitalize(name)}`),
+    ],
+  });
+
   return stitchSchemas({
     subschemas: [
       wrappedSubstrateChainSchema,
       wrappedPoapSchema,
+      wrappedGalaxySchema,
       ...remoteSchemas,
     ],
   });
