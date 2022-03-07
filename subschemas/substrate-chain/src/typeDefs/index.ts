@@ -4,6 +4,7 @@ import balance from './balance';
 import bounties from './bounties';
 import chainInfo from './chainInfo';
 import council from './council';
+import councilVote from './councilVote';
 import crowdLoan from './crowdloan';
 import CrowdloanContribution from './CrowdloanContribution';
 import convictions from './convictions';
@@ -23,6 +24,7 @@ export default [
   bounties,
   chainInfo,
   council,
+  councilVote,
   convictions,
   convictions,
   crowdLoan,

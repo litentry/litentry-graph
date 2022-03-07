@@ -7,6 +7,7 @@ import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips'
 import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
 import {PartialSubAccount} from '../resolvers/Query/account';
 import {PartialManager} from '../resolvers/Query/parathreads';
+import {PartialVote} from '../resolvers/Query/councilVote';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -227,6 +228,13 @@ export type CouncilMotion = {
   proposal: MotionProposal;
   votes?: Maybe<MotionVotes>;
   votingStatus?: Maybe<VotingStatus>;
+};
+
+export type CouncilVote = {
+  __typename?: 'CouncilVote';
+  formattedStake: Scalars['String'];
+  stake: Scalars['String'];
+  votes: Array<Vote>;
 };
 
 export type Crowdloan = {
@@ -486,6 +494,7 @@ export type Query = {
   convictions?: Maybe<Array<Conviction>>;
   council: Council;
   councilMotions: Array<CouncilMotion>;
+  councilVote: CouncilVote;
   crowdloan?: Maybe<Crowdloan>;
   crowdloanContribution: CrowdloanContribution;
   crowdloanSummary: CrowdloanSummary;
@@ -518,6 +527,10 @@ export type QueryBalanceArgs = {
 
 export type QueryBountyArgs = {
   index: Scalars['String'];
+};
+
+export type QueryCouncilVoteArgs = {
+  address: Scalars['String'];
 };
 
 export type QueryCrowdloanArgs = {
@@ -654,6 +667,12 @@ export type ValidatorsGroup = {
   __typename?: 'ValidatorsGroup';
   groupIndex?: Maybe<Scalars['String']>;
   validators: Array<AccountInfo>;
+};
+
+export type Vote = {
+  __typename?: 'Vote';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type VotingStatus = {
@@ -794,6 +813,7 @@ export type ResolversTypes = {
       votes?: Maybe<ResolversTypes['MotionVotes']>;
     }
   >;
+  CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & {votes: Array<ResolversTypes['Vote']>}>;
   Crowdloan: ResolverTypeWrapper<
     Omit<Crowdloan, 'contribution' | 'depositor'> & {
       contribution: ResolversTypes['Contribution'];
@@ -883,6 +903,7 @@ export type ResolversTypes = {
   ValidatorsGroup: ResolverTypeWrapper<
     Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['AccountInfo']>}
   >;
+  Vote: ResolverTypeWrapper<PartialVote>;
   VotingStatus: ResolverTypeWrapper<VotingStatus>;
   Who: ResolverTypeWrapper<PartialWho>;
 };
@@ -928,6 +949,7 @@ export type ResolversParentTypes = {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['MotionVotes']>;
   };
+  CouncilVote: Omit<CouncilVote, 'votes'> & {votes: Array<ResolversParentTypes['Vote']>};
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
     contribution: ResolversParentTypes['Contribution'];
     depositor: ResolversParentTypes['Depositor'];
@@ -997,6 +1019,7 @@ export type ResolversParentTypes = {
   TreasuryProposal: Omit<TreasuryProposal, 'proposal'> & {proposal: ResolversParentTypes['PalletProposal']};
   TreasurySummary: TreasurySummary;
   ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['AccountInfo']>};
+  Vote: PartialVote;
   VotingStatus: VotingStatus;
   Who: PartialWho;
 };
@@ -1276,6 +1299,16 @@ export type CouncilMotionResolvers<
   proposal?: Resolver<ResolversTypes['MotionProposal'], ParentType, ContextType>;
   votes?: Resolver<Maybe<ResolversTypes['MotionVotes']>, ParentType, ContextType>;
   votingStatus?: Resolver<Maybe<ResolversTypes['VotingStatus']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CouncilVoteResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CouncilVote'] = ResolversParentTypes['CouncilVote'],
+> = {
+  formattedStake?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  stake?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['Vote']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1621,6 +1654,12 @@ export type QueryResolvers<
   convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
+  councilVote?: Resolver<
+    ResolversTypes['CouncilVote'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryCouncilVoteArgs, 'address'>
+  >;
   crowdloan?: Resolver<
     Maybe<ResolversTypes['Crowdloan']>,
     ParentType,
@@ -1816,6 +1855,15 @@ export type ValidatorsGroupResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VoteResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Vote'] = ResolversParentTypes['Vote'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type VotingStatusResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['VotingStatus'] = ResolversParentTypes['VotingStatus'],
@@ -1864,6 +1912,7 @@ export type Resolvers<ContextType = any> = {
   CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   CouncilMotion?: CouncilMotionResolvers<ContextType>;
+  CouncilVote?: CouncilVoteResolvers<ContextType>;
   Crowdloan?: CrowdloanResolvers<ContextType>;
   CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
@@ -1904,6 +1953,7 @@ export type Resolvers<ContextType = any> = {
   TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
   ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
+  Vote?: VoteResolvers<ContextType>;
   VotingStatus?: VotingStatusResolvers<ContextType>;
   Who?: WhoResolvers<ContextType>;
 };
