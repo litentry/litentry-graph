@@ -4,6 +4,7 @@ import balance from './balance';
 import {bountiesSummary, bounties, bounty} from './bounties';
 import chainInfo from './chainInfo';
 import {council} from './council';
+import {councilVote} from './councilVote';
 import {convictions} from './convictions';
 import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan} from './crowdloan';
 import {councilMotions} from './councilMotions';
@@ -33,6 +34,7 @@ export const Query = {
   chainInfo,
   council,
   councilMotions,
+  councilVote,
   convictions,
   crowdloanSummary,
   activeCrowdloans,

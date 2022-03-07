@@ -22,6 +22,7 @@ generates:
         Beneficiary: ../resolvers/Query/bounties#PartialBeneficiary
         SubAccount: ../resolvers/Query/account#PartialSubAccount
         Manager: ../resolvers/Query/parathreads#PartialManager
+        Vote: ../resolvers/Query/councilVote#PartialVote
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
