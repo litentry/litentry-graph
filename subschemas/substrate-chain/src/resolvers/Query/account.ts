@@ -1,10 +1,17 @@
-import type {Account, SubAccount} from '../../generated/resolvers-types';
+import type {Account, SubAccount, Voter, CouncilVote} from '../../generated/resolvers-types';
 import type {Context} from '../../types';
 import {AccountsService} from '../../services/accountsService';
+import {formatBalance} from '../../services/substrateChainService';
 
 export type PartialSubAccount = Omit<SubAccount, 'account'>;
-interface PartialAccount extends Omit<Account, 'subAccounts'> {
+export type PartialVoter = Omit<Voter, 'account'>;
+
+interface CouncilVoteInfo extends Omit<CouncilVote, 'votes'> {
+  votes: PartialVoter[];
+}
+interface PartialAccount extends Omit<Account, 'subAccounts' | 'councilVote'> {
   subAccounts: PartialSubAccount[];
+  councilVote: CouncilVoteInfo;
 }
 
 export async function account(
@@ -24,8 +31,16 @@ export async function account(
   const subAccountsData = await api.query.identity.subsOf(address);
   const subAccounts = subAccountsData[1].map((accountId) => ({address: accountId.toString()}));
 
+  const voteData = await api.derive.council.votesOf(address);
+  const votes = voteData.votes.map((accountId) => ({address: accountId.toString()}));
+
   return {
     ...account,
     subAccounts,
+    councilVote: {
+      stake: voteData.stake.toString(),
+      formattedStake: formatBalance(api, voteData.stake),
+      votes,
+    },
   };
 }

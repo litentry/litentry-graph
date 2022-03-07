@@ -43,6 +43,17 @@ export default /* GraphQL */ `
     account: Account!
   }
 
+  type Voter {
+    address: String!
+    account: Account!
+  }
+
+  type CouncilVote {
+    stake: String!
+    formattedStake: String!
+    votes: [Voter!]!
+  }
+
   type Account {
     address: String!
     display: String!
@@ -50,6 +61,7 @@ export default /* GraphQL */ `
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
     subAccounts: [SubAccount!]
+    councilVote: CouncilVote
   }
 
   type Query {
