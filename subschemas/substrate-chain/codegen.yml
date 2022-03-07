@@ -21,7 +21,6 @@ generates:
         Curator: ../resolvers/Query/bounties#PartialCurator
         Beneficiary: ../resolvers/Query/bounties#PartialBeneficiary
         SubAccount: ../resolvers/Query/account#PartialSubAccount
-        Voter: ../resolvers/Query/account#PartialVoter
         Manager: ../resolvers/Query/parathreads#PartialManager
     plugins:
       - 'typescript'
