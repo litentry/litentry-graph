@@ -493,6 +493,7 @@ export type Query = {
   chainInfo: ChainInfo;
   convictions?: Maybe<Array<Conviction>>;
   council: Council;
+  councilMotionDetail?: Maybe<CouncilMotion>;
   councilMotions: Array<CouncilMotion>;
   councilVote: CouncilVote;
   crowdloan?: Maybe<Crowdloan>;
@@ -1653,6 +1654,7 @@ export type QueryResolvers<
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
   council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
+  councilMotionDetail?: Resolver<Maybe<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
   councilMotions?: Resolver<Array<ResolversTypes['CouncilMotion']>, ParentType, ContextType>;
   councilVote?: Resolver<
     ResolversTypes['CouncilVote'],
