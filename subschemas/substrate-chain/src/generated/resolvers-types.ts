@@ -172,6 +172,7 @@ export type ChainInfo = {
   chain: Scalars['String'];
   nodeName: Scalars['String'];
   nodeVersion: Scalars['String'];
+  registry: Registry;
 };
 
 export type CollectiveProposal = {
@@ -583,6 +584,12 @@ export type RegistrationJudgement = {
   registrarIndex?: Maybe<Scalars['Int']>;
 };
 
+export type Registry = {
+  __typename?: 'Registry';
+  decimals: Scalars['Int'];
+  token: Scalars['String'];
+};
+
 export type SpendPeriod = {
   __typename?: 'SpendPeriod';
   percentage: Scalars['Int'];
@@ -877,6 +884,7 @@ export type ResolversTypes = {
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrarsSummary: ResolverTypeWrapper<Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversTypes['Registrar']>}>;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
+  Registry: ResolverTypeWrapper<Registry>;
   SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
   SubAccount: ResolverTypeWrapper<PartialSubAccount>;
@@ -1001,6 +1009,7 @@ export type ResolversParentTypes = {
   Registrar: PartialRegistrar;
   RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversParentTypes['Registrar']>};
   RegistrationJudgement: RegistrationJudgement;
+  Registry: Registry;
   SpendPeriod: SpendPeriod;
   String: Scalars['String'];
   SubAccount: PartialSubAccount;
@@ -1222,6 +1231,7 @@ export type ChainInfoResolvers<
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  registry?: Resolver<ResolversTypes['Registry'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1740,6 +1750,15 @@ export type RegistrationJudgementResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RegistryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Registry'] = ResolversParentTypes['Registry'],
+> = {
+  decimals?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type SpendPeriodResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['SpendPeriod'] = ResolversParentTypes['SpendPeriod'],
@@ -1943,6 +1962,7 @@ export type Resolvers<ContextType = any> = {
   Registrar?: RegistrarResolvers<ContextType>;
   RegistrarsSummary?: RegistrarsSummaryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
+  Registry?: RegistryResolvers<ContextType>;
   SpendPeriod?: SpendPeriodResolvers<ContextType>;
   SubAccount?: SubAccountResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
