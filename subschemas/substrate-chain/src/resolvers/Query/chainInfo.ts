@@ -11,9 +11,16 @@ export default async function chainInfo(
     api.rpc.system.name(),
     api.rpc.system.version(),
   ]);
+
+  const registry = api.registry;
+
   return {
     chain: chain.toString(),
     nodeName: nodeName.toString(),
     nodeVersion: nodeVersion.toString(),
+    registry: {
+      decimals: registry.chainDecimals[0] ?? 0,
+      token: registry.chainTokens[0] ?? '',
+    },
   };
 }
