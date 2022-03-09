@@ -394,6 +394,8 @@ export type ModuleElection = {
   __typename?: 'ModuleElection';
   hasElections: Scalars['Boolean'];
   module?: Maybe<Scalars['String']>;
+  votingBondBase: Scalars['String'];
+  votingBondFactor: Scalars['String'];
 };
 
 export type MotionProposal = {
@@ -1525,6 +1527,8 @@ export type ModuleElectionResolvers<
 > = {
   hasElections?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   module?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  votingBondBase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votingBondFactor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
