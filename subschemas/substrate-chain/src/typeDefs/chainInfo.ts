@@ -8,6 +8,11 @@ export default /* GraphQL */ `
     chain: String!
     nodeName: String!
     nodeVersion: String!
+    democracyEnactmentPeriod: String!
+    crowdloanMinContribution: String!
+    auctionsLeasePeriodSlot: String!
+    democracyMinimumDeposit: String!
+    slotsLeasePeriod: String!
     registry: Registry!
   }
   type Query {

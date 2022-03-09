@@ -18,6 +18,11 @@ export default async function chainInfo(
     chain: chain.toString(),
     nodeName: nodeName.toString(),
     nodeVersion: nodeVersion.toString(),
+    democracyEnactmentPeriod: api.consts.democracy.enactmentPeriod.toString(),
+    crowdloanMinContribution: api.consts.crowdloan.minContribution.toString(),
+    auctionsLeasePeriodSlot: api.consts.auctions.leasePeriodsPerSlot.toString(),
+    democracyMinimumDeposit: api.consts.democracy.minimumDeposit.toString(),
+    slotsLeasePeriod: api.consts.slots.leasePeriod.toString(),
     registry: {
       decimals: registry.chainDecimals[0] ?? 0,
       token: registry.chainTokens[0] ?? '',
