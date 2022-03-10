@@ -398,6 +398,9 @@ export type Manager = {
 export type ModuleElection = {
   __typename?: 'ModuleElection';
   candidacyBond: Scalars['String'];
+  formattedCandidacyBond: Scalars['String'];
+  formattedVotingBondBase: Scalars['String'];
+  formattedVotingBondFactor: Scalars['String'];
   hasElections: Scalars['Boolean'];
   module?: Maybe<Scalars['String']>;
   votingBondBase: Scalars['String'];
@@ -1537,6 +1540,9 @@ export type ModuleElectionResolvers<
   ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection'],
 > = {
   candidacyBond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedCandidacyBond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedVotingBondBase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedVotingBondFactor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasElections?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   module?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   votingBondBase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
