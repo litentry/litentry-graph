@@ -3,8 +3,11 @@ export default /* GraphQL */ `
     module: String
     hasElections: Boolean!
     votingBondBase: String!
+    formattedVotingBondBase: String!
     votingBondFactor: String!
+    formattedVotingBondFactor: String!
     candidacyBond: String!
+    formattedCandidacyBond: String!
   }
 
   extend type Query {

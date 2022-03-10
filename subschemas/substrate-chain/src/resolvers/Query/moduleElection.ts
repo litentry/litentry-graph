@@ -1,7 +1,9 @@
 import type {Context} from '../../types';
-import {BN_ZERO} from '@polkadot/util'
+import type {ModuleElection} from '../../generated/resolvers-types'
+import {BN_ZERO, BN} from '@polkadot/util'
+import { formatBalance } from '../../services/substrateChainService';
 
-export default async function moduleElection(_: Record<string, never>, __: Record<string, never>, {api}: Context) {
+export default async function moduleElection(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<ModuleElection> {
   const moduleElections = api.tx.phragmenElection
     ? 'phragmenElection'
     : api.tx.electionsPhragmen
@@ -17,7 +19,10 @@ export default async function moduleElection(_: Record<string, never>, __: Recor
     module: moduleElections,
     hasElections: Boolean(moduleElections),
     votingBondBase: electionInfo.votingBondBase.toString(),
+    formattedVotingBondBase: formatBalance(api, electionInfo.votingBondBase),
     votingBondFactor: electionInfo.votingBondFactor.toString(),
+    formattedVotingBondFactor: formatBalance(api, electionInfo.votingBondFactor),
     candidacyBond: candidacyBond.toString(),
+    formattedCandidacyBond: formatBalance(api, candidacyBond as BN)
   };
 }
