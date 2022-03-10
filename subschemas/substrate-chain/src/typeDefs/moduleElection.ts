@@ -4,6 +4,7 @@ export default /* GraphQL */ `
     hasElections: Boolean!
     votingBondBase: String!
     votingBondFactor: String!
+    candidacyBond: String!
   }
 
   extend type Query {
