@@ -169,10 +169,15 @@ export type CalendarEvent = {
 
 export type ChainInfo = {
   __typename?: 'ChainInfo';
+  auctionsLeasePeriodSlot?: Maybe<Scalars['String']>;
   chain: Scalars['String'];
+  crowdloanMinContribution?: Maybe<Scalars['String']>;
+  democracyEnactmentPeriod?: Maybe<Scalars['String']>;
+  democracyMinimumDeposit?: Maybe<Scalars['String']>;
   nodeName: Scalars['String'];
   nodeVersion: Scalars['String'];
   registry: Registry;
+  slotsLeasePeriod?: Maybe<Scalars['String']>;
 };
 
 export type CollectiveProposal = {
@@ -392,8 +397,11 @@ export type Manager = {
 
 export type ModuleElection = {
   __typename?: 'ModuleElection';
+  candidacyBond: Scalars['String'];
   hasElections: Scalars['Boolean'];
   module?: Maybe<Scalars['String']>;
+  votingBondBase: Scalars['String'];
+  votingBondFactor: Scalars['String'];
 };
 
 export type MotionProposal = {
@@ -1228,10 +1236,15 @@ export type ChainInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo'],
 > = {
+  auctionsLeasePeriodSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  crowdloanMinContribution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  democracyEnactmentPeriod?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  democracyMinimumDeposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registry?: Resolver<ResolversTypes['Registry'], ParentType, ContextType>;
+  slotsLeasePeriod?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1523,8 +1536,11 @@ export type ModuleElectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection'],
 > = {
+  candidacyBond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasElections?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   module?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  votingBondBase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votingBondFactor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
