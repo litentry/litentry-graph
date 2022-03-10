@@ -294,7 +294,7 @@ export type DemocracyProposal = {
   formattedBalance?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   index: Scalars['String'];
-  meta: Scalars['String'];
+  meta?: Maybe<Scalars['String']>;
   method?: Maybe<Scalars['String']>;
   proposer: Proposer;
   seconds: Array<ProposalSecond>;
@@ -311,7 +311,7 @@ export type DemocracyReferendum = {
   formattedVotedNay: Scalars['String'];
   hash: Scalars['String'];
   index: Scalars['String'];
-  meta: Scalars['String'];
+  meta?: Maybe<Scalars['String']>;
   method?: Maybe<Scalars['String']>;
   section?: Maybe<Scalars['String']>;
   voteCountAye: Scalars['String'];
@@ -408,7 +408,7 @@ export type ModuleElection = {
 
 export type MotionProposal = {
   __typename?: 'MotionProposal';
-  args: Array<MotionProposalArg>;
+  args: Array<ProposalArg>;
   beneficiary?: Maybe<Account>;
   hash: Scalars['String'];
   index?: Maybe<Scalars['String']>;
@@ -417,14 +417,6 @@ export type MotionProposal = {
   payout?: Maybe<Scalars['String']>;
   proposer?: Maybe<Account>;
   section: Scalars['String'];
-};
-
-export type MotionProposalArg = {
-  __typename?: 'MotionProposalArg';
-  name?: Maybe<Scalars['String']>;
-  subCalls?: Maybe<Array<Maybe<MotionProposal>>>;
-  type?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
 };
 
 export type MotionVotes = {
@@ -477,7 +469,7 @@ export type Parathread = {
 export type ProposalArg = {
   __typename?: 'ProposalArg';
   name?: Maybe<Scalars['String']>;
-  subCalls?: Maybe<Array<Maybe<DemocracyProposal>>>;
+  subCalls?: Maybe<Array<Maybe<ProposalSubCall>>>;
   type?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
@@ -486,6 +478,14 @@ export type ProposalSecond = {
   __typename?: 'ProposalSecond';
   account: Account;
   address: Scalars['String'];
+};
+
+export type ProposalSubCall = {
+  __typename?: 'ProposalSubCall';
+  args?: Maybe<Array<Maybe<ProposalArg>>>;
+  meta?: Maybe<Scalars['String']>;
+  method?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
 };
 
 export type ProposalVotes = {
@@ -867,15 +867,12 @@ export type ResolversTypes = {
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
-    Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-      args?: Maybe<Array<ResolversTypes['ProposalArg']>>;
+    Omit<DemocracyProposal, 'proposer' | 'seconds'> & {
       proposer: ResolversTypes['Proposer'];
       seconds: Array<ResolversTypes['ProposalSecond']>;
     }
   >;
-  DemocracyReferendum: ResolverTypeWrapper<
-    Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversTypes['ProposalArg']>>}
-  >;
+  DemocracyReferendum: ResolverTypeWrapper<DemocracyReferendum>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
@@ -890,14 +887,10 @@ export type ResolversTypes = {
   Manager: ResolverTypeWrapper<PartialManager>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
   MotionProposal: ResolverTypeWrapper<
-    Omit<MotionProposal, 'args' | 'beneficiary' | 'proposer'> & {
-      args: Array<ResolversTypes['MotionProposalArg']>;
+    Omit<MotionProposal, 'beneficiary' | 'proposer'> & {
       beneficiary?: Maybe<ResolversTypes['Account']>;
       proposer?: Maybe<ResolversTypes['Account']>;
     }
-  >;
-  MotionProposalArg: ResolverTypeWrapper<
-    Omit<MotionProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['MotionProposal']>>>}
   >;
   MotionVotes: ResolverTypeWrapper<
     Omit<MotionVotes, 'ayes' | 'nays'> & {
@@ -919,10 +912,9 @@ export type ResolversTypes = {
   >;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['Manager']>}>;
-  ProposalArg: ResolverTypeWrapper<
-    Omit<ProposalArg, 'subCalls'> & {subCalls?: Maybe<Array<Maybe<ResolversTypes['DemocracyProposal']>>>}
-  >;
+  ProposalArg: ResolverTypeWrapper<ProposalArg>;
   ProposalSecond: ResolverTypeWrapper<PartialProposalSecond>;
+  ProposalSubCall: ResolverTypeWrapper<ProposalSubCall>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
   Proposer: ResolverTypeWrapper<PartialProposer>;
   Query: ResolverTypeWrapper<{}>;
@@ -1013,12 +1005,11 @@ export type ResolversParentTypes = {
   CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
   Curator: PartialCurator;
-  DemocracyProposal: Omit<DemocracyProposal, 'args' | 'proposer' | 'seconds'> & {
-    args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>;
+  DemocracyProposal: Omit<DemocracyProposal, 'proposer' | 'seconds'> & {
     proposer: ResolversParentTypes['Proposer'];
     seconds: Array<ResolversParentTypes['ProposalSecond']>;
   };
-  DemocracyReferendum: Omit<DemocracyReferendum, 'args'> & {args?: Maybe<Array<ResolversParentTypes['ProposalArg']>>};
+  DemocracyReferendum: DemocracyReferendum;
   DemocracySummary: DemocracySummary;
   Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
@@ -1032,13 +1023,9 @@ export type ResolversParentTypes = {
   LeasePeriod: LeasePeriod;
   Manager: PartialManager;
   ModuleElection: ModuleElection;
-  MotionProposal: Omit<MotionProposal, 'args' | 'beneficiary' | 'proposer'> & {
-    args: Array<ResolversParentTypes['MotionProposalArg']>;
+  MotionProposal: Omit<MotionProposal, 'beneficiary' | 'proposer'> & {
     beneficiary?: Maybe<ResolversParentTypes['Account']>;
     proposer?: Maybe<ResolversParentTypes['Account']>;
-  };
-  MotionProposalArg: Omit<MotionProposalArg, 'subCalls'> & {
-    subCalls?: Maybe<Array<Maybe<ResolversParentTypes['MotionProposal']>>>;
   };
   MotionVotes: Omit<MotionVotes, 'ayes' | 'nays'> & {
     ayes: Array<ResolversParentTypes['Account']>;
@@ -1054,10 +1041,9 @@ export type ResolversParentTypes = {
   };
   ParachainsInfo: ParachainsInfo;
   Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['Manager']>};
-  ProposalArg: Omit<ProposalArg, 'subCalls'> & {
-    subCalls?: Maybe<Array<Maybe<ResolversParentTypes['DemocracyProposal']>>>;
-  };
+  ProposalArg: ProposalArg;
   ProposalSecond: PartialProposalSecond;
+  ProposalSubCall: ProposalSubCall;
   ProposalVotes: ProposalVotes;
   Proposer: PartialProposer;
   Query: {};
@@ -1450,7 +1436,7 @@ export type DemocracyProposalResolvers<
   formattedBalance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
   seconds?: Resolver<Array<ResolversTypes['ProposalSecond']>, ParentType, ContextType>;
@@ -1470,7 +1456,7 @@ export type DemocracyReferendumResolvers<
   formattedVotedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   section?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   voteCountAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1600,7 +1586,7 @@ export type MotionProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['MotionProposal'] = ResolversParentTypes['MotionProposal'],
 > = {
-  args?: Resolver<Array<ResolversTypes['MotionProposalArg']>, ParentType, ContextType>;
+  args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   beneficiary?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1609,17 +1595,6 @@ export type MotionProposalResolvers<
   payout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   proposer?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MotionProposalArgResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['MotionProposalArg'] = ResolversParentTypes['MotionProposalArg'],
-> = {
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['MotionProposal']>>>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  value?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1690,7 +1665,7 @@ export type ProposalArgResolvers<
   ParentType extends ResolversParentTypes['ProposalArg'] = ResolversParentTypes['ProposalArg'],
 > = {
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['DemocracyProposal']>>>, ParentType, ContextType>;
+  subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalSubCall']>>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   value?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1702,6 +1677,17 @@ export type ProposalSecondResolvers<
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProposalSubCallResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ProposalSubCall'] = ResolversParentTypes['ProposalSubCall'],
+> = {
+  args?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalArg']>>>, ParentType, ContextType>;
+  meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  section?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2050,7 +2036,6 @@ export type Resolvers<ContextType = any> = {
   Manager?: ManagerResolvers<ContextType>;
   ModuleElection?: ModuleElectionResolvers<ContextType>;
   MotionProposal?: MotionProposalResolvers<ContextType>;
-  MotionProposalArg?: MotionProposalArgResolvers<ContextType>;
   MotionVotes?: MotionVotesResolvers<ContextType>;
   PalletProposal?: PalletProposalResolvers<ContextType>;
   Parachain?: ParachainResolvers<ContextType>;
@@ -2058,6 +2043,7 @@ export type Resolvers<ContextType = any> = {
   Parathread?: ParathreadResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
   ProposalSecond?: ProposalSecondResolvers<ContextType>;
+  ProposalSubCall?: ProposalSubCallResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
   Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

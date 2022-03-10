@@ -41,19 +41,12 @@ export default /* GraphQL */ `
     endTime: [String!]!
   }
 
-  type MotionProposalArg {
-    name: String
-    type: String
-    value: String
-    subCalls: [MotionProposal]
-  }
-
   type MotionProposal {
     index: String
     meta: String!
     method: String!
     section: String!
-    args: [MotionProposalArg!]!
+    args: [ProposalArg!]!
     hash: String!
     proposer: Account
     beneficiary: Account
