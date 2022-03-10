@@ -169,15 +169,15 @@ export type CalendarEvent = {
 
 export type ChainInfo = {
   __typename?: 'ChainInfo';
-  auctionsLeasePeriodSlot: Scalars['String'];
+  auctionsLeasePeriodSlot?: Maybe<Scalars['String']>;
   chain: Scalars['String'];
-  crowdloanMinContribution: Scalars['String'];
-  democracyEnactmentPeriod: Scalars['String'];
-  democracyMinimumDeposit: Scalars['String'];
+  crowdloanMinContribution?: Maybe<Scalars['String']>;
+  democracyEnactmentPeriod?: Maybe<Scalars['String']>;
+  democracyMinimumDeposit?: Maybe<Scalars['String']>;
   nodeName: Scalars['String'];
   nodeVersion: Scalars['String'];
   registry: Registry;
-  slotsLeasePeriod: Scalars['String'];
+  slotsLeasePeriod?: Maybe<Scalars['String']>;
 };
 
 export type CollectiveProposal = {
@@ -1236,15 +1236,15 @@ export type ChainInfoResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ChainInfo'] = ResolversParentTypes['ChainInfo'],
 > = {
-  auctionsLeasePeriodSlot?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  auctionsLeasePeriodSlot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   chain?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  crowdloanMinContribution?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  democracyEnactmentPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  democracyMinimumDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  crowdloanMinContribution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  democracyEnactmentPeriod?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  democracyMinimumDeposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registry?: Resolver<ResolversTypes['Registry'], ParentType, ContextType>;
-  slotsLeasePeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slotsLeasePeriod?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
