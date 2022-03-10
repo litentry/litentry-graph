@@ -1,5 +1,5 @@
 export default /* GraphQL */ `
-  type TechCommitteeSummary {
+  type TechnicalCommitteeSummary {
     memberCount: Int!
     activeProposal: Int!
     totalProposal: String!
@@ -7,6 +7,6 @@ export default /* GraphQL */ `
   }
 
   type Query {
-    techCommitteeSummary: TechCommitteeSummary!
+    technicalCommitteeSummary: TechnicalCommitteeSummary!
   }
 `;
