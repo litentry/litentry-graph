@@ -618,10 +618,10 @@ export type SubAccount = {
 
 export type TechnicalCommitteeSummary = {
   __typename?: 'TechnicalCommitteeSummary';
-  activeProposal: Scalars['Int'];
+  activeProposalCount: Scalars['Int'];
   memberCount: Scalars['Int'];
   members: Array<Account>;
-  totalProposal: Scalars['String'];
+  totalProposalCount: Scalars['String'];
 };
 
 export type TermProgress = {
@@ -1821,10 +1821,10 @@ export type TechnicalCommitteeSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TechnicalCommitteeSummary'] = ResolversParentTypes['TechnicalCommitteeSummary'],
 > = {
-  activeProposal?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  activeProposalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   memberCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
-  totalProposal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalProposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

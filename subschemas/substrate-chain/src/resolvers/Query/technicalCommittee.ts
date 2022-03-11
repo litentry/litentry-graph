@@ -24,8 +24,8 @@ export async function technicalCommitteeSummary(
 
   return {
     memberCount: members.length,
-    activeProposal: proposalHashes.length,
-    totalProposal: formatNumber(proposalCount),
+    activeProposalCount: proposalHashes.length,
+    totalProposalCount: formatNumber(proposalCount),
     members: committeeMembers,
   };
 }

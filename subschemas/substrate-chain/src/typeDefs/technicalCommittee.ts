@@ -1,8 +1,8 @@
 export default /* GraphQL */ `
   type TechnicalCommitteeSummary {
     memberCount: Int!
-    activeProposal: Int!
-    totalProposal: String!
+    activeProposalCount: Int!
+    totalProposalCount: String!
     members: [Account!]!
   }
 
