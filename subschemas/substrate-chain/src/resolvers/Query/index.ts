@@ -23,6 +23,7 @@ import {tips, tip} from './tips';
 import {treasurySummary, treasury} from './treasury';
 import {registrarsSummary} from './registrars';
 import {parathreads} from './parathreads';
+import {technicalCommitteeSummary} from './technicalCommittee';
 
 export const Query = {
   account,
@@ -57,4 +58,5 @@ export const Query = {
   tips,
   treasurySummary,
   treasury,
+  technicalCommitteeSummary,
 };

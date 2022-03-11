@@ -16,6 +16,7 @@ import parathreads from './parathreads';
 import tips from './tips';
 import treasury from './treasury';
 import registrars from './registrars';
+import technicalCommittee from './technicalCommittee';
 
 export default [
   account,
@@ -37,4 +38,5 @@ export default [
   registrars,
   tips,
   treasury,
+  technicalCommittee,
 ];

@@ -522,6 +522,7 @@ export type Query = {
   parachainsInfo: ParachainsInfo;
   parathreads: Array<Parathread>;
   registrarsSummary: RegistrarsSummary;
+  technicalCommitteeSummary: TechnicalCommitteeSummary;
   tip?: Maybe<Tip>;
   tips?: Maybe<Array<Tip>>;
   treasury: Treasury;
@@ -613,6 +614,14 @@ export type SubAccount = {
   __typename?: 'SubAccount';
   account: Account;
   address: Scalars['String'];
+};
+
+export type TechnicalCommitteeSummary = {
+  __typename?: 'TechnicalCommitteeSummary';
+  activeProposalCount: Scalars['Int'];
+  memberCount: Scalars['Int'];
+  members: Array<Account>;
+  totalProposalCount: Scalars['String'];
 };
 
 export type TermProgress = {
@@ -899,6 +908,9 @@ export type ResolversTypes = {
   SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
   SubAccount: ResolverTypeWrapper<PartialSubAccount>;
+  TechnicalCommitteeSummary: ResolverTypeWrapper<
+    Omit<TechnicalCommitteeSummary, 'members'> & {members: Array<ResolversTypes['Account']>}
+  >;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
     Omit<Tip, 'finder' | 'tippers' | 'who'> & {
@@ -1024,6 +1036,9 @@ export type ResolversParentTypes = {
   SpendPeriod: SpendPeriod;
   String: Scalars['String'];
   SubAccount: PartialSubAccount;
+  TechnicalCommitteeSummary: Omit<TechnicalCommitteeSummary, 'members'> & {
+    members: Array<ResolversParentTypes['Account']>;
+  };
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
     finder?: Maybe<ResolversParentTypes['Finder']>;
@@ -1732,6 +1747,7 @@ export type QueryResolvers<
   parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
   parathreads?: Resolver<Array<ResolversTypes['Parathread']>, ParentType, ContextType>;
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
+  technicalCommitteeSummary?: Resolver<ResolversTypes['TechnicalCommitteeSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
   tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
   treasury?: Resolver<ResolversTypes['Treasury'], ParentType, ContextType>;
@@ -1798,6 +1814,17 @@ export type SubAccountResolvers<
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TechnicalCommitteeSummaryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TechnicalCommitteeSummary'] = ResolversParentTypes['TechnicalCommitteeSummary'],
+> = {
+  activeProposalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  memberCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  members?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  totalProposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1987,6 +2014,7 @@ export type Resolvers<ContextType = any> = {
   Registry?: RegistryResolvers<ContextType>;
   SpendPeriod?: SpendPeriodResolvers<ContextType>;
   SubAccount?: SubAccountResolvers<ContextType>;
+  TechnicalCommitteeSummary?: TechnicalCommitteeSummaryResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
   Tipper?: TipperResolvers<ContextType>;
