@@ -24,8 +24,8 @@ export async function councilMotions(
   const councilMembers = electionsInfo.members;
 
   return await Promise.all(
-    motions.map(async (motion) => {
-      return (await getMotionDetails(motion, accountService, api, councilMembers, bestNumber)) as CouncilMotion;
+    motions.map((motion) => {
+      return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
     }),
   );
 }
@@ -48,7 +48,7 @@ export async function councilMotionDetail(
   const accountService = new AccountsService(api);
   const councilMembers = electionsInfo.members;
 
-  return await getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
+  return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
 }
 
 async function getVotes(votes: Votes, accountsService: AccountsService, api: Context['api']): Promise<MotionVotes> {
@@ -127,7 +127,7 @@ async function getMotionDetails(
   api: Context['api'],
   councilMembers: [AccountId, Balance][],
   bestNumber: BlockNumber,
-): Promise<CouncilMotion | null> {
+): Promise<CouncilMotion> {
   const proposal = {
     hash: String(motion.proposal.hash),
     ...getCallParams(motion.proposal),
