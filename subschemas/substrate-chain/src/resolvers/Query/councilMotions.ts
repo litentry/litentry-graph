@@ -6,6 +6,8 @@ import {getCallParams} from '../../utils/call';
 import {getBlockTime} from '../../services/substrateChainService';
 import {AccountsService} from '../../services/accountsService';
 import {isFunction} from '@polkadot/util';
+import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
+import type {AccountId, Balance} from '@polkadot/types/interfaces';
 
 export async function councilMotions(
   _: Record<string, never>,
@@ -22,20 +24,31 @@ export async function councilMotions(
   const councilMembers = electionsInfo.members;
 
   return await Promise.all(
-    motions.map(async (motion) => {
-      const proposal = {
-        hash: String(motion.proposal.hash),
-        ...getCallParams(motion.proposal),
-      };
-
-      return {
-        hash: String(motion.hash),
-        proposal,
-        votes: motion.votes ? await getVotes(motion.votes, accountService, api) : undefined,
-        votingStatus: motion.votes ? getVotingStatus(motion.votes, councilMembers.length, bestNumber, api) : undefined,
-      };
+    motions.map((motion) => {
+      return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
     }),
   );
+}
+
+export async function councilMotionDetail(
+  _: Record<string, never>,
+  params: {hash: string},
+  {api}: Context,
+): Promise<CouncilMotion | null> {
+  const [motion, electionsInfo, bestNumber] = await Promise.all([
+    api.derive.council.proposal(params.hash),
+    api.derive.elections.info(),
+    api.derive.chain.bestNumber(),
+  ]);
+
+  if (!motion) {
+    return null;
+  }
+
+  const accountService = new AccountsService(api);
+  const councilMembers = electionsInfo.members;
+
+  return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
 }
 
 async function getVotes(votes: Votes, accountsService: AccountsService, api: Context['api']): Promise<MotionVotes> {
@@ -105,5 +118,25 @@ function getVotingStatus(
     remainingBlocks: remainingBlocks.toString(),
     remainingBlocksTime,
     status,
+  };
+}
+
+async function getMotionDetails(
+  motion: DeriveCollectiveProposal,
+  accountService: AccountsService,
+  api: Context['api'],
+  councilMembers: [AccountId, Balance][],
+  bestNumber: BlockNumber,
+): Promise<CouncilMotion> {
+  const proposal = {
+    hash: String(motion.proposal.hash),
+    ...getCallParams(motion.proposal),
+  };
+
+  return {
+    hash: String(motion.hash),
+    proposal,
+    votes: motion.votes ? await getVotes(motion.votes, accountService, api) : undefined,
+    votingStatus: motion.votes ? getVotingStatus(motion.votes, councilMembers.length, bestNumber, api) : undefined,
   };
 }

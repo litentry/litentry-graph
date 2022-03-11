@@ -69,5 +69,6 @@ export default /* GraphQL */ `
   type Query {
     council: Council!
     councilMotions: [CouncilMotion!]!
+    councilMotionDetail(hash: String!): CouncilMotion
   }
 `;
