@@ -6,11 +6,13 @@ import { RenameRootFields, RenameTypes, wrapSchema } from '@graphql-tools/wrap';
 import { introspectSchema } from '@graphql-tools/wrap';
 import { schema as substrateChainSchema } from 'substrate-chain';
 import { schema as poapSchema } from 'poap-credential';
+import { schema as uniswapSchema } from 'uniswap';
 import { schema as galaxySchema } from 'galaxy-credential';
 import makeRemoteExecutor from './makeRemoteExecutor';
 import config from './config';
 import { capitalize } from './utils';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
+import Web3 from 'web3';
 
 async function makeAggregatedSchema() {
   const remoteSchemas = [];
@@ -51,11 +53,20 @@ async function makeAggregatedSchema() {
     ],
   });
 
+  const wrappedUniswapSchemaSchema = wrapSchema({
+    schema: uniswapSchema,
+    transforms: [
+      new RenameTypes((name) => `Uniswap${capitalize(name)}`),
+      new RenameRootFields((_, name) => `Uniswap${capitalize(name)}`),
+    ],
+  });
+
   return stitchSchemas({
     subschemas: [
       wrappedSubstrateChainSchema,
       wrappedPoapSchema,
       wrappedGalaxySchema,
+      wrappedUniswapSchemaSchema,
       ...remoteSchemas,
     ],
   });
@@ -65,6 +76,7 @@ async function run() {
   const app = express();
   const schema = await makeAggregatedSchema();
   const getSubstrateApi = await initSubstrateApi();
+  const web3 = new Web3(config.ethMainnetProvider);
 
   app.use(
     '/graphql',
@@ -77,7 +89,7 @@ async function run() {
       return {
         schema,
         graphiql: { headerEditorEnabled: true },
-        context: { api },
+        context: { api, web3 },
       };
     })
   );

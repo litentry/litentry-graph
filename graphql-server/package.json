@@ -30,7 +30,9 @@
     "substrate-chain": "0.0.1",
     "poap-credential": "0.0.1",
     "galaxy-credential": "0.0.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "uniswap": "0.0.1",
+    "web3": "^1.7.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "4.22.1",
