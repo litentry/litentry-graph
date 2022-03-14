@@ -13,11 +13,18 @@ export default /* GraphQL */ `
     timeLeftParts: [String!]!
   }
 
+  type ProposalSubCall {
+    meta: String
+    method: String
+    section: String
+    args: [ProposalArg]
+  }
+
   type ProposalArg {
     name: String
     type: String
     value: String
-    subCalls: [DemocracyProposal]
+    subCalls: [ProposalSubCall]
   }
 
   type Proposer {
@@ -35,7 +42,7 @@ export default /* GraphQL */ `
     balance: String
     formattedBalance: String
     seconds: [ProposalSecond!]!
-    meta: String!
+    meta: String
     method: String
     section: String
     args: [ProposalArg!]
@@ -45,7 +52,7 @@ export default /* GraphQL */ `
 
   type DemocracyReferendum {
     index: String!
-    meta: String!
+    meta: String
     method: String
     section: String
     args: [ProposalArg!]

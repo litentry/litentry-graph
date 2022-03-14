@@ -2,7 +2,7 @@ import type {Context} from '../../types';
 import type {CouncilMotion, VotingStatus, MotionVotes} from '../../generated/resolvers-types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Votes} from '@polkadot/types/interfaces';
-import {getCallParams} from '../../utils/call';
+import {getCallParams, getMotionProposalTreasuryInfo} from '../../utils/call';
 import {getBlockTime} from '../../services/substrateChainService';
 import {AccountsService} from '../../services/accountsService';
 import {isFunction} from '@polkadot/util';
@@ -20,12 +20,12 @@ export async function councilMotions(
     api.derive.chain.bestNumber(),
   ]);
 
-  const accountService = new AccountsService(api);
+  const accountsService = new AccountsService(api);
   const councilMembers = electionsInfo.members;
 
-  return await Promise.all(
+  return Promise.all(
     motions.map((motion) => {
-      return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
+      return getMotionDetails(motion, accountsService, api, councilMembers, bestNumber);
     }),
   );
 }
@@ -60,7 +60,6 @@ async function getVotes(votes: Votes, accountsService: AccountsService, api: Con
     : [];
 
   return {
-    index: votes.index.toNumber(),
     threshold: votes.threshold.toNumber(),
     ayes,
     nays,
@@ -123,20 +122,23 @@ function getVotingStatus(
 
 async function getMotionDetails(
   motion: DeriveCollectiveProposal,
-  accountService: AccountsService,
+  accountsService: AccountsService,
   api: Context['api'],
   councilMembers: [AccountId, Balance][],
   bestNumber: BlockNumber,
 ): Promise<CouncilMotion> {
+  const treasuryInfo = await getMotionProposalTreasuryInfo(motion.proposal, api, accountsService);
+
   const proposal = {
-    hash: String(motion.proposal.hash),
+    hash: motion.proposal.hash.toString(),
     ...getCallParams(motion.proposal),
+    ...treasuryInfo,
+    index: motion.votes?.index.toString(),
   };
 
   return {
-    hash: String(motion.hash),
     proposal,
-    votes: motion.votes ? await getVotes(motion.votes, accountService, api) : undefined,
+    votes: motion.votes ? await getVotes(motion.votes, accountsService, api) : undefined,
     votingStatus: motion.votes ? getVotingStatus(motion.votes, councilMembers.length, bestNumber, api) : undefined,
   };
 }

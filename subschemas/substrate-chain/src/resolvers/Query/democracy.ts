@@ -12,7 +12,7 @@ import type {
 } from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {Context} from '../../types';
-import {formatCallMeta, getCallParams} from '../../utils/call';
+import {getCallParams} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
@@ -66,9 +66,8 @@ function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber:
 
 function formatProposalData(proposal: DeriveProposal, api: Context['api']): ProposalInfo | null {
   const imageProposal = proposal.image?.proposal;
-  const meta = imageProposal ? formatCallMeta(imageProposal?.registry.findMetaCall(imageProposal.callIndex).meta) : '';
+
   return {
-    meta,
     balance: proposal.balance?.toString(),
     formattedBalance: proposal?.balance ? formatBalance(api, proposal.balance) : undefined,
     seconds: proposal.seconds.map((account) => ({
@@ -126,9 +125,7 @@ function formatReferendumData(
         .toNumber() / 100
     : 0;
 
-  const meta = imageProposal ? formatCallMeta(imageProposal.registry.findMetaCall(imageProposal.callIndex).meta) : '';
   return {
-    meta,
     endPeriod,
     activatePeriod,
     votedAye: referendum.votedAye.toString(),
