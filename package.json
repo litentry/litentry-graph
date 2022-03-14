@@ -7,8 +7,8 @@
     "postinstall": "yarn build"
   },
   "workspaces": [
-    "graphql-server",
-    "subschemas/*"
+    "subschemas/*",
+    "graphql-server"
   ],
   "resolutions": {
     "@polkadot/api": "^7.10.1",
