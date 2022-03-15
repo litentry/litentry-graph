@@ -1,4 +1,9 @@
 export default /* GraphQL */ `
+  enum CrowdloanStatus {
+    Active
+    Ended
+  }
+
   type CrowdloanSummary {
     activeRaised: String!
     formattedActiveRaised: String!
@@ -45,5 +50,6 @@ export default /* GraphQL */ `
     activeCrowdloans: [Crowdloan!]!
     endedCrowdloans: [Crowdloan!]!
     crowdloan(paraId: String!): Crowdloan
+    crowdloans(status: CrowdloanStatus): [Crowdloan!]!
   }
 `;
