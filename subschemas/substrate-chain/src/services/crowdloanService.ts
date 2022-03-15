@@ -1,4 +1,4 @@
-import type {LeasePeriod} from '../generated/resolvers-types';
+import {CrowdloanStatus, LeasePeriod} from '../generated/resolvers-types';
 import {ApiPromise} from '@polkadot/api';
 import type {Option} from '@polkadot/types';
 import type {ITuple} from '@polkadot/types/types';
@@ -8,7 +8,7 @@ import type {ParaId, BlockNumber, FundInfo, AccountId, BalanceOf} from '@polkado
 
 const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
-type Campaign = {
+export type Campaign = {
   info: FundInfo;
   isCapped?: boolean;
   isEnded?: boolean;
@@ -150,6 +150,19 @@ export function extractEndedFunds(funds: Campaign[], leasePeriod: LeasePeriod): 
   return funds.filter(
     ({firstSlot, isCapped, isEnded, isWinner}) => isCapped || isEnded || isWinner || currentPeriod.gt(firstSlot),
   );
+}
+
+export function extractFunds(status: CrowdloanStatus, funds: Campaign[], leasePeriod: LeasePeriod): Campaign[] {
+  if (!status) {
+    return funds;
+  }
+
+  switch (status) {
+    case CrowdloanStatus.Active:
+      return extractActiveFunds(funds, leasePeriod);
+    case CrowdloanStatus.Ended:
+      return extractEndedFunds(funds, leasePeriod);
+  }
 }
 
 export function extractParaIds(funds: Campaign[]): ParaId[] {
