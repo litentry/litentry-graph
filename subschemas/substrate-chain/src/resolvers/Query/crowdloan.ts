@@ -1,5 +1,4 @@
 import {BN, BN_ZERO} from '@polkadot/util';
-import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
@@ -7,6 +6,7 @@ import type {CrowdloanSummary, Crowdloan, Depositor, Contribution} from '../../g
 import {getFunds, extractActiveFunds, extractEndedFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {getEndpoints} from '../../utils/endpoints';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -70,13 +70,11 @@ export async function activeCrowdloans(
     api.derive.chain.bestNumber(),
   ]);
 
-  const genesisHash = api.genesisHash.toHex();
   const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
-  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
 
   return activeFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
@@ -116,13 +114,11 @@ export async function endedCrowdloans(
     api.derive.chain.bestNumber(),
   ]);
 
-  const genesisHash = api.genesisHash.toHex();
   const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
   const data = await getFunds(paraIds, bestNumber, api);
   const leasePeriod = await getLeasePeriod(api);
   const endedFunds = extractEndedFunds(data.funds, leasePeriod);
-  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
 
   return endedFunds.map((fund) => {
     const {info, isWinner, paraId} = fund;
@@ -165,10 +161,8 @@ export async function crowdloan(
       args: [paraId],
     } = paraIdKey;
     const bestNumber = await api.derive.chain.bestNumber();
-    const genesisHash = api.genesisHash.toHex();
     const data = await getFunds([paraId], bestNumber, api);
-    const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-    const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+    const endpoints = getEndpoints(api);
     const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
     const currentPeriod = bestNumber.div(leasePeriodLength);
 

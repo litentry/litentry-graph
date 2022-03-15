@@ -1,5 +1,4 @@
 import type {AccountId, ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
-import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
 import type {Account, AccountInfo, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
@@ -19,6 +18,7 @@ import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
 import {AccountsService} from '../../services/accountsService';
+import {getEndpoints} from '../../utils/endpoints';
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -52,8 +52,7 @@ export async function parachains(
     getParachainValidators(api),
   ]);
 
-  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
 
   return parachainIds.map((paraId) => {
     const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
@@ -78,8 +77,7 @@ export async function parachain(
     return null;
   }
 
-  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
   const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
 
   return extractParachainData(api, paraId.toString(), parachain, lastEvents, validators);
