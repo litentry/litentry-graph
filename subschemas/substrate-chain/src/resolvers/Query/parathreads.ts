@@ -8,12 +8,12 @@ import type {
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import {BN, BN_ONE} from '@polkadot/util';
 import {bnToBn} from '@polkadot/util';
-import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import {Parathread, Manager} from '../../generated/resolvers-types';
 import {Context} from '../../types';
 import {getLeasePeriodString} from '../../services/parachainsService';
 import {notEmpty} from '../../utils/notEmpty';
 import {getBlockTime} from '../../services/substrateChainService';
+import {getEndpoints} from '../../utils/endpoints';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 
@@ -50,9 +50,7 @@ export async function parathreads(
 ): Promise<ParathreadData[]> {
   const paraLifecycles = (await api.query.paras?.paraLifecycles?.entries()) as ParaIdEntries;
   const parathreadIds = paraLifecycles ? extractIds(paraLifecycles) : [];
-  const genesisHash = api.genesisHash.toHex();
-  const wsEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = wsEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
   const hasLinksMap = isParasLinked(parathreadIds, endpoints);
   const leases = (await api.query.slots.leases.multi(parathreadIds)) as unknown as LeaseOptions[];
   const paraMap = extractParaMap(hasLinksMap, parathreadIds, leases);

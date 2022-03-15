@@ -1,5 +1,4 @@
 import {ApiPromise} from '@polkadot/api';
-import {createWsEndpoints} from '@polkadot/apps-config/endpoints';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {ITuple, Codec} from '@polkadot/types/types';
 import type {u32, u128, Option, StorageKey} from '@polkadot/types';
@@ -9,13 +8,14 @@ import type {Context} from '../../types';
 import type {AuctionsSummary, Auction} from '../../generated/resolvers-types';
 import {extractWinningData, Winning} from '../../utils/winners';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import {getEndpoints} from '../../utils/endpoints';
 
 export async function auctionsSummary(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
 ): Promise<AuctionsSummary> {
-  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber, genesisHash] =
+  const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber] =
     await Promise.all([
       api.query.auctions?.auctionCounter?.<AuctionIndex>(),
       api.query.auctions?.auctionInfo?.<Option<ITuple<[LeasePeriodOf, BlockNumber]>>>(),
@@ -24,12 +24,10 @@ export async function auctionsSummary(
       api.query.auctions?.winning?.entries() as Promise<[StorageKey<[BlockNumber]>, Option<WinningData>][]>,
       api.query.balances.totalIssuance(),
       api.derive.chain.bestNumber(),
-      api.genesisHash.toHex(),
     ]);
   const [leasePeriod, endBlock] = optInfo?.unwrapOr([null, null]) ?? [null, null];
   const winningData = extractWinningData({endBlock, leasePeriod, numAuctions, leasePeriodsPerSlot}, winners);
-  const startingEndpoints = createWsEndpoints((key: string, value: string | undefined) => value || key);
-  const endpoints = startingEndpoints.filter(({genesisHashRelay}) => genesisHash === genesisHashRelay);
+  const endpoints = getEndpoints(api);
 
   return {
     auctionsInfo: {
