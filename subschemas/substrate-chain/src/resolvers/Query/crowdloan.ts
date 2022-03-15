@@ -2,11 +2,13 @@ import {BN, BN_ZERO} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import type {CrowdloanSummary, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
-import {getFunds, extractActiveFunds, extractEndedFunds} from '../../services/crowdloanService';
+import {CrowdloanSummary, CrowdloanStatus, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
+import {getFunds, extractActiveFunds, extractEndedFunds, extractFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {getEndpoints} from '../../utils/endpoints';
+import {LinkOption} from '@polkadot/apps-config/endpoints/types';
+import type {Campaign} from '../../services/crowdloanService';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -75,33 +77,10 @@ export async function activeCrowdloans(
   const leasePeriod = await getLeasePeriod(api);
   const activeFunds = extractActiveFunds(data.funds, leasePeriod);
   const endpoints = getEndpoints(api);
+  const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
+  const currentPeriod = bestNumber.div(leasePeriodLength);
 
-  return activeFunds.map((fund) => {
-    const {info, isWinner, paraId} = fund;
-    const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
-    const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
-    const status = isWinner ? 'Winner' : 'Active';
-    const ending = getBlockTime(api, blocksLeft);
-    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-    const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
-
-    return {
-      paraId: paraId.toString(),
-      name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
-      homepage: parachain?.homepage ?? null,
-      depositor: {address: depositor.toString()},
-      status,
-      ending: ending.timeStringParts,
-      firstPeriod: firstPeriod.toString(),
-      lastPeriod: lastPeriod.toString(),
-      raised: raised.toString(),
-      raisedPercentage: String(raisedPercentage),
-      formattedRaised: formatBalance(api, raised),
-      cap: cap.toString(),
-      formattedCap: formatBalance(api, cap),
-      contribution: {paraId: paraId.toString()},
-    };
-  });
+  return activeFunds.map((fund) => getCrowdloanDetail(fund, currentPeriod, bestNumber, api, endpoints));
 }
 
 export async function endedCrowdloans(
@@ -119,33 +98,31 @@ export async function endedCrowdloans(
   const leasePeriod = await getLeasePeriod(api);
   const endedFunds = extractEndedFunds(data.funds, leasePeriod);
   const endpoints = getEndpoints(api);
+  const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
+  const currentPeriod = bestNumber.div(leasePeriodLength);
 
-  return endedFunds.map((fund) => {
-    const {info, isWinner, paraId} = fund;
-    const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
-    const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
-    const status = isWinner ? 'Winner' : 'Ended';
-    const ending = getBlockTime(api, blocksLeft);
-    const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-    const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
+  return endedFunds.map((fund) => getCrowdloanDetail(fund, currentPeriod, bestNumber, api, endpoints));
+}
 
-    return {
-      paraId: paraId.toString(),
-      name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
-      homepage: parachain?.homepage ?? null,
-      depositor: {address: depositor.toString()},
-      status,
-      ending: ending.timeStringParts,
-      firstPeriod: firstPeriod.toString(),
-      lastPeriod: lastPeriod.toString(),
-      raised: raised.toString(),
-      formattedRaised: formatBalance(api, raised),
-      raisedPercentage: String(raisedPercentage),
-      cap: cap.toString(),
-      formattedCap: formatBalance(api, cap),
-      contribution: {paraId: paraId.toString()},
-    };
-  });
+export async function crowdloans(
+  _: Record<string, never>,
+  {status: status}: {status: CrowdloanStatus},
+  {api}: Context,
+): Promise<CrowdloanInfo[]> {
+  const [paraIdKeys, bestNumber] = await Promise.all([
+    api.query.crowdloan?.funds?.keys<[ParaId]>(),
+    api.derive.chain.bestNumber(),
+  ]);
+
+  const paraIds = paraIdKeys.map(({args: [paraId]}) => paraId);
+  const data = await getFunds(paraIds, bestNumber, api);
+  const leasePeriod = await getLeasePeriod(api);
+  const funds = extractFunds(status, data.funds, leasePeriod);
+  const endpoints = getEndpoints(api);
+  const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
+  const currentPeriod = bestNumber.div(leasePeriodLength);
+
+  return funds.map((fund) => getCrowdloanDetail(fund, currentPeriod, bestNumber, api, endpoints));
 }
 
 export async function crowdloan(
@@ -166,34 +143,45 @@ export async function crowdloan(
     const leasePeriodLength = api.consts.slots.leasePeriod as BlockNumber;
     const currentPeriod = bestNumber.div(leasePeriodLength);
 
-    return data.funds.reduce((_, fund) => {
-      const {info, isWinner, isCapped, isEnded, firstSlot} = fund;
-      const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
-      const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
-      const isOngoing = !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot);
-      const status = isWinner ? 'Winner' : blocksLeft ? (isCapped ? 'Capped' : isOngoing ? 'Active' : 'Past') : 'Ended';
-      const ending = getBlockTime(api, blocksLeft);
-      const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
-      const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
-
-      return {
-        paraId: paraId.toString(),
-        name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
-        homepage: parachain?.homepage ?? null,
-        depositor: {address: depositor.toString()},
-        status,
-        ending: ending.timeStringParts,
-        firstPeriod: firstPeriod.toString(),
-        lastPeriod: lastPeriod.toString(),
-        raised: raised.toString(),
-        formattedRaised: formatBalance(api, raised),
-        cap: cap.toString(),
-        formattedCap: formatBalance(api, cap),
-        contribution: {paraId: paraId.toString()},
-        raisedPercentage: String(raisedPercentage),
-      };
-    }, {} as CrowdloanInfo);
+    return data.funds.reduce(
+      (_, fund) => getCrowdloanDetail(fund, currentPeriod, bestNumber, api, endpoints),
+      {} as CrowdloanInfo,
+    );
   }
 
   return null;
+}
+
+function getCrowdloanDetail(
+  fund: Campaign,
+  currentPeriod: BN,
+  bestNumber: BlockNumber,
+  api: Context['api'],
+  endpoints: LinkOption[],
+) {
+  const {info, isWinner, isCapped, isEnded, firstSlot, paraId} = fund;
+  const {end, firstPeriod, lastPeriod, cap, raised, depositor} = info;
+  const blocksLeft = end.gt(bestNumber) ? end.sub(bestNumber) : BN_ZERO;
+  const isOngoing = !(isCapped || isEnded || isWinner) && currentPeriod.lte(firstSlot);
+  const status = isWinner ? 'Winner' : blocksLeft ? (isCapped ? 'Capped' : isOngoing ? 'Active' : 'Past') : 'Ended';
+  const ending = getBlockTime(api, blocksLeft);
+  const parachain = endpoints.find((e) => e.paraId === paraId.toNumber());
+  const raisedPercentage = cap.isZero() ? 100 : raised.muln(10000).div(cap).toNumber() / 10000;
+
+  return {
+    paraId: paraId.toString(),
+    name: parachain?.text?.toString() ?? `#${paraId.toString()}`,
+    homepage: parachain?.homepage ?? null,
+    depositor: {address: depositor.toString()},
+    status,
+    ending: ending.timeStringParts,
+    firstPeriod: firstPeriod.toString(),
+    lastPeriod: lastPeriod.toString(),
+    raised: raised.toString(),
+    formattedRaised: formatBalance(api, raised),
+    raisedPercentage: String(raisedPercentage),
+    cap: cap.toString(),
+    formattedCap: formatBalance(api, cap),
+    contribution: {paraId: paraId.toString()},
+  };
 }
