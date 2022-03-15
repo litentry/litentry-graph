@@ -12,9 +12,11 @@ export async function bountiesSummary(
   __: Record<string, string>,
   {api}: Context,
 ): Promise<BountiesSummary> {
-  const bestNumber = await api.derive.chain.bestNumber();
-  const deriveBounties = await api.derive.bounties.bounties();
-  const bountyCount = await (api.query.bounties || api.query.treasury).bountyCount();
+  const [bestNumber, deriveBounties, bountyCount] = await Promise.all([
+    api.derive.chain.bestNumber(),
+    api.derive.bounties.bounties(),
+    (api.query.bounties || api.query.treasury).bountyCount(),
+  ]);
   const activeBounties = deriveBounties.length;
   const pastBounties = bountyCount.subn(activeBounties);
   const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
@@ -28,6 +30,12 @@ export async function bountiesSummary(
     .div(spendPeriod ?? BN_ONE)
     .toNumber();
 
+  const bountyConsts = api.consts.bounties || api.consts.treasury;
+  const bountyDepositBase = bountyConsts.bountyDepositBase;
+  const bountyValueMinimum = bountyConsts.bountyValueMinimum;
+  const dataDepositPerByte = bountyConsts.dataDepositPerByte;
+  const maximumReasonLength = bountyConsts.maximumReasonLength;
+
   return {
     bountyCount: bountyCount.toString(),
     activeBounties: activeBounties.toString(),
@@ -36,6 +44,10 @@ export async function bountiesSummary(
     formattedTotalValue: formatBalance(api, totalValue),
     progressPercent,
     timeLeft: timeStringParts,
+    bountyDepositBase: bountyDepositBase.toString(),
+    bountyValueMinimum: bountyValueMinimum.toString(),
+    dataDepositPerByte: dataDepositPerByte.toString(),
+    maximumReasonLength: maximumReasonLength.toString(),
   };
 }
 

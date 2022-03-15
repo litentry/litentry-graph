@@ -7,6 +7,10 @@ export default /* GraphQL */ `
     formattedTotalValue: String!
     timeLeft: [String!]!
     progressPercent: Int!
+    bountyDepositBase: String!
+    bountyValueMinimum: String!
+    dataDepositPerByte: String!
+    maximumReasonLength: String!
   }
 
   type Curator {

@@ -124,7 +124,11 @@ export type BountiesSummary = {
   __typename?: 'BountiesSummary';
   activeBounties: Scalars['String'];
   bountyCount: Scalars['String'];
+  bountyDepositBase: Scalars['String'];
+  bountyValueMinimum: Scalars['String'];
+  dataDepositPerByte: Scalars['String'];
   formattedTotalValue: Scalars['String'];
+  maximumReasonLength: Scalars['String'];
   pastBounties: Scalars['String'];
   progressPercent: Scalars['Int'];
   timeLeft: Array<Scalars['String']>;
@@ -1215,7 +1219,11 @@ export type BountiesSummaryResolvers<
 > = {
   activeBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bountyCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bountyDepositBase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  bountyValueMinimum?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  dataDepositPerByte?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedTotalValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  maximumReasonLength?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pastBounties?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   progressPercent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   timeLeft?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
