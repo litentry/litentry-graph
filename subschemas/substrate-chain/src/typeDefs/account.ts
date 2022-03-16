@@ -36,6 +36,7 @@ export default /* GraphQL */ `
     formattedFree: String!
     freeFrozen: String!
     formattedFreeFrozen: String!
+    formattedExistentialDeposit: String!
   }
 
   type SubAccount {
