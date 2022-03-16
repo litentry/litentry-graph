@@ -152,7 +152,11 @@ export function extractEndedFunds(funds: Campaign[], leasePeriod: LeasePeriod): 
   );
 }
 
-export function extractFunds(status: CrowdloanStatus, funds: Campaign[], leasePeriod: LeasePeriod): Campaign[] {
+export function extractFunds(
+  status: CrowdloanStatus | undefined | null,
+  funds: Campaign[],
+  leasePeriod: LeasePeriod,
+): Campaign[] {
   if (!status) {
     return funds;
   }

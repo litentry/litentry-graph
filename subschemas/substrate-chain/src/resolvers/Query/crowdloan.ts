@@ -106,7 +106,7 @@ export async function endedCrowdloans(
 
 export async function crowdloans(
   _: Record<string, never>,
-  {status: status}: {status: CrowdloanStatus},
+  {status}: {status?: CrowdloanStatus | undefined | null},
   {api}: Context,
 ): Promise<CrowdloanInfo[]> {
   const [paraIdKeys, bestNumber] = await Promise.all([
