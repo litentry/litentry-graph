@@ -13,10 +13,10 @@ export const resolvers: Resolvers<Context> = {
   Registrar: {
     account: Query.account,
   },
-  Contribution: {
-    contribution: Query.crowdloanContribution,
-  },
   Tipper: {
     account: Query.account,
+  },
+  Crowdloan: {
+    contribution: Query.crowdloanContribution,
   },
 };

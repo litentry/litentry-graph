@@ -18,11 +18,6 @@ export default /* GraphQL */ `
     totalFunds: Int!
   }
 
-  type Contribution {
-    paraId: String!
-    contribution: CrowdloanContribution!
-  }
-
   type Crowdloan {
     paraId: String!
     name: String
@@ -36,7 +31,7 @@ export default /* GraphQL */ `
     cap: String!
     formattedCap: String!
     raisedPercentage: String!
-    contribution: Contribution!
+    contribution: CrowdloanContribution!
     homepage: String
   }
 

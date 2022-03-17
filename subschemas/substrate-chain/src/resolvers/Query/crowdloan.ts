@@ -2,7 +2,7 @@ import {BN, BN_ZERO} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import {CrowdloanSummary, CrowdloanStatus, Crowdloan, Contribution} from '../../generated/resolvers-types';
+import {CrowdloanSummary, CrowdloanStatus, Crowdloan} from '../../generated/resolvers-types';
 import {getFunds, extractActiveFunds, extractEndedFunds, extractFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
@@ -10,6 +10,7 @@ import {getEndpoints} from '../../utils/endpoints';
 import {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Campaign} from '../../services/crowdloanService';
 import { PartialNestedAccount } from './account';
+import {PartialCrowdloanContribution} from './crowdloanContribution'
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -53,19 +54,16 @@ export async function crowdloanSummary(
     totalFunds: data.funds.length,
   };
 }
-
-interface CrowdloanInfo extends Omit<Crowdloan, 'depositor' | 'contribution'> {
+interface PartialCrowdloan extends Omit<Crowdloan, 'depositor' | 'contribution'> {
   depositor: PartialNestedAccount;
-  contribution: PartialContribution;
+  contribution: PartialCrowdloanContribution;
 }
-
-export type PartialContribution = Omit<Contribution, 'contribution'>;
 
 export async function activeCrowdloans(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<CrowdloanInfo[]> {
+): Promise<PartialCrowdloan[]> {
   const [paraIdKeys, bestNumber] = await Promise.all([
     api.query.crowdloan?.funds?.keys<[ParaId]>(),
     api.derive.chain.bestNumber(),
@@ -86,7 +84,7 @@ export async function endedCrowdloans(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<CrowdloanInfo[]> {
+): Promise<PartialCrowdloan[]> {
   const [paraIdKeys, bestNumber] = await Promise.all([
     api.query.crowdloan?.funds?.keys<[ParaId]>(),
     api.derive.chain.bestNumber(),
@@ -107,7 +105,7 @@ export async function crowdloans(
   _: Record<string, never>,
   {status}: {status?: CrowdloanStatus | undefined | null},
   {api}: Context,
-): Promise<CrowdloanInfo[]> {
+): Promise<PartialCrowdloan[]> {
   const [paraIdKeys, bestNumber] = await Promise.all([
     api.query.crowdloan?.funds?.keys<[ParaId]>(),
     api.derive.chain.bestNumber(),
@@ -128,7 +126,7 @@ export async function crowdloan(
   _: Record<string, never>,
   {paraId: key}: {paraId: string},
   {api}: Context,
-): Promise<CrowdloanInfo | null> {
+): Promise<PartialCrowdloan | null> {
   const paraIdKeys = await api.query.crowdloan?.funds?.keys<[ParaId]>();
   const paraIdKey = paraIdKeys.find(({args: [paraId]}) => paraId.toString() === key);
 
@@ -144,7 +142,7 @@ export async function crowdloan(
 
     return data.funds.reduce(
       (_, fund) => getCrowdloanDetail(fund, currentPeriod, bestNumber, api, endpoints),
-      {} as CrowdloanInfo,
+      {} as PartialCrowdloan,
     );
   }
 

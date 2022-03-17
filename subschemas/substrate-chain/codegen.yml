@@ -11,8 +11,8 @@ generates:
         NestedAccount: ../resolvers/Query/account#PartialNestedAccount
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
-        Contribution: ../resolvers/Query/crowdloan#PartialContribution
         Tipper: ../resolvers/Query/tips#PartialTipper
+        CrowdloanContribution: ../resolvers/Query/CrowdloanContribution#PartialCrowdloanContribution
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

@@ -2,8 +2,8 @@ import {GraphQLResolveInfo} from 'graphql';
 import {PartialNestedAccount} from '../resolvers/Query/account';
 import {PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
-import {PartialContribution} from '../resolvers/Query/crowdloan';
 import {PartialTipper} from '../resolvers/Query/tips';
+import {PartialCrowdloanContribution} from '../resolvers/Query/CrowdloanContribution';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -175,12 +175,6 @@ export type CollectiveProposal = {
   votes: ProposalVotes;
 };
 
-export type Contribution = {
-  __typename?: 'Contribution';
-  contribution: CrowdloanContribution;
-  paraId: Scalars['String'];
-};
-
 export type Conviction = {
   __typename?: 'Conviction';
   text: Scalars['String'];
@@ -227,7 +221,7 @@ export type CouncilVote = {
 export type Crowdloan = {
   __typename?: 'Crowdloan';
   cap: Scalars['String'];
-  contribution: Contribution;
+  contribution: CrowdloanContribution;
   depositor: NestedAccount;
   ending: Array<Scalars['String']>;
   firstPeriod: Scalars['String'];
@@ -780,7 +774,6 @@ export type ResolversTypes = {
   CalendarEvent: ResolverTypeWrapper<CalendarEvent>;
   ChainInfo: ResolverTypeWrapper<ChainInfo>;
   CollectiveProposal: ResolverTypeWrapper<CollectiveProposal>;
-  Contribution: ResolverTypeWrapper<PartialContribution>;
   Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
@@ -800,11 +793,11 @@ export type ResolversTypes = {
   CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & {votes: Array<ResolversTypes['NestedAccount']>}>;
   Crowdloan: ResolverTypeWrapper<
     Omit<Crowdloan, 'contribution' | 'depositor'> & {
-      contribution: ResolversTypes['Contribution'];
+      contribution: ResolversTypes['CrowdloanContribution'];
       depositor: ResolversTypes['NestedAccount'];
     }
   >;
-  CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
+  CrowdloanContribution: ResolverTypeWrapper<PartialCrowdloanContribution>;
   CrowdloanStatus: CrowdloanStatus;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   DemocracyProposal: ResolverTypeWrapper<
@@ -915,7 +908,6 @@ export type ResolversParentTypes = {
   CalendarEvent: CalendarEvent;
   ChainInfo: ChainInfo;
   CollectiveProposal: CollectiveProposal;
-  Contribution: PartialContribution;
   Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
     candidates: Array<ResolversParentTypes['NestedAccount']>;
@@ -930,10 +922,10 @@ export type ResolversParentTypes = {
   };
   CouncilVote: Omit<CouncilVote, 'votes'> & {votes: Array<ResolversParentTypes['NestedAccount']>};
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
-    contribution: ResolversParentTypes['Contribution'];
+    contribution: ResolversParentTypes['CrowdloanContribution'];
     depositor: ResolversParentTypes['NestedAccount'];
   };
-  CrowdloanContribution: CrowdloanContribution;
+  CrowdloanContribution: PartialCrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
   DemocracyProposal: Omit<DemocracyProposal, 'proposer' | 'seconds'> & {
     proposer: ResolversParentTypes['NestedAccount'];
@@ -1203,15 +1195,6 @@ export type CollectiveProposalResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ContributionResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Contribution'] = ResolversParentTypes['Contribution'],
-> = {
-  contribution?: Resolver<ResolversTypes['CrowdloanContribution'], ParentType, ContextType>;
-  paraId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type ConvictionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Conviction'] = ResolversParentTypes['Conviction'],
@@ -1275,7 +1258,7 @@ export type CrowdloanResolvers<
   ParentType extends ResolversParentTypes['Crowdloan'] = ResolversParentTypes['Crowdloan'],
 > = {
   cap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  contribution?: Resolver<ResolversTypes['Contribution'], ParentType, ContextType>;
+  contribution?: Resolver<ResolversTypes['CrowdloanContribution'], ParentType, ContextType>;
   depositor?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   ending?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1844,7 +1827,6 @@ export type Resolvers<ContextType = any> = {
   CalendarEvent?: CalendarEventResolvers<ContextType>;
   ChainInfo?: ChainInfoResolvers<ContextType>;
   CollectiveProposal?: CollectiveProposalResolvers<ContextType>;
-  Contribution?: ContributionResolvers<ContextType>;
   Conviction?: ConvictionResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
