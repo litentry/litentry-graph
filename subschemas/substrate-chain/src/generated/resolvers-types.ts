@@ -1,13 +1,9 @@
 import {GraphQLResolveInfo} from 'graphql';
-import {PartialCouncilCandidate, PartialCouncilMember} from '../resolvers/Query/council';
+import {PartialNestedAccount} from '../resolvers/Query/account';
+import {PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
-import {PartialProposalSecond, PartialProposer} from '../resolvers/Query/democracy';
-import {PartialDepositor, PartialContribution} from '../resolvers/Query/crowdloan';
-import {PartialFinder, PartialWho, PartialTipper} from '../resolvers/Query/tips';
-import {PartialCurator, PartialBeneficiary} from '../resolvers/Query/bounties';
-import {PartialSubAccount} from '../resolvers/Query/account';
-import {PartialManager} from '../resolvers/Query/parathreads';
-import {PartialVote} from '../resolvers/Query/councilVote';
+import {PartialContribution} from '../resolvers/Query/crowdloan';
+import {PartialTipper} from '../resolvers/Query/tips';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -31,7 +27,7 @@ export type Account = {
   display: Scalars['String'];
   hasIdentity: Scalars['Boolean'];
   registration: DeriveAccountRegistration;
-  subAccounts?: Maybe<Array<SubAccount>>;
+  subAccounts?: Maybe<Array<NestedAccount>>;
 };
 
 export type AccountBalance = {
@@ -44,12 +40,6 @@ export type AccountBalance = {
   freeFrozen: Scalars['String'];
   reserved: Scalars['String'];
   total: Scalars['String'];
-};
-
-export type AccountInfo = {
-  __typename?: 'AccountInfo';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type Auction = {
@@ -114,12 +104,6 @@ export type BalanceData = {
   reserved: Scalars['Float'];
 };
 
-export type Beneficiary = {
-  __typename?: 'Beneficiary';
-  account: Account;
-  address: Scalars['String'];
-};
-
 export type BountiesSummary = {
   __typename?: 'BountiesSummary';
   activeBounties: Scalars['String'];
@@ -147,14 +131,14 @@ export type Bounty = {
   formattedFee: Scalars['String'];
   formattedValue: Scalars['String'];
   index: Scalars['String'];
-  proposer: Proposer;
+  proposer: NestedAccount;
   value: Scalars['String'];
 };
 
 export type BountyStatus = {
   __typename?: 'BountyStatus';
-  beneficiary?: Maybe<Beneficiary>;
-  curator?: Maybe<Curator>;
+  beneficiary?: Maybe<NestedAccount>;
+  curator?: Maybe<NestedAccount>;
   status?: Maybe<Scalars['String']>;
   unlockAt?: Maybe<Scalars['String']>;
   unlockAtTime?: Maybe<Array<Scalars['String']>>;
@@ -205,7 +189,7 @@ export type Conviction = {
 
 export type Council = {
   __typename?: 'Council';
-  candidates: Array<CouncilCandidate>;
+  candidates: Array<NestedAccount>;
   desiredRunnersUp: Scalars['Int'];
   desiredSeats: Scalars['Int'];
   members: Array<CouncilMember>;
@@ -215,12 +199,6 @@ export type Council = {
   totalCandidates: Scalars['Int'];
   totalMembers: Scalars['Int'];
   totalRunnersUp: Scalars['Int'];
-};
-
-export type CouncilCandidate = {
-  __typename?: 'CouncilCandidate';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type CouncilMember = {
@@ -243,14 +221,14 @@ export type CouncilVote = {
   __typename?: 'CouncilVote';
   formattedStake: Scalars['String'];
   stake: Scalars['String'];
-  votes: Array<Vote>;
+  votes: Array<NestedAccount>;
 };
 
 export type Crowdloan = {
   __typename?: 'Crowdloan';
   cap: Scalars['String'];
   contribution: Contribution;
-  depositor: Depositor;
+  depositor: NestedAccount;
   ending: Array<Scalars['String']>;
   firstPeriod: Scalars['String'];
   formattedCap: Scalars['String'];
@@ -290,12 +268,6 @@ export type CrowdloanSummary = {
   totalRaised: Scalars['String'];
 };
 
-export type Curator = {
-  __typename?: 'Curator';
-  account: Account;
-  address: Scalars['String'];
-};
-
 export type DemocracyProposal = {
   __typename?: 'DemocracyProposal';
   args?: Maybe<Array<ProposalArg>>;
@@ -305,8 +277,8 @@ export type DemocracyProposal = {
   index: Scalars['String'];
   meta?: Maybe<Scalars['String']>;
   method?: Maybe<Scalars['String']>;
-  proposer: Proposer;
-  seconds: Array<ProposalSecond>;
+  proposer: NestedAccount;
+  seconds: Array<NestedAccount>;
   section?: Maybe<Scalars['String']>;
 };
 
@@ -338,12 +310,6 @@ export type DemocracySummary = {
   referendums: Scalars['String'];
 };
 
-export type Depositor = {
-  __typename?: 'Depositor';
-  account: Account;
-  address: Scalars['String'];
-};
-
 export type DeriveAccountRegistration = {
   __typename?: 'DeriveAccountRegistration';
   display?: Maybe<Scalars['String']>;
@@ -356,12 +322,6 @@ export type DeriveAccountRegistration = {
   riot?: Maybe<Scalars['String']>;
   twitter?: Maybe<Scalars['String']>;
   web?: Maybe<Scalars['String']>;
-};
-
-export type Finder = {
-  __typename?: 'Finder';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type IdentityJudgement = {
@@ -397,12 +357,6 @@ export type LeasePeriod = {
   totalPeriod: Scalars['String'];
 };
 
-export type Manager = {
-  __typename?: 'Manager';
-  account: Account;
-  address: Scalars['String'];
-};
-
 export type ModuleElection = {
   __typename?: 'ModuleElection';
   candidacyBond: Scalars['String'];
@@ -418,30 +372,36 @@ export type ModuleElection = {
 export type MotionProposal = {
   __typename?: 'MotionProposal';
   args: Array<ProposalArg>;
-  beneficiary?: Maybe<Account>;
+  beneficiary?: Maybe<NestedAccount>;
   hash: Scalars['String'];
   index?: Maybe<Scalars['String']>;
   meta: Scalars['String'];
   method: Scalars['String'];
   payout?: Maybe<Scalars['String']>;
-  proposer?: Maybe<Account>;
+  proposer?: Maybe<NestedAccount>;
   section: Scalars['String'];
 };
 
 export type MotionVotes = {
   __typename?: 'MotionVotes';
-  ayes: Array<Account>;
+  ayes: Array<NestedAccount>;
   end: Scalars['String'];
   endTime: Array<Scalars['String']>;
-  nays: Array<Account>;
+  nays: Array<NestedAccount>;
   threshold: Scalars['Int'];
+};
+
+export type NestedAccount = {
+  __typename?: 'NestedAccount';
+  account: Account;
+  address: Scalars['String'];
 };
 
 export type PalletProposal = {
   __typename?: 'PalletProposal';
-  beneficiary: Account;
+  beneficiary: NestedAccount;
   bond: Scalars['String'];
-  proposer: Account;
+  proposer: NestedAccount;
   value: Scalars['String'];
 };
 
@@ -454,7 +414,7 @@ export type Parachain = {
   lease?: Maybe<Lease>;
   lifecycle: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-  nonVoters: Array<AccountInfo>;
+  nonVoters: Array<NestedAccount>;
   validators?: Maybe<ValidatorsGroup>;
 };
 
@@ -471,7 +431,7 @@ export type Parathread = {
   homepage?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   lease?: Maybe<Lease>;
-  manager?: Maybe<Manager>;
+  manager?: Maybe<NestedAccount>;
   name?: Maybe<Scalars['String']>;
 };
 
@@ -481,12 +441,6 @@ export type ProposalArg = {
   subCalls?: Maybe<Array<Maybe<ProposalSubCall>>>;
   type?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
-};
-
-export type ProposalSecond = {
-  __typename?: 'ProposalSecond';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type ProposalSubCall = {
@@ -504,12 +458,6 @@ export type ProposalVotes = {
   index?: Maybe<Scalars['String']>;
   nays?: Maybe<Array<Scalars['String']>>;
   threshold?: Maybe<Scalars['String']>;
-};
-
-export type Proposer = {
-  __typename?: 'Proposer';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type Query = {
@@ -640,17 +588,11 @@ export type SpendPeriod = {
   termLeftParts: Array<Scalars['String']>;
 };
 
-export type SubAccount = {
-  __typename?: 'SubAccount';
-  account: Account;
-  address: Scalars['String'];
-};
-
 export type TechnicalCommitteeSummary = {
   __typename?: 'TechnicalCommitteeSummary';
   activeProposalCount: Scalars['Int'];
   memberCount: Scalars['Int'];
-  members: Array<Account>;
+  members: Array<NestedAccount>;
   totalProposalCount: Scalars['String'];
 };
 
@@ -667,7 +609,7 @@ export type Tip = {
   __typename?: 'Tip';
   closes?: Maybe<Scalars['String']>;
   deposit?: Maybe<Scalars['String']>;
-  finder?: Maybe<Finder>;
+  finder?: Maybe<NestedAccount>;
   formattedMedian?: Maybe<Scalars['String']>;
   /** id: Tip Hash */
   id: Scalars['String'];
@@ -675,7 +617,7 @@ export type Tip = {
   reason: Scalars['String'];
   tippers: Array<Tipper>;
   tippersCount: Scalars['Int'];
-  who: Who;
+  who: NestedAccount;
 };
 
 export type Tipper = {
@@ -723,13 +665,7 @@ export type TreasurySummary = {
 export type ValidatorsGroup = {
   __typename?: 'ValidatorsGroup';
   groupIndex?: Maybe<Scalars['String']>;
-  validators: Array<AccountInfo>;
-};
-
-export type Vote = {
-  __typename?: 'Vote';
-  account: Account;
-  address: Scalars['String'];
+  validators: Array<NestedAccount>;
 };
 
 export type VotingStatus = {
@@ -741,12 +677,6 @@ export type VotingStatus = {
   remainingBlocks?: Maybe<Scalars['String']>;
   remainingBlocksTime?: Maybe<Array<Scalars['String']>>;
   status: Scalars['String'];
-};
-
-export type Who = {
-  __typename?: 'Who';
-  account: Account;
-  address: Scalars['String'];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -822,10 +752,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<
-    Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversTypes['SubAccount']>>}
+    Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversTypes['NestedAccount']>>}
   >;
   AccountBalance: ResolverTypeWrapper<AccountBalance>;
-  AccountInfo: ResolverTypeWrapper<Omit<AccountInfo, 'account'> & {account: ResolversTypes['Account']}>;
   Auction: ResolverTypeWrapper<Auction>;
   AuctionBid: ResolverTypeWrapper<AuctionBid>;
   AuctionEndingPeriod: ResolverTypeWrapper<AuctionEndingPeriod>;
@@ -834,19 +763,18 @@ export type ResolversTypes = {
   AuctionsSummary: ResolverTypeWrapper<AuctionsSummary>;
   Balance: ResolverTypeWrapper<Balance>;
   BalanceData: ResolverTypeWrapper<BalanceData>;
-  Beneficiary: ResolverTypeWrapper<PartialBeneficiary>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
   Bounty: ResolverTypeWrapper<
     Omit<Bounty, 'bountyStatus' | 'proposer'> & {
       bountyStatus: ResolversTypes['BountyStatus'];
-      proposer: ResolversTypes['Proposer'];
+      proposer: ResolversTypes['NestedAccount'];
     }
   >;
   BountyStatus: ResolverTypeWrapper<
     Omit<BountyStatus, 'beneficiary' | 'curator'> & {
-      beneficiary?: Maybe<ResolversTypes['Beneficiary']>;
-      curator?: Maybe<ResolversTypes['Curator']>;
+      beneficiary?: Maybe<ResolversTypes['NestedAccount']>;
+      curator?: Maybe<ResolversTypes['NestedAccount']>;
     }
   >;
   CalendarEvent: ResolverTypeWrapper<CalendarEvent>;
@@ -856,13 +784,12 @@ export type ResolversTypes = {
   Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-      candidates: Array<ResolversTypes['CouncilCandidate']>;
+      candidates: Array<ResolversTypes['NestedAccount']>;
       members: Array<ResolversTypes['CouncilMember']>;
       primeMember?: Maybe<ResolversTypes['CouncilMember']>;
       runnersUp: Array<ResolversTypes['CouncilMember']>;
     }
   >;
-  CouncilCandidate: ResolverTypeWrapper<PartialCouncilCandidate>;
   CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
   CouncilMotion: ResolverTypeWrapper<
     Omit<CouncilMotion, 'proposal' | 'votes'> & {
@@ -870,28 +797,25 @@ export type ResolversTypes = {
       votes?: Maybe<ResolversTypes['MotionVotes']>;
     }
   >;
-  CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & {votes: Array<ResolversTypes['Vote']>}>;
+  CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & {votes: Array<ResolversTypes['NestedAccount']>}>;
   Crowdloan: ResolverTypeWrapper<
     Omit<Crowdloan, 'contribution' | 'depositor'> & {
       contribution: ResolversTypes['Contribution'];
-      depositor: ResolversTypes['Depositor'];
+      depositor: ResolversTypes['NestedAccount'];
     }
   >;
   CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
   CrowdloanStatus: CrowdloanStatus;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
-  Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
     Omit<DemocracyProposal, 'proposer' | 'seconds'> & {
-      proposer: ResolversTypes['Proposer'];
-      seconds: Array<ResolversTypes['ProposalSecond']>;
+      proposer: ResolversTypes['NestedAccount'];
+      seconds: Array<ResolversTypes['NestedAccount']>;
     }
   >;
   DemocracyReferendum: ResolverTypeWrapper<DemocracyReferendum>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
-  Depositor: ResolverTypeWrapper<PartialDepositor>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
-  Finder: ResolverTypeWrapper<PartialFinder>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   IdentityJudgement: ResolverTypeWrapper<IdentityJudgement>;
@@ -899,39 +823,37 @@ export type ResolversTypes = {
   LaunchPeriodInfo: ResolverTypeWrapper<LaunchPeriodInfo>;
   Lease: ResolverTypeWrapper<Lease>;
   LeasePeriod: ResolverTypeWrapper<LeasePeriod>;
-  Manager: ResolverTypeWrapper<PartialManager>;
   ModuleElection: ResolverTypeWrapper<ModuleElection>;
   MotionProposal: ResolverTypeWrapper<
     Omit<MotionProposal, 'beneficiary' | 'proposer'> & {
-      beneficiary?: Maybe<ResolversTypes['Account']>;
-      proposer?: Maybe<ResolversTypes['Account']>;
+      beneficiary?: Maybe<ResolversTypes['NestedAccount']>;
+      proposer?: Maybe<ResolversTypes['NestedAccount']>;
     }
   >;
   MotionVotes: ResolverTypeWrapper<
     Omit<MotionVotes, 'ayes' | 'nays'> & {
-      ayes: Array<ResolversTypes['Account']>;
-      nays: Array<ResolversTypes['Account']>;
+      ayes: Array<ResolversTypes['NestedAccount']>;
+      nays: Array<ResolversTypes['NestedAccount']>;
     }
   >;
+  NestedAccount: ResolverTypeWrapper<PartialNestedAccount>;
   PalletProposal: ResolverTypeWrapper<
     Omit<PalletProposal, 'beneficiary' | 'proposer'> & {
-      beneficiary: ResolversTypes['Account'];
-      proposer: ResolversTypes['Account'];
+      beneficiary: ResolversTypes['NestedAccount'];
+      proposer: ResolversTypes['NestedAccount'];
     }
   >;
   Parachain: ResolverTypeWrapper<
     Omit<Parachain, 'nonVoters' | 'validators'> & {
-      nonVoters: Array<ResolversTypes['AccountInfo']>;
+      nonVoters: Array<ResolversTypes['NestedAccount']>;
       validators?: Maybe<ResolversTypes['ValidatorsGroup']>;
     }
   >;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
-  Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['Manager']>}>;
+  Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['NestedAccount']>}>;
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
-  ProposalSecond: ResolverTypeWrapper<PartialProposalSecond>;
   ProposalSubCall: ResolverTypeWrapper<ProposalSubCall>;
   ProposalVotes: ResolverTypeWrapper<ProposalVotes>;
-  Proposer: ResolverTypeWrapper<PartialProposer>;
   Query: ResolverTypeWrapper<{}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
   RegistrarsSummary: ResolverTypeWrapper<Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversTypes['Registrar']>}>;
@@ -939,16 +861,15 @@ export type ResolversTypes = {
   Registry: ResolverTypeWrapper<Registry>;
   SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  SubAccount: ResolverTypeWrapper<PartialSubAccount>;
   TechnicalCommitteeSummary: ResolverTypeWrapper<
-    Omit<TechnicalCommitteeSummary, 'members'> & {members: Array<ResolversTypes['Account']>}
+    Omit<TechnicalCommitteeSummary, 'members'> & {members: Array<ResolversTypes['NestedAccount']>}
   >;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
     Omit<Tip, 'finder' | 'tippers' | 'who'> & {
-      finder?: Maybe<ResolversTypes['Finder']>;
+      finder?: Maybe<ResolversTypes['NestedAccount']>;
       tippers: Array<ResolversTypes['Tipper']>;
-      who: ResolversTypes['Who'];
+      who: ResolversTypes['NestedAccount'];
     }
   >;
   Tipper: ResolverTypeWrapper<PartialTipper>;
@@ -964,18 +885,15 @@ export type ResolversTypes = {
   >;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
   ValidatorsGroup: ResolverTypeWrapper<
-    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['AccountInfo']>}
+    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['NestedAccount']>}
   >;
-  Vote: ResolverTypeWrapper<PartialVote>;
   VotingStatus: ResolverTypeWrapper<VotingStatus>;
-  Who: ResolverTypeWrapper<PartialWho>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Account: Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversParentTypes['SubAccount']>>};
+  Account: Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversParentTypes['NestedAccount']>>};
   AccountBalance: AccountBalance;
-  AccountInfo: Omit<AccountInfo, 'account'> & {account: ResolversParentTypes['Account']};
   Auction: Auction;
   AuctionBid: AuctionBid;
   AuctionEndingPeriod: AuctionEndingPeriod;
@@ -984,16 +902,15 @@ export type ResolversParentTypes = {
   AuctionsSummary: AuctionsSummary;
   Balance: Balance;
   BalanceData: BalanceData;
-  Beneficiary: PartialBeneficiary;
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
   Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & {
     bountyStatus: ResolversParentTypes['BountyStatus'];
-    proposer: ResolversParentTypes['Proposer'];
+    proposer: ResolversParentTypes['NestedAccount'];
   };
   BountyStatus: Omit<BountyStatus, 'beneficiary' | 'curator'> & {
-    beneficiary?: Maybe<ResolversParentTypes['Beneficiary']>;
-    curator?: Maybe<ResolversParentTypes['Curator']>;
+    beneficiary?: Maybe<ResolversParentTypes['NestedAccount']>;
+    curator?: Maybe<ResolversParentTypes['NestedAccount']>;
   };
   CalendarEvent: CalendarEvent;
   ChainInfo: ChainInfo;
@@ -1001,34 +918,30 @@ export type ResolversParentTypes = {
   Contribution: PartialContribution;
   Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-    candidates: Array<ResolversParentTypes['CouncilCandidate']>;
+    candidates: Array<ResolversParentTypes['NestedAccount']>;
     members: Array<ResolversParentTypes['CouncilMember']>;
     primeMember?: Maybe<ResolversParentTypes['CouncilMember']>;
     runnersUp: Array<ResolversParentTypes['CouncilMember']>;
   };
-  CouncilCandidate: PartialCouncilCandidate;
   CouncilMember: PartialCouncilMember;
   CouncilMotion: Omit<CouncilMotion, 'proposal' | 'votes'> & {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['MotionVotes']>;
   };
-  CouncilVote: Omit<CouncilVote, 'votes'> & {votes: Array<ResolversParentTypes['Vote']>};
+  CouncilVote: Omit<CouncilVote, 'votes'> & {votes: Array<ResolversParentTypes['NestedAccount']>};
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
     contribution: ResolversParentTypes['Contribution'];
-    depositor: ResolversParentTypes['Depositor'];
+    depositor: ResolversParentTypes['NestedAccount'];
   };
   CrowdloanContribution: CrowdloanContribution;
   CrowdloanSummary: CrowdloanSummary;
-  Curator: PartialCurator;
   DemocracyProposal: Omit<DemocracyProposal, 'proposer' | 'seconds'> & {
-    proposer: ResolversParentTypes['Proposer'];
-    seconds: Array<ResolversParentTypes['ProposalSecond']>;
+    proposer: ResolversParentTypes['NestedAccount'];
+    seconds: Array<ResolversParentTypes['NestedAccount']>;
   };
   DemocracyReferendum: DemocracyReferendum;
   DemocracySummary: DemocracySummary;
-  Depositor: PartialDepositor;
   DeriveAccountRegistration: DeriveAccountRegistration;
-  Finder: PartialFinder;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
   IdentityJudgement: IdentityJudgement;
@@ -1036,31 +949,29 @@ export type ResolversParentTypes = {
   LaunchPeriodInfo: LaunchPeriodInfo;
   Lease: Lease;
   LeasePeriod: LeasePeriod;
-  Manager: PartialManager;
   ModuleElection: ModuleElection;
   MotionProposal: Omit<MotionProposal, 'beneficiary' | 'proposer'> & {
-    beneficiary?: Maybe<ResolversParentTypes['Account']>;
-    proposer?: Maybe<ResolversParentTypes['Account']>;
+    beneficiary?: Maybe<ResolversParentTypes['NestedAccount']>;
+    proposer?: Maybe<ResolversParentTypes['NestedAccount']>;
   };
   MotionVotes: Omit<MotionVotes, 'ayes' | 'nays'> & {
-    ayes: Array<ResolversParentTypes['Account']>;
-    nays: Array<ResolversParentTypes['Account']>;
+    ayes: Array<ResolversParentTypes['NestedAccount']>;
+    nays: Array<ResolversParentTypes['NestedAccount']>;
   };
+  NestedAccount: PartialNestedAccount;
   PalletProposal: Omit<PalletProposal, 'beneficiary' | 'proposer'> & {
-    beneficiary: ResolversParentTypes['Account'];
-    proposer: ResolversParentTypes['Account'];
+    beneficiary: ResolversParentTypes['NestedAccount'];
+    proposer: ResolversParentTypes['NestedAccount'];
   };
   Parachain: Omit<Parachain, 'nonVoters' | 'validators'> & {
-    nonVoters: Array<ResolversParentTypes['AccountInfo']>;
+    nonVoters: Array<ResolversParentTypes['NestedAccount']>;
     validators?: Maybe<ResolversParentTypes['ValidatorsGroup']>;
   };
   ParachainsInfo: ParachainsInfo;
-  Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['Manager']>};
+  Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['NestedAccount']>};
   ProposalArg: ProposalArg;
-  ProposalSecond: PartialProposalSecond;
   ProposalSubCall: ProposalSubCall;
   ProposalVotes: ProposalVotes;
-  Proposer: PartialProposer;
   Query: {};
   Registrar: PartialRegistrar;
   RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversParentTypes['Registrar']>};
@@ -1068,15 +979,14 @@ export type ResolversParentTypes = {
   Registry: Registry;
   SpendPeriod: SpendPeriod;
   String: Scalars['String'];
-  SubAccount: PartialSubAccount;
   TechnicalCommitteeSummary: Omit<TechnicalCommitteeSummary, 'members'> & {
-    members: Array<ResolversParentTypes['Account']>;
+    members: Array<ResolversParentTypes['NestedAccount']>;
   };
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
-    finder?: Maybe<ResolversParentTypes['Finder']>;
+    finder?: Maybe<ResolversParentTypes['NestedAccount']>;
     tippers: Array<ResolversParentTypes['Tipper']>;
-    who: ResolversParentTypes['Who'];
+    who: ResolversParentTypes['NestedAccount'];
   };
   Tipper: PartialTipper;
   Treasury: Omit<Treasury, 'approvals' | 'proposals'> & {
@@ -1086,10 +996,8 @@ export type ResolversParentTypes = {
   TreasuryBalance: TreasuryBalance;
   TreasuryProposal: Omit<TreasuryProposal, 'proposal'> & {proposal: ResolversParentTypes['PalletProposal']};
   TreasurySummary: TreasurySummary;
-  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['AccountInfo']>};
-  Vote: PartialVote;
+  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['NestedAccount']>};
   VotingStatus: VotingStatus;
-  Who: PartialWho;
 };
 
 export type AccountResolvers<
@@ -1101,7 +1009,7 @@ export type AccountResolvers<
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasIdentity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
-  subAccounts?: Resolver<Maybe<Array<ResolversTypes['SubAccount']>>, ParentType, ContextType>;
+  subAccounts?: Resolver<Maybe<Array<ResolversTypes['NestedAccount']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1117,15 +1025,6 @@ export type AccountBalanceResolvers<
   freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AccountInfoResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['AccountInfo'] = ResolversParentTypes['AccountInfo'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1215,15 +1114,6 @@ export type BalanceDataResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type BeneficiaryResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Beneficiary'] = ResolversParentTypes['Beneficiary'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type BountiesSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BountiesSummary'] = ResolversParentTypes['BountiesSummary'],
@@ -1256,7 +1146,7 @@ export type BountyResolvers<
   formattedFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedValue?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1265,8 +1155,8 @@ export type BountyStatusResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BountyStatus'] = ResolversParentTypes['BountyStatus'],
 > = {
-  beneficiary?: Resolver<Maybe<ResolversTypes['Beneficiary']>, ParentType, ContextType>;
-  curator?: Resolver<Maybe<ResolversTypes['Curator']>, ParentType, ContextType>;
+  beneficiary?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
+  curator?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   unlockAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   unlockAtTime?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
@@ -1335,7 +1225,7 @@ export type CouncilResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
 > = {
-  candidates?: Resolver<Array<ResolversTypes['CouncilCandidate']>, ParentType, ContextType>;
+  candidates?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   desiredRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   desiredSeats?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
@@ -1345,15 +1235,6 @@ export type CouncilResolvers<
   totalCandidates?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalMembers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CouncilCandidateResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['CouncilCandidate'] = ResolversParentTypes['CouncilCandidate'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1385,7 +1266,7 @@ export type CouncilVoteResolvers<
 > = {
   formattedStake?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stake?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  votes?: Resolver<Array<ResolversTypes['Vote']>, ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1395,7 +1276,7 @@ export type CrowdloanResolvers<
 > = {
   cap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   contribution?: Resolver<ResolversTypes['Contribution'], ParentType, ContextType>;
-  depositor?: Resolver<ResolversTypes['Depositor'], ParentType, ContextType>;
+  depositor?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   ending?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   firstPeriod?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedCap?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1437,15 +1318,6 @@ export type CrowdloanSummaryResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratorResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Curator'] = ResolversParentTypes['Curator'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type DemocracyProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DemocracyProposal'] = ResolversParentTypes['DemocracyProposal'],
@@ -1457,8 +1329,8 @@ export type DemocracyProposalResolvers<
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['Proposer'], ParentType, ContextType>;
-  seconds?: Resolver<Array<ResolversTypes['ProposalSecond']>, ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
+  seconds?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   section?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1497,15 +1369,6 @@ export type DemocracySummaryResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DepositorResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Depositor'] = ResolversParentTypes['Depositor'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type DeriveAccountRegistrationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['DeriveAccountRegistration'] = ResolversParentTypes['DeriveAccountRegistration'],
@@ -1520,15 +1383,6 @@ export type DeriveAccountRegistrationResolvers<
   riot?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   twitter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   web?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type FinderResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Finder'] = ResolversParentTypes['Finder'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1577,15 +1431,6 @@ export type LeasePeriodResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ManagerResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Manager'] = ResolversParentTypes['Manager'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type ModuleElectionResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ModuleElection'] = ResolversParentTypes['ModuleElection'],
@@ -1606,13 +1451,13 @@ export type MotionProposalResolvers<
   ParentType extends ResolversParentTypes['MotionProposal'] = ResolversParentTypes['MotionProposal'],
 > = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
-  beneficiary?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  beneficiary?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   method?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   payout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  proposer?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  proposer?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   section?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1621,11 +1466,20 @@ export type MotionVotesResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['MotionVotes'] = ResolversParentTypes['MotionVotes'],
 > = {
-  ayes?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  ayes?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   end?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   endTime?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  nays?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  nays?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   threshold?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NestedAccountResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['NestedAccount'] = ResolversParentTypes['NestedAccount'],
+> = {
+  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1633,9 +1487,9 @@ export type PalletProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['PalletProposal'] = ResolversParentTypes['PalletProposal'],
 > = {
-  beneficiary?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  beneficiary?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1651,7 +1505,7 @@ export type ParachainResolvers<
   lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
   lifecycle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  nonVoters?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  nonVoters?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   validators?: Resolver<Maybe<ResolversTypes['ValidatorsGroup']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1674,7 +1528,7 @@ export type ParathreadResolvers<
   homepage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
-  manager?: Resolver<Maybe<ResolversTypes['Manager']>, ParentType, ContextType>;
+  manager?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1687,15 +1541,6 @@ export type ProposalArgResolvers<
   subCalls?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProposalSubCall']>>>, ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   value?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ProposalSecondResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['ProposalSecond'] = ResolversParentTypes['ProposalSecond'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1719,15 +1564,6 @@ export type ProposalVotesResolvers<
   index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nays?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   threshold?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ProposerResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Proposer'] = ResolversParentTypes['Proposer'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1871,22 +1707,13 @@ export type SpendPeriodResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type SubAccountResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['SubAccount'] = ResolversParentTypes['SubAccount'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type TechnicalCommitteeSummaryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TechnicalCommitteeSummary'] = ResolversParentTypes['TechnicalCommitteeSummary'],
 > = {
   activeProposalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   memberCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  members?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  members?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   totalProposalCount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1909,14 +1736,14 @@ export type TipResolvers<
 > = {
   closes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  finder?: Resolver<Maybe<ResolversTypes['Finder']>, ParentType, ContextType>;
+  finder?: Resolver<Maybe<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   formattedMedian?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   median?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tippers?: Resolver<Array<ResolversTypes['Tipper']>, ParentType, ContextType>;
   tippersCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  who?: Resolver<ResolversTypes['Who'], ParentType, ContextType>;
+  who?: Resolver<ResolversTypes['NestedAccount'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1982,16 +1809,7 @@ export type ValidatorsGroupResolvers<
   ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup'],
 > = {
   groupIndex?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  validators?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type VoteResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Vote'] = ResolversParentTypes['Vote'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  validators?: Resolver<Array<ResolversTypes['NestedAccount']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2009,19 +1827,9 @@ export type VotingStatusResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type WhoResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Who'] = ResolversParentTypes['Who'],
-> = {
-  account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   AccountBalance?: AccountBalanceResolvers<ContextType>;
-  AccountInfo?: AccountInfoResolvers<ContextType>;
   Auction?: AuctionResolvers<ContextType>;
   AuctionBid?: AuctionBidResolvers<ContextType>;
   AuctionEndingPeriod?: AuctionEndingPeriodResolvers<ContextType>;
@@ -2030,7 +1838,6 @@ export type Resolvers<ContextType = any> = {
   AuctionsSummary?: AuctionsSummaryResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
   BalanceData?: BalanceDataResolvers<ContextType>;
-  Beneficiary?: BeneficiaryResolvers<ContextType>;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
@@ -2040,44 +1847,37 @@ export type Resolvers<ContextType = any> = {
   Contribution?: ContributionResolvers<ContextType>;
   Conviction?: ConvictionResolvers<ContextType>;
   Council?: CouncilResolvers<ContextType>;
-  CouncilCandidate?: CouncilCandidateResolvers<ContextType>;
   CouncilMember?: CouncilMemberResolvers<ContextType>;
   CouncilMotion?: CouncilMotionResolvers<ContextType>;
   CouncilVote?: CouncilVoteResolvers<ContextType>;
   Crowdloan?: CrowdloanResolvers<ContextType>;
   CrowdloanContribution?: CrowdloanContributionResolvers<ContextType>;
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
-  Curator?: CuratorResolvers<ContextType>;
   DemocracyProposal?: DemocracyProposalResolvers<ContextType>;
   DemocracyReferendum?: DemocracyReferendumResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
-  Depositor?: DepositorResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
-  Finder?: FinderResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
   LaunchPeriodInfo?: LaunchPeriodInfoResolvers<ContextType>;
   Lease?: LeaseResolvers<ContextType>;
   LeasePeriod?: LeasePeriodResolvers<ContextType>;
-  Manager?: ManagerResolvers<ContextType>;
   ModuleElection?: ModuleElectionResolvers<ContextType>;
   MotionProposal?: MotionProposalResolvers<ContextType>;
   MotionVotes?: MotionVotesResolvers<ContextType>;
+  NestedAccount?: NestedAccountResolvers<ContextType>;
   PalletProposal?: PalletProposalResolvers<ContextType>;
   Parachain?: ParachainResolvers<ContextType>;
   ParachainsInfo?: ParachainsInfoResolvers<ContextType>;
   Parathread?: ParathreadResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
-  ProposalSecond?: ProposalSecondResolvers<ContextType>;
   ProposalSubCall?: ProposalSubCallResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
-  Proposer?: ProposerResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Registrar?: RegistrarResolvers<ContextType>;
   RegistrarsSummary?: RegistrarsSummaryResolvers<ContextType>;
   RegistrationJudgement?: RegistrationJudgementResolvers<ContextType>;
   Registry?: RegistryResolvers<ContextType>;
   SpendPeriod?: SpendPeriodResolvers<ContextType>;
-  SubAccount?: SubAccountResolvers<ContextType>;
   TechnicalCommitteeSummary?: TechnicalCommitteeSummaryResolvers<ContextType>;
   TermProgress?: TermProgressResolvers<ContextType>;
   Tip?: TipResolvers<ContextType>;
@@ -2087,7 +1887,5 @@ export type Resolvers<ContextType = any> = {
   TreasuryProposal?: TreasuryProposalResolvers<ContextType>;
   TreasurySummary?: TreasurySummaryResolvers<ContextType>;
   ValidatorsGroup?: ValidatorsGroupResolvers<ContextType>;
-  Vote?: VoteResolvers<ContextType>;
   VotingStatus?: VotingStatusResolvers<ContextType>;
-  Who?: WhoResolvers<ContextType>;
 };

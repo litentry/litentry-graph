@@ -13,20 +13,10 @@ export default /* GraphQL */ `
     maximumReasonLength: String!
   }
 
-  type Curator {
-    address: String!
-    account: Account!
-  }
-
-  type Beneficiary {
-    address: String!
-    account: Account!
-  }
-
   type BountyStatus {
-    beneficiary: Beneficiary
+    beneficiary: NestedAccount
     status: String
-    curator: Curator
+    curator: NestedAccount
     unlockAt: String
     unlockAtTime: [String!]
     updateDue: String
@@ -36,7 +26,7 @@ export default /* GraphQL */ `
   type Bounty {
     index: String!
     description: String!
-    proposer: Proposer!
+    proposer: NestedAccount!
     value: String!
     formattedValue: String!
     fee: String!

@@ -8,12 +8,13 @@ import type {
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import {BN, BN_ONE} from '@polkadot/util';
 import {bnToBn} from '@polkadot/util';
-import {Parathread, Manager} from '../../generated/resolvers-types';
+import {Parathread} from '../../generated/resolvers-types';
 import {Context} from '../../types';
 import {getLeasePeriodString} from '../../services/parachainsService';
 import {notEmpty} from '../../utils/notEmpty';
 import {getBlockTime} from '../../services/substrateChainService';
 import {getEndpoints} from '../../utils/endpoints';
+import {PartialNestedAccount} from './account';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 
@@ -37,10 +38,8 @@ type ParaMap = {
   leases: LeaseInfo[];
 };
 
-export type PartialManager = Omit<Manager, 'account'>;
-
 interface ParathreadData extends Omit<Parathread, 'manager'> {
-  manager: PartialManager;
+  manager: PartialNestedAccount;
 }
 
 export async function parathreads(

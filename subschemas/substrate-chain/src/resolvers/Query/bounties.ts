@@ -1,11 +1,12 @@
 import {BN} from '@polkadot/util';
 import type {BountyStatus as BountyStatusType, BlockNumber} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import type {BountiesSummary, Bounty, BountyStatus, Beneficiary, Curator} from '../../generated/resolvers-types';
+import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn} from '@polkadot/util';
 import type {DeriveBounty} from '@polkadot/api-derive/types';
 import type {ApiPromise} from '@polkadot/api';
+import type {PartialNestedAccount} from './account';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -52,7 +53,7 @@ export async function bountiesSummary(
 }
 
 interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
-  proposer: {address: string};
+  proposer: PartialNestedAccount;
   bountyStatus: BountyStatusInfo;
 }
 
@@ -104,13 +105,9 @@ export async function bounty(
 }
 
 interface BountyStatusInfo extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
-  curator?: PartialCurator;
-  beneficiary?: PartialBeneficiary;
+  curator?: PartialNestedAccount;
+  beneficiary?: PartialNestedAccount;
 }
-
-export type PartialCurator = Omit<Curator, 'account'>;
-
-export type PartialBeneficiary = Omit<Beneficiary, 'account'>;
 
 const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): BountyStatusInfo => {
   let result: BountyStatusInfo = {

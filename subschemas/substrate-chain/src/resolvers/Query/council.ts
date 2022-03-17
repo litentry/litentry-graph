@@ -1,15 +1,18 @@
 import type {Context} from '../../types';
 import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Council, TermProgress, CouncilCandidate, CouncilMember} from '../../generated/resolvers-types';
+import type {Council, TermProgress, CouncilMember} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import type {PartialNestedAccount} from './account';
+
+export type PartialCouncilMember = Omit<CouncilMember, 'account'>;
 
 type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
 
 interface CouncilInfo extends PartialCouncil {
   members: PartialCouncilMember[];
   runnersUp: PartialCouncilMember[];
-  candidates: PartialCouncilCandidate[];
+  candidates: PartialNestedAccount[];
   primeMember: PartialCouncilMember | null;
 }
 
@@ -53,7 +56,7 @@ export async function council(
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
-  const candidates = electionsInfo.candidates.map<PartialCouncilCandidate>((accountId) => ({
+  const candidates = electionsInfo.candidates.map<PartialNestedAccount>((accountId) => ({
     address: String(accountId),
   }));
 
@@ -115,7 +118,3 @@ function getTermLeft(termDuration: BN, bestNumber: BlockNumber) {
     percentage,
   };
 }
-
-export type PartialCouncilCandidate = Omit<CouncilCandidate, 'account'>;
-
-export type PartialCouncilMember = Omit<CouncilMember, 'account'>;

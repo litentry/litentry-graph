@@ -21,7 +21,7 @@ export default /* GraphQL */ `
     lastBackedBlock: String!
     homepage: String
     validators: ValidatorsGroup
-    nonVoters: [AccountInfo!]!
+    nonVoters: [NestedAccount!]!
   }
   type Lease {
     period: String
@@ -29,12 +29,9 @@ export default /* GraphQL */ `
   }
   type ValidatorsGroup {
     groupIndex: String
-    validators: [AccountInfo!]!
+    validators: [NestedAccount!]!
   }
-  type AccountInfo {
-    address: String!
-    account: Account!
-  }
+
   type Query {
     parachainsInfo: ParachainsInfo!
     parachains: [Parachain!]

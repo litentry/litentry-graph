@@ -1,31 +1,45 @@
 import type {Context} from '../../types';
-import type {CouncilMotion, VotingStatus, MotionVotes} from '../../generated/resolvers-types';
+import type {CouncilMotion, MotionProposal, VotingStatus, MotionVotes} from '../../generated/resolvers-types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Votes} from '@polkadot/types/interfaces';
 import {getCallParams, getMotionProposalTreasuryInfo} from '../../utils/call';
 import {getBlockTime} from '../../services/substrateChainService';
-import {AccountsService} from '../../services/accountsService';
 import {isFunction} from '@polkadot/util';
 import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import type {AccountId, Balance} from '@polkadot/types/interfaces';
+import {PartialNestedAccount} from './account';
+
+interface PartialMotionVotes extends Omit<MotionVotes, 'ayes' | 'nays'> {
+  ayes: PartialNestedAccount[];
+  nays: PartialNestedAccount[];
+}
+
+interface PartialMotionProposal extends Omit<MotionProposal, 'beneficiary' | 'proposer'> {
+  beneficiary?: PartialNestedAccount;
+  proposer?: PartialNestedAccount;
+}
+
+interface PartialCouncilMotion extends Omit<CouncilMotion, 'proposal' | 'votes'> {
+  proposal: PartialMotionProposal;
+  votes?: PartialMotionVotes;
+}
 
 export async function councilMotions(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<CouncilMotion[]> {
+): Promise<PartialCouncilMotion[]> {
   const [motions, electionsInfo, bestNumber] = await Promise.all([
     api.derive.council.proposals(),
     api.derive.elections.info(),
     api.derive.chain.bestNumber(),
   ]);
 
-  const accountsService = new AccountsService(api);
   const councilMembers = electionsInfo.members;
 
   return Promise.all(
     motions.map((motion) => {
-      return getMotionDetails(motion, accountsService, api, councilMembers, bestNumber);
+      return getMotionDetails(motion, api, councilMembers, bestNumber);
     }),
   );
 }
@@ -34,7 +48,7 @@ export async function councilMotionDetail(
   _: Record<string, never>,
   params: {hash: string},
   {api}: Context,
-): Promise<CouncilMotion | null> {
+): Promise<PartialCouncilMotion | null> {
   const [motion, electionsInfo, bestNumber] = await Promise.all([
     api.derive.council.proposal(params.hash),
     api.derive.elections.info(),
@@ -45,24 +59,16 @@ export async function councilMotionDetail(
     return null;
   }
 
-  const accountService = new AccountsService(api);
   const councilMembers = electionsInfo.members;
 
-  return getMotionDetails(motion, accountService, api, councilMembers, bestNumber);
+  return getMotionDetails(motion, api, councilMembers, bestNumber);
 }
 
-async function getVotes(votes: Votes, accountsService: AccountsService, api: Context['api']): Promise<MotionVotes> {
-  const ayes = votes?.ayes
-    ? await Promise.all(votes.ayes.map((account) => accountsService.getAccount(account.toString())))
-    : [];
-  const nays = votes?.nays
-    ? await Promise.all(votes.nays.map((account) => accountsService.getAccount(account.toString())))
-    : [];
-
+async function getVotes(votes: Votes, api: Context['api']): Promise<PartialMotionVotes> {
   return {
     threshold: votes.threshold.toNumber(),
-    ayes,
-    nays,
+    ayes: votes.ayes.map((accountId) => ({address: accountId.toString()})),
+    nays: votes.nays.map((accountId) => ({address: accountId.toString()})),
     end: votes.end.toString(),
     endTime: getBlockTime(api, votes.end).timeStringParts,
   };
@@ -122,12 +128,11 @@ function getVotingStatus(
 
 async function getMotionDetails(
   motion: DeriveCollectiveProposal,
-  accountsService: AccountsService,
   api: Context['api'],
   councilMembers: [AccountId, Balance][],
   bestNumber: BlockNumber,
-): Promise<CouncilMotion> {
-  const treasuryInfo = await getMotionProposalTreasuryInfo(motion.proposal, api, accountsService);
+): Promise<PartialCouncilMotion> {
+  const treasuryInfo = await getMotionProposalTreasuryInfo(motion.proposal, api);
 
   const proposal = {
     hash: motion.proposal.hash.toString(),
@@ -138,7 +143,7 @@ async function getMotionDetails(
 
   return {
     proposal,
-    votes: motion.votes ? await getVotes(motion.votes, accountsService, api) : undefined,
+    votes: motion.votes ? await getVotes(motion.votes, api) : undefined,
     votingStatus: motion.votes ? getVotingStatus(motion.votes, councilMembers.length, bestNumber, api) : undefined,
   };
 }

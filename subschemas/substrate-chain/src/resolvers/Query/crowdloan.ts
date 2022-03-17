@@ -2,13 +2,14 @@ import {BN, BN_ZERO} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {ParaId} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import {CrowdloanSummary, CrowdloanStatus, Crowdloan, Depositor, Contribution} from '../../generated/resolvers-types';
+import {CrowdloanSummary, CrowdloanStatus, Crowdloan, Contribution} from '../../generated/resolvers-types';
 import {getFunds, extractActiveFunds, extractEndedFunds, extractFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {getEndpoints} from '../../utils/endpoints';
 import {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Campaign} from '../../services/crowdloanService';
+import { PartialNestedAccount } from './account';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -54,11 +55,9 @@ export async function crowdloanSummary(
 }
 
 interface CrowdloanInfo extends Omit<Crowdloan, 'depositor' | 'contribution'> {
-  depositor: PartialDepositor;
+  depositor: PartialNestedAccount;
   contribution: PartialContribution;
 }
-
-export type PartialDepositor = Omit<Depositor, 'account'>;
 
 export type PartialContribution = Omit<Contribution, 'contribution'>;
 

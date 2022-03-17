@@ -1,14 +1,4 @@
 export default /* GraphQL */ `
-  type Finder {
-    address: String!
-    account: Account!
-  }
-
-  type Who {
-    address: String!
-    account: Account!
-  }
-
   type Tipper {
     address: String!
     account: Account!
@@ -19,8 +9,8 @@ export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
-    who: Who!
-    finder: Finder
+    who: NestedAccount!
+    finder: NestedAccount
     reason: String!
     deposit: String
     closes: String

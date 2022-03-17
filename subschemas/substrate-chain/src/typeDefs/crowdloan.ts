@@ -18,11 +18,6 @@ export default /* GraphQL */ `
     totalFunds: Int!
   }
 
-  type Depositor {
-    address: String!
-    account: Account!
-  }
-
   type Contribution {
     paraId: String!
     contribution: CrowdloanContribution!
@@ -31,7 +26,7 @@ export default /* GraphQL */ `
   type Crowdloan {
     paraId: String!
     name: String
-    depositor: Depositor!
+    depositor: NestedAccount!
     ending: [String!]!
     status: String!
     firstPeriod: String!

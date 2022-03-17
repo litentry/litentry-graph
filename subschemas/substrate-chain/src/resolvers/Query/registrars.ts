@@ -1,11 +1,11 @@
 import type {PalletIdentityRegistrarInfo} from '@polkadot/types/lookup';
 import {BN_ZERO} from '@polkadot/util';
-import type {Registrar, RegistrarsSummary} from '../../generated/resolvers-types';
+import type {RegistrarsSummary, Registrar} from '../../generated/resolvers-types';
 import {formatBalance} from '../../services/substrateChainService';
 import type {Context} from '../../types';
 
 export type PartialRegistrar = Omit<Registrar, 'account'>;
-interface RegistrarsSummaryInfo extends Omit<RegistrarsSummary, 'list'> {
+interface PartialRegistrarsSummary extends Omit<RegistrarsSummary, 'list'> {
   list: PartialRegistrar[];
 }
 
@@ -13,7 +13,7 @@ export async function registrarsSummary(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<RegistrarsSummaryInfo> {
+): Promise<PartialRegistrarsSummary> {
   const registrarsData = await api.query.identity.registrars();
   const registrars = registrarsData
     .map((r) => r.unwrapOr(undefined))
