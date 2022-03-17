@@ -10,7 +10,7 @@ import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {PartialNestedAccount} from './account';
+import type {PartialNestedAccount} from './account';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 

@@ -14,7 +14,7 @@ import {getLeasePeriodString} from '../../services/parachainsService';
 import {notEmpty} from '../../utils/notEmpty';
 import {getBlockTime} from '../../services/substrateChainService';
 import {getEndpoints} from '../../utils/endpoints';
-import {PartialNestedAccount} from './account';
+import type {PartialNestedAccount} from './account';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 

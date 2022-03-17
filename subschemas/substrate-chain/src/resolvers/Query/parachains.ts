@@ -18,7 +18,7 @@ import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
 import {getEndpoints} from '../../utils/endpoints';
-import {PartialNestedAccount} from './account';
+import type {PartialNestedAccount} from './account';
 
 interface PartialValidatorsGroup extends Omit<ValidatorsGroup, 'validators'> {
   validators: PartialNestedAccount[];

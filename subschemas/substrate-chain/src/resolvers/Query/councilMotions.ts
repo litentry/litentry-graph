@@ -7,7 +7,7 @@ import {getBlockTime} from '../../services/substrateChainService';
 import {isFunction} from '@polkadot/util';
 import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import type {AccountId, Balance} from '@polkadot/types/interfaces';
-import {PartialNestedAccount} from './account';
+import type {PartialNestedAccount} from './account';
 
 interface PartialMotionVotes extends Omit<MotionVotes, 'ayes' | 'nays'> {
   ayes: PartialNestedAccount[];
