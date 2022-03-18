@@ -64,7 +64,7 @@ export async function councilMotionDetail(
   return getMotionDetails(motion, api, councilMembers, bestNumber);
 }
 
-async function getVotes(votes: Votes, api: Context['api']): Promise<PartialMotionVotes> {
+function getVotes(votes: Votes, api: Context['api']): PartialMotionVotes {
   return {
     threshold: votes.threshold.toNumber(),
     ayes: votes.ayes.map((accountId) => ({address: accountId.toString()})),
@@ -143,7 +143,7 @@ async function getMotionDetails(
 
   return {
     proposal,
-    votes: motion.votes ? await getVotes(motion.votes, api) : undefined,
+    votes: motion.votes ? getVotes(motion.votes, api) : undefined,
     votingStatus: motion.votes ? getVotingStatus(motion.votes, councilMembers.length, bestNumber, api) : undefined,
   };
 }

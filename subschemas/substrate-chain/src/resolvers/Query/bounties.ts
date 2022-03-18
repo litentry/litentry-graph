@@ -52,9 +52,13 @@ export async function bountiesSummary(
   };
 }
 
+interface PartialBountyStatus extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
+  curator?: PartialNestedAccount;
+  beneficiary?: PartialNestedAccount;
+}
 interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   proposer: PartialNestedAccount;
-  bountyStatus: BountyStatusInfo;
+  bountyStatus: PartialBountyStatus;
 }
 
 function extractBountyData(
@@ -104,13 +108,8 @@ export async function bounty(
   return null;
 }
 
-interface BountyStatusInfo extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
-  curator?: PartialNestedAccount;
-  beneficiary?: PartialNestedAccount;
-}
-
 const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): BountyStatusInfo => {
-  let result: BountyStatusInfo = {
+  let result: PartialBountyStatus = {
     status: status.type,
   };
 
