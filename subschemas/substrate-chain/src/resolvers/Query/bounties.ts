@@ -108,7 +108,7 @@ export async function bounty(
   return null;
 }
 
-const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): BountyStatusInfo => {
+const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): PartialBountyStatus => {
   let result: PartialBountyStatus = {
     status: status.type,
   };
