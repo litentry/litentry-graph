@@ -36,7 +36,6 @@ export type Account = {
 
 export type AccountBalance = {
   __typename?: 'AccountBalance';
-  formattedExistentialDeposit: Scalars['String'];
   formattedFree: Scalars['String'];
   formattedFreeFrozen: Scalars['String'];
   formattedReserved: Scalars['String'];
@@ -1099,7 +1098,6 @@ export type AccountBalanceResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AccountBalance'] = ResolversParentTypes['AccountBalance'],
 > = {
-  formattedExistentialDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

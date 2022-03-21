@@ -17,7 +17,6 @@ export class AccountsService {
     const reserved = accountData.reserved;
     const free = accountData.free;
     const freeFrozen = accountData.feeFrozen;
-    const existentialDeposit = await this.#api.consts.balances?.existentialDeposit;
 
     const display = accountInfo.identity.displayParent
       ? `${accountInfo.identity.displayParent}/${accountInfo.identity.display || accountInfo.identity.displayParent}`
@@ -51,7 +50,6 @@ export class AccountsService {
         formattedFree: formatBalance(this.#api, free),
         freeFrozen: freeFrozen.toString(),
         formattedFreeFrozen: formatBalance(this.#api, freeFrozen),
-        formattedExistentialDeposit: formatBalance(this.#api, existentialDeposit),
       },
     };
   }
