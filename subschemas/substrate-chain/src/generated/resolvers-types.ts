@@ -178,6 +178,7 @@ export type ChainInfo = {
   crowdloanMinContribution?: Maybe<Scalars['String']>;
   democracyEnactmentPeriod?: Maybe<Scalars['String']>;
   democracyMinimumDeposit?: Maybe<Scalars['String']>;
+  formattedExistentialDeposit: Scalars['String'];
   nodeName: Scalars['String'];
   nodeVersion: Scalars['String'];
   registry: Registry;
@@ -1285,6 +1286,7 @@ export type ChainInfoResolvers<
   crowdloanMinContribution?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   democracyEnactmentPeriod?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   democracyMinimumDeposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  formattedExistentialDeposit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registry?: Resolver<ResolversTypes['Registry'], ParentType, ContextType>;
