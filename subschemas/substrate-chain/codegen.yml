@@ -12,7 +12,7 @@ generates:
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
         Tipper: ../resolvers/Query/tips#PartialTipper
-        CrowdloanContribution: ../resolvers/Query/CrowdloanContribution#PartialCrowdloanContribution
+        CrowdloanContribution: ../resolvers/Query/crowdloanContribution#PartialCrowdloanContribution
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

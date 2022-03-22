@@ -3,7 +3,7 @@ import {PartialAccountInfo} from '../resolvers/Query/account';
 import {PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
 import {PartialTipper} from '../resolvers/Query/tips';
-import {PartialCrowdloanContribution} from '../resolvers/Query/CrowdloanContribution';
+import {PartialCrowdloanContribution} from '../resolvers/Query/crowdloanContribution';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
