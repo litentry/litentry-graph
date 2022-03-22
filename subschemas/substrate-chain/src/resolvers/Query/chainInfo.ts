@@ -7,11 +7,10 @@ export default async function chainInfo(
   __: Record<string, never>,
   {api}: Context,
 ): Promise<ChainInfo> {
-  const [chain, nodeName, nodeVersion, existentialDeposit] = await Promise.all([
+  const [chain, nodeName, nodeVersion] = await Promise.all([
     api.rpc.system.chain(),
     api.rpc.system.name(),
     api.rpc.system.version(),
-    api.consts.balances.existentialDeposit,
   ]);
   const registry = api.registry;
 
@@ -28,6 +27,6 @@ export default async function chainInfo(
       decimals: registry.chainDecimals[0] ?? 0,
       token: registry.chainTokens[0] ?? '',
     },
-    formattedExistentialDeposit: formatBalance(api, existentialDeposit),
+    formattedExistentialDeposit: formatBalance(api, api.consts.balances.existentialDeposit),
   };
 }
