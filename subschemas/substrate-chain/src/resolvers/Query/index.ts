@@ -6,7 +6,7 @@ import chainInfo from './chainInfo';
 import {council} from './council';
 import {councilVote} from './councilVote';
 import {convictions} from './convictions';
-import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan} from './crowdloan';
+import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan, crowdloans} from './crowdloan';
 import {councilMotions, councilMotionDetail} from './councilMotions';
 import {crowdloanContribution} from './CrowdloanContribution';
 import {
@@ -42,6 +42,7 @@ export const Query = {
   activeCrowdloans,
   endedCrowdloans,
   crowdloan,
+  crowdloans,
   crowdloanContribution,
   democracySummary,
   democracyProposals,

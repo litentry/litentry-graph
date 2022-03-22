@@ -270,6 +270,11 @@ export type CrowdloanContribution = {
   paraId: Scalars['String'];
 };
 
+export enum CrowdloanStatus {
+  Active = 'Active',
+  Ended = 'Ended',
+}
+
 export type CrowdloanSummary = {
   __typename?: 'CrowdloanSummary';
   activeCap: Scalars['String'];
@@ -526,6 +531,7 @@ export type Query = {
   crowdloan?: Maybe<Crowdloan>;
   crowdloanContribution: CrowdloanContribution;
   crowdloanSummary: CrowdloanSummary;
+  crowdloans: Array<Crowdloan>;
   democracyProposal?: Maybe<DemocracyProposal>;
   democracyProposals: Array<DemocracyProposal>;
   democracyReferendum?: Maybe<DemocracyReferendum>;
@@ -572,6 +578,10 @@ export type QueryCrowdloanArgs = {
 
 export type QueryCrowdloanContributionArgs = {
   paraId: Scalars['String'];
+};
+
+export type QueryCrowdloansArgs = {
+  status?: InputMaybe<CrowdloanStatus>;
 };
 
 export type QueryDemocracyProposalArgs = {
@@ -868,6 +878,7 @@ export type ResolversTypes = {
     }
   >;
   CrowdloanContribution: ResolverTypeWrapper<CrowdloanContribution>;
+  CrowdloanStatus: CrowdloanStatus;
   CrowdloanSummary: ResolverTypeWrapper<CrowdloanSummary>;
   Curator: ResolverTypeWrapper<PartialCurator>;
   DemocracyProposal: ResolverTypeWrapper<
@@ -1766,6 +1777,12 @@ export type QueryResolvers<
     RequireFields<QueryCrowdloanContributionArgs, 'paraId'>
   >;
   crowdloanSummary?: Resolver<ResolversTypes['CrowdloanSummary'], ParentType, ContextType>;
+  crowdloans?: Resolver<
+    Array<ResolversTypes['Crowdloan']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryCrowdloansArgs, never>
+  >;
   democracyProposal?: Resolver<
     Maybe<ResolversTypes['DemocracyProposal']>,
     ParentType,
