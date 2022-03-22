@@ -3,7 +3,7 @@ import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Council, TermProgress, CouncilMember} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 export type PartialCouncilMember = Omit<CouncilMember, 'account'>;
 
@@ -12,7 +12,7 @@ type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'pr
 interface CouncilInfo extends PartialCouncil {
   members: PartialCouncilMember[];
   runnersUp: PartialCouncilMember[];
-  candidates: PartialNestedAccount[];
+  candidates: PartialAccountInfo[];
   primeMember: PartialCouncilMember | null;
 }
 
@@ -56,7 +56,7 @@ export async function council(
     voters: votesByCandidates[String(accountId)] || [],
   }));
 
-  const candidates = electionsInfo.candidates.map<PartialNestedAccount>((accountId) => ({
+  const candidates = electionsInfo.candidates.map<PartialAccountInfo>((accountId) => ({
     address: String(accountId),
   }));
 

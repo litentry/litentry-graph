@@ -18,7 +18,7 @@ export default /* GraphQL */ `
   type Council {
     members: [CouncilMember!]!
     runnersUp: [CouncilMember!]!
-    candidates: [NestedAccount!]!
+    candidates: [AccountInfo!]!
     totalCandidates: Int!
     primeMember: CouncilMember
     desiredSeats: Int!
@@ -30,8 +30,8 @@ export default /* GraphQL */ `
 
   type MotionVotes {
     threshold: Int!
-    ayes: [NestedAccount!]!
-    nays: [NestedAccount!]!
+    ayes: [AccountInfo!]!
+    nays: [AccountInfo!]!
     end: String!
     endTime: [String!]!
   }
@@ -43,8 +43,8 @@ export default /* GraphQL */ `
     section: String!
     args: [ProposalArg!]!
     hash: String!
-    proposer: NestedAccount
-    beneficiary: NestedAccount
+    proposer: AccountInfo
+    beneficiary: AccountInfo
     payout: String
   }
 

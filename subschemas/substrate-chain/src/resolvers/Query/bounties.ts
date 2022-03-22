@@ -6,7 +6,7 @@ import {formatBalance, getBlockTime} from '../../services/substrateChainService'
 import {BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn} from '@polkadot/util';
 import type {DeriveBounty} from '@polkadot/api-derive/types';
 import type {ApiPromise} from '@polkadot/api';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -53,11 +53,11 @@ export async function bountiesSummary(
 }
 
 interface PartialBountyStatus extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
-  curator?: PartialNestedAccount;
-  beneficiary?: PartialNestedAccount;
+  curator?: PartialAccountInfo;
+  beneficiary?: PartialAccountInfo;
 }
 interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
-  proposer: PartialNestedAccount;
+  proposer: PartialAccountInfo;
   bountyStatus: PartialBountyStatus;
 }
 

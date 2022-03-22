@@ -7,16 +7,16 @@ import {getBlockTime} from '../../services/substrateChainService';
 import {isFunction} from '@polkadot/util';
 import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import type {AccountId, Balance} from '@polkadot/types/interfaces';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 interface PartialMotionVotes extends Omit<MotionVotes, 'ayes' | 'nays'> {
-  ayes: PartialNestedAccount[];
-  nays: PartialNestedAccount[];
+  ayes: PartialAccountInfo[];
+  nays: PartialAccountInfo[];
 }
 
 interface PartialMotionProposal extends Omit<MotionProposal, 'beneficiary' | 'proposer'> {
-  beneficiary?: PartialNestedAccount;
-  proposer?: PartialNestedAccount;
+  beneficiary?: PartialAccountInfo;
+  proposer?: PartialAccountInfo;
 }
 
 interface PartialCouncilMotion extends Omit<CouncilMotion, 'proposal' | 'votes'> {

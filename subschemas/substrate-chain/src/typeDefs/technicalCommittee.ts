@@ -3,7 +3,7 @@ export default /* GraphQL */ `
     memberCount: Int!
     activeProposalCount: Int!
     totalProposalCount: String!
-    members: [NestedAccount!]!
+    members: [AccountInfo!]!
   }
 
   type Query {

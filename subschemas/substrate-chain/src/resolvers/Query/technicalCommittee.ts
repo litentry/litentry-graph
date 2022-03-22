@@ -1,10 +1,10 @@
 import type {TechnicalCommitteeSummary} from '../../generated/resolvers-types';
 import type {Context} from '../../types';
 import {formatNumber} from '@polkadot/util';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 interface PartialTechnicalCommitteeSummary extends Omit<TechnicalCommitteeSummary, 'members'> {
-  members: PartialNestedAccount[];
+  members: PartialAccountInfo[];
 }
 
 const COLLECTIVE_TYPE = 'technicalCommittee';

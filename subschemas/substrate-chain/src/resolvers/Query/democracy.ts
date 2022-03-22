@@ -12,11 +12,11 @@ import {formatBalance, getBlockTime} from '../../services/substrateChainService'
 import {Context} from '../../types';
 import {getCallParams} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
-  seconds: PartialNestedAccount[];
-  proposer: PartialNestedAccount;
+  seconds: PartialAccountInfo[];
+  proposer: PartialAccountInfo;
 }
 
 export async function democracySummary(

@@ -4,7 +4,7 @@ import {Query} from './Query';
 
 export const resolvers: Resolvers<Context> = {
   Query,
-  NestedAccount: {
+  AccountInfo: {
     account: Query.account,
   },
   CouncilMember: {

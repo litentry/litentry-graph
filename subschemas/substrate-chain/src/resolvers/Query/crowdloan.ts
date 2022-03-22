@@ -9,8 +9,8 @@ import {formatBalance, getBlockTime} from '../../services/substrateChainService'
 import {getEndpoints} from '../../utils/endpoints';
 import {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Campaign} from '../../services/crowdloanService';
-import { PartialNestedAccount } from './account';
-import {PartialCrowdloanContribution} from './crowdloanContribution'
+import {PartialAccountInfo} from './account';
+import {PartialCrowdloanContribution} from './crowdloanContribution';
 
 export async function crowdloanSummary(
   _: Record<string, never>,
@@ -55,7 +55,7 @@ export async function crowdloanSummary(
   };
 }
 interface PartialCrowdloan extends Omit<Crowdloan, 'depositor' | 'contribution'> {
-  depositor: PartialNestedAccount;
+  depositor: PartialAccountInfo;
   contribution: PartialCrowdloanContribution;
 }
 

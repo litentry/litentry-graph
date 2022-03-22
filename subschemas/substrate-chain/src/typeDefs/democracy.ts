@@ -31,13 +31,13 @@ export default /* GraphQL */ `
     index: String!
     balance: String
     formattedBalance: String
-    seconds: [NestedAccount!]!
+    seconds: [AccountInfo!]!
     meta: String
     method: String
     section: String
     args: [ProposalArg!]
     hash: String!
-    proposer: NestedAccount!
+    proposer: AccountInfo!
   }
 
   type DemocracyReferendum {

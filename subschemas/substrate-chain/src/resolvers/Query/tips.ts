@@ -7,12 +7,12 @@ import {hexToString} from '@polkadot/util';
 import type {Context} from '../../types';
 import type {Tip, Tipper} from '../../generated/resolvers-types';
 import {formatBalance} from '../../services/substrateChainService';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 export type PartialTipper = Omit<Tipper, 'account'>;
 interface PartialTip extends Omit<Tip, 'finder' | 'who' | 'tippers'> {
-  finder?: PartialNestedAccount;
-  who: PartialNestedAccount;
+  finder?: PartialAccountInfo;
+  who: PartialAccountInfo;
   tippers: PartialTipper[];
 }
 

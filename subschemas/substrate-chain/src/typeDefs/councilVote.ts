@@ -2,7 +2,7 @@ export default /* GraphQL */ `
   type CouncilVote {
     stake: String!
     formattedStake: String!
-    votes: [NestedAccount!]!
+    votes: [AccountInfo!]!
   }
 
   type Query {

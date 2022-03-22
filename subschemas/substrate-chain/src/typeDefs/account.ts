@@ -44,10 +44,10 @@ export default /* GraphQL */ `
     hasIdentity: Boolean!
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
-    subAccounts: [NestedAccount!]
+    subAccounts: [AccountInfo!]
   }
 
-  type NestedAccount {
+  type AccountInfo {
     address: String!
     account: Account!
   }

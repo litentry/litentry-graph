@@ -14,7 +14,7 @@ import {getLeasePeriodString} from '../../services/parachainsService';
 import {notEmpty} from '../../utils/notEmpty';
 import {getBlockTime} from '../../services/substrateChainService';
 import {getEndpoints} from '../../utils/endpoints';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 
@@ -39,7 +39,7 @@ type ParaMap = {
 };
 
 interface ParathreadData extends Omit<Parathread, 'manager'> {
-  manager: PartialNestedAccount;
+  manager: PartialAccountInfo;
 }
 
 export async function parathreads(

@@ -14,9 +14,9 @@ export default /* GraphQL */ `
   }
 
   type BountyStatus {
-    beneficiary: NestedAccount
+    beneficiary: AccountInfo
     status: String
-    curator: NestedAccount
+    curator: AccountInfo
     unlockAt: String
     unlockAtTime: [String!]
     updateDue: String
@@ -26,7 +26,7 @@ export default /* GraphQL */ `
   type Bounty {
     index: String!
     description: String!
-    proposer: NestedAccount!
+    proposer: AccountInfo!
     value: String!
     formattedValue: String!
     fee: String!

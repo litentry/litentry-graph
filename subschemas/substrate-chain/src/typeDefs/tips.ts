@@ -9,8 +9,8 @@ export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
-    who: NestedAccount!
-    finder: NestedAccount
+    who: AccountInfo!
+    finder: AccountInfo
     reason: String!
     deposit: String
     closes: String

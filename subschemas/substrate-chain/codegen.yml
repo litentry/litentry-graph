@@ -8,7 +8,7 @@ generates:
       # eg: https://the-guild.dev/blog/better-type-safety-for-resolvers-with-graphql-codegen
       # more info also on the https://www.graphql-code-generator.com/plugins/typescript-resolvers
       mappers:
-        NestedAccount: ../resolvers/Query/account#PartialNestedAccount
+        AccountInfo: ../resolvers/Query/account#PartialAccountInfo
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
         Tipper: ../resolvers/Query/tips#PartialTipper

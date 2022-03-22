@@ -10,7 +10,7 @@ import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import type {PartialNestedAccount} from './account';
+import type {PartialAccountInfo} from './account';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
@@ -103,8 +103,8 @@ function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal
 }
 
 interface PartialPalletProposal extends Omit<PalletProposal, 'proposer' | 'beneficiary'> {
-  proposer: PartialNestedAccount;
-  beneficiary: PartialNestedAccount;
+  proposer: PartialAccountInfo;
+  beneficiary: PartialAccountInfo;
 }
 
 interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposal'> {

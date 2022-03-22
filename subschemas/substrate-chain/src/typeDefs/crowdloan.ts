@@ -21,7 +21,7 @@ export default /* GraphQL */ `
   type Crowdloan {
     paraId: String!
     name: String
-    depositor: NestedAccount!
+    depositor: AccountInfo!
     ending: [String!]!
     status: String!
     firstPeriod: String!

@@ -2,7 +2,7 @@ export default /* GraphQL */ `
   type Parathread {
     id: String!
     name: String
-    manager: NestedAccount
+    manager: AccountInfo
     lease: Lease
     homepage: String
   }
