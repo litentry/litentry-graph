@@ -56,7 +56,7 @@ interface PartialBountyStatus extends Omit<BountyStatus, 'curator' | 'beneficiar
   curator?: PartialAccountInfo;
   beneficiary?: PartialAccountInfo;
 }
-interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
+interface PartialBounty extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
   proposer: PartialAccountInfo;
   bountyStatus: PartialBountyStatus;
 }
@@ -65,7 +65,7 @@ function extractBountyData(
   {bounty, description, index}: DeriveBounty,
   api: ApiPromise,
   bestNumber: BlockNumber,
-): BountyInfo {
+): PartialBounty {
   return {
     index: index.toString(),
     proposer: {address: bounty.proposer.toString()},
@@ -86,7 +86,7 @@ export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<BountyInfo[]> {
+): Promise<PartialBounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   const bestNumber = await api.derive.chain.bestNumber();
   return deriveBounties.map((bounty) => extractBountyData(bounty, api, bestNumber));
@@ -96,7 +96,7 @@ export async function bounty(
   _: Record<string, string>,
   {index}: {index: string},
   {api}: Context,
-): Promise<BountyInfo | null> {
+): Promise<PartialBounty | null> {
   const bestNumber = await api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
