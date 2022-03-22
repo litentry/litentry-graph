@@ -1,5 +1,5 @@
 import {ApiPromise} from '@polkadot/api';
-import type {RegistrationJudgement, Account} from '../generated/resolvers-types';
+import type {Account, RegistrationJudgement} from '../generated/resolvers-types';
 import {formatBalance} from './substrateChainService';
 
 export class AccountsService {

@@ -1,5 +1,6 @@
-import type {Context} from '../../types';
 import type {ChainInfo} from '../../generated/resolvers-types';
+import {formatBalance} from '../../services/substrateChainService';
+import type {Context} from '../../types';
 
 export default async function chainInfo(
   _: Record<string, never>,
@@ -11,7 +12,6 @@ export default async function chainInfo(
     api.rpc.system.name(),
     api.rpc.system.version(),
   ]);
-
   const registry = api.registry;
 
   return {
@@ -27,5 +27,6 @@ export default async function chainInfo(
       decimals: registry.chainDecimals[0] ?? 0,
       token: registry.chainTokens[0] ?? '',
     },
+    formattedExistentialDeposit: formatBalance(api, api.consts.balances.existentialDeposit),
   };
 }

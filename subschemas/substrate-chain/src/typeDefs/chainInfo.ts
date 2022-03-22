@@ -14,6 +14,7 @@ export default /* GraphQL */ `
     democracyMinimumDeposit: String
     slotsLeasePeriod: String
     registry: Registry!
+    formattedExistentialDeposit: String!
   }
   type Query {
     chainInfo: ChainInfo!
