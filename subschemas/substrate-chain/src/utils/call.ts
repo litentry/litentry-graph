@@ -1,8 +1,7 @@
 import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
-import type {Compact, Option} from '@polkadot/types';
-import type {FunctionMetadataLatest, ProposalIndex, TreasuryProposal, Proposal} from '@polkadot/types/interfaces';
+import type {Compact} from '@polkadot/types';
+import type {FunctionMetadataLatest, ProposalIndex, Proposal} from '@polkadot/types/interfaces';
 import {ApiPromise} from '@polkadot/api';
-import {AccountsService} from '../services/accountsService';
 import {formatBalance} from '../services/substrateChainService';
 
 export function getCallParams(call: Proposal) {
@@ -44,11 +43,7 @@ export function getCallParams(call: Proposal) {
 
 const METHOD_TREA = ['approveProposal', 'rejectProposal'];
 
-export async function getMotionProposalTreasuryInfo(
-  proposal: Proposal,
-  api: ApiPromise,
-  accountsService: AccountsService,
-) {
+export async function getMotionProposalTreasuryInfo(proposal: Proposal, api: ApiPromise) {
   const {method, section} = proposal.registry.findMetaCall(proposal.callIndex) ?? {};
   const isTreasury = section === 'treasury' && METHOD_TREA.includes(method);
   if (isTreasury) {
@@ -56,8 +51,8 @@ export async function getMotionProposalTreasuryInfo(
     const treasuryProposal = (await api.query.treasury.proposals(proposalId)).unwrap();
 
     return {
-      beneficiary: await accountsService.getAccount(treasuryProposal.beneficiary.toString()),
-      proposer: await accountsService.getAccount(treasuryProposal.proposer.toString()),
+      beneficiary: {address: treasuryProposal.beneficiary.toString()},
+      proposer: {address: treasuryProposal.proposer.toString()},
       payout: formatBalance(api, treasuryProposal.value),
     };
   }

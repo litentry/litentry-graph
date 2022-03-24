@@ -7,22 +7,17 @@ import type {
   DemocracyReferendum,
   DemocracySummary,
   LaunchPeriodInfo,
-  ProposalSecond,
-  Proposer,
 } from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {Context} from '../../types';
 import {getCallParams} from '../../utils/call';
 import {notEmpty} from '../../utils/notEmpty';
+import type {PartialAccountInfo} from './account';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
-  seconds: PartialProposalSecond[];
-  proposer: PartialProposer;
+  seconds: PartialAccountInfo[];
+  proposer: PartialAccountInfo;
 }
-
-export type PartialProposalSecond = Omit<ProposalSecond, 'account'>;
-
-export type PartialProposer = Omit<Proposer, 'account'>;
 
 export async function democracySummary(
   _: Record<string, never>,

@@ -1,11 +1,12 @@
 import {BN} from '@polkadot/util';
 import type {BountyStatus as BountyStatusType, BlockNumber} from '@polkadot/types/interfaces';
 import type {Context} from '../../types';
-import type {BountiesSummary, Bounty, BountyStatus, Beneficiary, Curator} from '../../generated/resolvers-types';
+import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import {BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn} from '@polkadot/util';
 import type {DeriveBounty} from '@polkadot/api-derive/types';
 import type {ApiPromise} from '@polkadot/api';
+import type {PartialAccountInfo} from './account';
 
 export async function bountiesSummary(
   _: Record<string, string>,
@@ -51,16 +52,20 @@ export async function bountiesSummary(
   };
 }
 
-interface BountyInfo extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
-  proposer: {address: string};
-  bountyStatus: BountyStatusInfo;
+interface PartialBountyStatus extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
+  curator?: PartialAccountInfo;
+  beneficiary?: PartialAccountInfo;
+}
+interface PartialBounty extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
+  proposer: PartialAccountInfo;
+  bountyStatus: PartialBountyStatus;
 }
 
 function extractBountyData(
   {bounty, description, index}: DeriveBounty,
   api: ApiPromise,
   bestNumber: BlockNumber,
-): BountyInfo {
+): PartialBounty {
   return {
     index: index.toString(),
     proposer: {address: bounty.proposer.toString()},
@@ -81,7 +86,7 @@ export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<BountyInfo[]> {
+): Promise<PartialBounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   const bestNumber = await api.derive.chain.bestNumber();
   return deriveBounties.map((bounty) => extractBountyData(bounty, api, bestNumber));
@@ -91,7 +96,7 @@ export async function bounty(
   _: Record<string, string>,
   {index}: {index: string},
   {api}: Context,
-): Promise<BountyInfo | null> {
+): Promise<PartialBounty | null> {
   const bestNumber = await api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
   const bountyData = deriveBounties.find((bounty) => bounty.index.toString() === index);
@@ -103,17 +108,8 @@ export async function bounty(
   return null;
 }
 
-interface BountyStatusInfo extends Omit<BountyStatus, 'curator' | 'beneficiary'> {
-  curator?: PartialCurator;
-  beneficiary?: PartialBeneficiary;
-}
-
-export type PartialCurator = Omit<Curator, 'account'>;
-
-export type PartialBeneficiary = Omit<Beneficiary, 'account'>;
-
-const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): BountyStatusInfo => {
-  let result: BountyStatusInfo = {
+const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: BlockNumber): PartialBountyStatus => {
+  let result: PartialBountyStatus = {
     status: status.type,
   };
 

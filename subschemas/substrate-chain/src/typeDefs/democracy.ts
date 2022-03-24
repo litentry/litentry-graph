@@ -27,27 +27,17 @@ export default /* GraphQL */ `
     subCalls: [ProposalSubCall]
   }
 
-  type Proposer {
-    address: String!
-    account: Account!
-  }
-
-  type ProposalSecond {
-    address: String!
-    account: Account!
-  }
-
   type DemocracyProposal {
     index: String!
     balance: String
     formattedBalance: String
-    seconds: [ProposalSecond!]!
+    seconds: [AccountInfo!]!
     meta: String
     method: String
     section: String
     args: [ProposalArg!]
     hash: String!
-    proposer: Proposer!
+    proposer: AccountInfo!
   }
 
   type DemocracyReferendum {

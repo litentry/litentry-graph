@@ -8,21 +8,11 @@ generates:
       # eg: https://the-guild.dev/blog/better-type-safety-for-resolvers-with-graphql-codegen
       # more info also on the https://www.graphql-code-generator.com/plugins/typescript-resolvers
       mappers:
-        CouncilCandidate: ../resolvers/Query/council#PartialCouncilCandidate
+        AccountInfo: ../resolvers/Query/account#PartialAccountInfo
         CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
-        ProposalSecond: ../resolvers/Query/democracy#PartialProposalSecond
-        Proposer: ../resolvers/Query/democracy#PartialProposer
-        Depositor: ../resolvers/Query/crowdloan#PartialDepositor
-        Contribution: ../resolvers/Query/crowdloan#PartialContribution
-        Finder: ../resolvers/Query/tips#PartialFinder
-        Who: ../resolvers/Query/tips#PartialWho
         Tipper: ../resolvers/Query/tips#PartialTipper
-        Curator: ../resolvers/Query/bounties#PartialCurator
-        Beneficiary: ../resolvers/Query/bounties#PartialBeneficiary
-        SubAccount: ../resolvers/Query/account#PartialSubAccount
-        Manager: ../resolvers/Query/parathreads#PartialManager
-        Vote: ../resolvers/Query/councilVote#PartialVote
+        CrowdloanContribution: ../resolvers/Query/crowdloanContribution#PartialCrowdloanContribution
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

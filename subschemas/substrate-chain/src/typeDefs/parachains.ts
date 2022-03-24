@@ -31,10 +31,7 @@ export default /* GraphQL */ `
     groupIndex: String
     validators: [AccountInfo!]!
   }
-  type AccountInfo {
-    address: String!
-    account: Account!
-  }
+
   type Query {
     parachainsInfo: ParachainsInfo!
     parachains: [Parachain!]

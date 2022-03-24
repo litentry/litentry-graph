@@ -1,12 +1,8 @@
 export default /* GraphQL */ `
-  type Manager {
-    address: String!
-    account: Account!
-  }
   type Parathread {
     id: String!
     name: String
-    manager: Manager
+    manager: AccountInfo
     lease: Lease
     homepage: String
   }

@@ -1,7 +1,7 @@
-import type {AccountId, ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
+import type {ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {Account, AccountInfo, Parachain, ParachainsInfo} from '../../generated/resolvers-types';
+import type {Parachain, ParachainsInfo, ValidatorsGroup} from '../../generated/resolvers-types';
 import {
   ValidatorsInfo,
   getParachainValidators,
@@ -17,8 +17,16 @@ import {
 import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
-import {AccountsService} from '../../services/accountsService';
 import {getEndpoints} from '../../utils/endpoints';
+import type {PartialAccountInfo} from './account';
+
+interface PartialValidatorsGroup extends Omit<ValidatorsGroup, 'validators'> {
+  validators: PartialAccountInfo[];
+}
+interface PartialParachain extends Omit<Parachain, 'nonVoters' | 'validators'> {
+  nonVoters: PartialAccountInfo[];
+  validators: PartialValidatorsGroup;
+}
 
 export async function parachainsInfo(
   _: Record<string, never>,
@@ -44,7 +52,7 @@ export async function parachains(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<Promise<Parachain>[]> {
+): Promise<Promise<PartialParachain>[]> {
   const [parachainIds, genesisHash, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     api.genesisHash.toHex(),
@@ -64,10 +72,9 @@ export async function parachain(
   _: Record<string, never>,
   params: {id: string},
   {api}: Context,
-): Promise<Parachain | null> {
-  const [parachainIds, genesisHash, lastEvents, validators] = await Promise.all([
+): Promise<PartialParachain | null> {
+  const [parachainIds, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
-    api.genesisHash.toHex(),
     getLastEvents(api),
     getParachainValidators(api),
   ]);
@@ -89,7 +96,7 @@ const extractParachainData = async (
   parachain: LinkOption | undefined,
   lastEvents: LastEvents,
   validators: ValidatorsInfo,
-): Promise<Parachain> => {
+): Promise<PartialParachain> => {
   const [leases, leasePeriod, optLifecycle, optPending] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
@@ -107,8 +114,8 @@ const extractParachainData = async (
   const validatorInfo = getValidatorInfo(id.toString(), validators);
   const nonVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
 
-  const validatorsAccounts = await Promise.all(getAccountsInfoFromValidators(api, validatorInfo?.validators) ?? []);
-  const nonVotersAccounts = await Promise.all(getAccountsInfoFromValidators(api, nonVoters) ?? []);
+  const validatorsAccounts = validatorInfo?.validators?.map((accountId) => ({address: accountId.toString()})) || [];
+  const nonVotersAccounts = nonVoters.map((accountId) => ({address: accountId.toString()}));
 
   return {
     id,
@@ -127,18 +134,4 @@ const extractParachainData = async (
     },
     nonVoters: nonVotersAccounts,
   };
-};
-
-const getAccountsInfoFromValidators = (
-  api: Context['api'],
-  validators: AccountId[] | undefined,
-): Promise<AccountInfo>[] | undefined => {
-  const accountsService = new AccountsService(api);
-
-  return validators?.map(async (v): Promise<AccountInfo> => {
-    return {
-      address: v.toString(),
-      account: accountsService.getAccount(v.toString()) as unknown as Account,
-    };
-  });
 };

@@ -38,18 +38,18 @@ export default /* GraphQL */ `
     formattedFreeFrozen: String!
   }
 
-  type SubAccount {
-    address: String!
-    account: Account!
-  }
-
   type Account {
     address: String!
     display: String!
     hasIdentity: Boolean!
     registration: DeriveAccountRegistration!
     balance: AccountBalance!
-    subAccounts: [SubAccount!]
+    subAccounts: [AccountInfo!]
+  }
+
+  type AccountInfo {
+    address: String!
+    account: Account!
   }
 
   type Query {

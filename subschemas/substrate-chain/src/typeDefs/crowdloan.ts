@@ -18,20 +18,10 @@ export default /* GraphQL */ `
     totalFunds: Int!
   }
 
-  type Depositor {
-    address: String!
-    account: Account!
-  }
-
-  type Contribution {
-    paraId: String!
-    contribution: CrowdloanContribution!
-  }
-
   type Crowdloan {
     paraId: String!
     name: String
-    depositor: Depositor!
+    depositor: AccountInfo!
     ending: [String!]!
     status: String!
     firstPeriod: String!
@@ -41,7 +31,7 @@ export default /* GraphQL */ `
     cap: String!
     formattedCap: String!
     raisedPercentage: String!
-    contribution: Contribution!
+    contribution: CrowdloanContribution!
     homepage: String
   }
 

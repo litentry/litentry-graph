@@ -1,10 +1,16 @@
 import type {Context} from '../../types';
-import type {TreasurySummary, Treasury, SpendPeriod} from '../../generated/resolvers-types';
+import type {
+  TreasurySummary,
+  Treasury,
+  SpendPeriod,
+  TreasuryProposal,
+  PalletProposal,
+} from '../../generated/resolvers-types';
 import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
 import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {AccountsService} from '../../services/accountsService';
+import type {PartialAccountInfo} from './account';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
@@ -83,32 +89,42 @@ function processTreasuryCouncils(councils: DeriveCollectiveProposal[]) {
   }));
 }
 
-async function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal[]) {
-  const accountsService = new AccountsService(api);
+function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal[]) {
+  return proposals.map((data) => ({
+    id: data.id.toString(),
+    proposal: {
+      proposer: {address: data.proposal.proposer.toString()},
+      value: formatBalance(api, data.proposal.value),
+      beneficiary: {address: data.proposal.beneficiary.toString()},
+      bond: formatBalance(api, data.proposal.bond),
+    },
+    councils: processTreasuryCouncils(data.council),
+  }));
+}
 
-  return Promise.all(
-    proposals.map(async (data) => ({
-      id: data.id.toString(),
-      proposal: {
-        proposer: await accountsService.getAccount(data.proposal.proposer.toString()),
-        value: formatBalance(api, data.proposal.value),
-        beneficiary: await accountsService.getAccount(data.proposal.beneficiary.toString()),
-        bond: formatBalance(api, data.proposal.bond),
-      },
-      councils: processTreasuryCouncils(data.council),
-    })),
-  );
+interface PartialPalletProposal extends Omit<PalletProposal, 'proposer' | 'beneficiary'> {
+  proposer: PartialAccountInfo;
+  beneficiary: PartialAccountInfo;
+}
+
+interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposal'> {
+  proposal: PartialPalletProposal;
+}
+
+interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
+  proposals: PartialTreasuryProposal[];
+  approvals: PartialTreasuryProposal[];
 }
 
 export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<Treasury> {
+): Promise<PartialTreasury> {
   const treasuryProposals = await api.derive.treasury.proposals();
 
-  const approvals = await processProposals(api, treasuryProposals.approvals);
-  const proposals = await processProposals(api, treasuryProposals.proposals);
+  const approvals = processProposals(api, treasuryProposals.approvals);
+  const proposals = processProposals(api, treasuryProposals.proposals);
 
   return {
     approvals,

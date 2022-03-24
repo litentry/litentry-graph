@@ -1,10 +1,9 @@
-import type {CouncilVote, Vote} from '../../generated/resolvers-types';
+import type {CouncilVote} from '../../generated/resolvers-types';
 import {formatBalance} from '../../services/substrateChainService';
 import type {Context} from '../../types';
-
-export type PartialVote = Omit<Vote, 'account'>;
+import type {PartialAccountInfo} from './account';
 interface CouncilVoteInfo extends Omit<CouncilVote, 'votes'> {
-  votes: PartialVote[];
+  votes: PartialAccountInfo[];
 }
 
 export async function councilVote(

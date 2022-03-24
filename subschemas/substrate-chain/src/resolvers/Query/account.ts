@@ -1,10 +1,10 @@
-import type {Account, SubAccount} from '../../generated/resolvers-types';
+import type {Account, AccountInfo} from '../../generated/resolvers-types';
 import type {Context} from '../../types';
 import {AccountsService} from '../../services/accountsService';
 
-export type PartialSubAccount = Omit<SubAccount, 'account'>;
+export type PartialAccountInfo = Omit<AccountInfo, 'account'>;
 interface PartialAccount extends Omit<Account, 'subAccounts'> {
-  subAccounts: PartialSubAccount[];
+  subAccounts: PartialAccountInfo[];
 }
 
 export async function account(

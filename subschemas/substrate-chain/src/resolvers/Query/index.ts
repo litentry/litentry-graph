@@ -8,7 +8,7 @@ import {councilVote} from './councilVote';
 import {convictions} from './convictions';
 import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan, crowdloans} from './crowdloan';
 import {councilMotions, councilMotionDetail} from './councilMotions';
-import {crowdloanContribution} from './CrowdloanContribution';
+import {crowdloanContribution} from './crowdloanContribution';
 import {
   democracySummary,
   democracyProposals,
