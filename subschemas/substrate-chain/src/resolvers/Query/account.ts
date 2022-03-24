@@ -20,9 +20,8 @@ export async function account(
   }
 
   const account = await accountsService.getAccount(address);
-
-  const subAccountsData = await api.query.identity.subsOf(address);
-  const subAccounts = subAccountsData[1].map((accountId) => ({address: accountId.toString()}));
+  const subAccountsData = await api.query.identity?.subsOf(address);
+  const subAccounts = subAccountsData?.[1].map((accountId) => ({address: accountId.toString()}));
 
   return {
     ...account,
