@@ -15,6 +15,7 @@ export default /* GraphQL */ `
     slotsLeasePeriod: String
     registry: Registry!
     formattedExistentialDeposit: String!
+    existentialDeposit: String!
   }
   type Query {
     chainInfo: ChainInfo!

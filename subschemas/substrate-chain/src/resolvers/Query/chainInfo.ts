@@ -28,5 +28,6 @@ export default async function chainInfo(
       token: registry.chainTokens[0] ?? '',
     },
     formattedExistentialDeposit: formatBalance(api, api.consts.balances.existentialDeposit),
+    existentialDeposit: api.consts.balances.existentialDeposit?.toString(),
   };
 }
