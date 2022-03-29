@@ -28,26 +28,6 @@ export default /* GraphQL */ `
     termProgress: TermProgress!
   }
 
-  type MotionVotes {
-    threshold: Int!
-    ayes: [AccountInfo!]!
-    nays: [AccountInfo!]!
-    end: String!
-    endTime: [String!]!
-  }
-
-  type MotionProposal {
-    index: String
-    meta: String!
-    method: String!
-    section: String!
-    args: [ProposalArg!]!
-    hash: String!
-    proposer: AccountInfo
-    beneficiary: AccountInfo
-    payout: String
-  }
-
   type VotingStatus {
     hasFailed: Boolean!
     hasPassed: Boolean!
@@ -58,9 +38,17 @@ export default /* GraphQL */ `
     status: String!
   }
 
+  type ProposalVotes {
+    threshold: Int!
+    ayes: [AccountInfo!]!
+    nays: [AccountInfo!]!
+    end: String!
+    endTime: [String!]!
+  }
+
   type CouncilMotion {
-    proposal: MotionProposal!
-    votes: MotionVotes
+    proposal: Proposal!
+    votes: ProposalVotes
     votingStatus: VotingStatus
   }
 

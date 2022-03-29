@@ -1,14 +1,8 @@
 import type {Context} from '../../types';
-import type {
-  TreasurySummary,
-  Treasury,
-  SpendPeriod,
-  TreasuryProposal,
-  PalletProposal,
-} from '../../generated/resolvers-types';
+import type {TreasurySummary, Treasury, SpendPeriod, Proposal} from '../../generated/resolvers-types';
 import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
-import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
+import {DeriveTreasuryProposal} from '@polkadot/api-derive/types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
 import type {PartialAccountInfo} from './account';
 
@@ -75,45 +69,24 @@ function createSpendPeriod(api: Context['api'], bestNumber: BlockNumber): SpendP
   };
 }
 
-function processTreasuryCouncils(councils: DeriveCollectiveProposal[]) {
-  return councils.map((council) => ({
-    hash: council.hash.toString(),
-    votes: {
-      index: council.votes?.index.toString(),
-      threshold: council.votes?.threshold.toString(),
-      ayes: council.votes?.ayes.map((aye) => aye.toString()),
-      nays: council.votes?.nays.map((nay) => nay.toString()),
-      end: council.votes?.end.toString(),
-    },
-    callIndex: council.proposal.callIndex.toString(),
-  }));
-}
-
 function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal[]) {
   return proposals.map((data) => ({
-    id: data.id.toString(),
-    proposal: {
-      proposer: {address: data.proposal.proposer.toString()},
-      value: formatBalance(api, data.proposal.value),
-      beneficiary: {address: data.proposal.beneficiary.toString()},
-      bond: formatBalance(api, data.proposal.bond),
-    },
-    councils: processTreasuryCouncils(data.council),
+    index: data.id.toString(),
+    proposer: {address: data.proposal.proposer.toString()},
+    value: formatBalance(api, data.proposal.value),
+    beneficiary: {address: data.proposal.beneficiary.toString()},
+    bond: formatBalance(api, data.proposal.bond),
   }));
 }
 
-interface PartialPalletProposal extends Omit<PalletProposal, 'proposer' | 'beneficiary'> {
-  proposer: PartialAccountInfo;
-  beneficiary: PartialAccountInfo;
-}
-
-interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposal'> {
-  proposal: PartialPalletProposal;
+interface PartialProposal extends Omit<Proposal, 'proposer' | 'beneficiary'> {
+  proposer?: PartialAccountInfo;
+  beneficiary?: PartialAccountInfo;
 }
 
 interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
-  proposals: PartialTreasuryProposal[];
-  approvals: PartialTreasuryProposal[];
+  proposals: PartialProposal[];
+  approvals: PartialProposal[];
 }
 
 export async function treasury(

@@ -1,5 +1,5 @@
 import type {Context} from '../../types';
-import type {CouncilMotion, MotionProposal, VotingStatus, MotionVotes} from '../../generated/resolvers-types';
+import type {CouncilMotion, Proposal, VotingStatus, ProposalVotes} from '../../generated/resolvers-types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Votes} from '@polkadot/types/interfaces';
 import {getCallParams, getMotionProposalTreasuryInfo} from '../../utils/call';
@@ -9,12 +9,12 @@ import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import type {AccountId, Balance} from '@polkadot/types/interfaces';
 import type {PartialAccountInfo} from './account';
 
-interface PartialMotionVotes extends Omit<MotionVotes, 'ayes' | 'nays'> {
+interface PartialMotionVotes extends Omit<ProposalVotes, 'ayes' | 'nays'> {
   ayes: PartialAccountInfo[];
   nays: PartialAccountInfo[];
 }
 
-interface PartialMotionProposal extends Omit<MotionProposal, 'beneficiary' | 'proposer'> {
+interface PartialMotionProposal extends Omit<Proposal, 'beneficiary' | 'proposer'> {
   beneficiary?: PartialAccountInfo;
   proposer?: PartialAccountInfo;
 }

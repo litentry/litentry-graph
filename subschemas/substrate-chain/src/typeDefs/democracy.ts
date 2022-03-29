@@ -27,42 +27,34 @@ export default /* GraphQL */ `
     subCalls: [ProposalSubCall]
   }
 
-  type DemocracyProposal {
-    index: String!
+  type Proposal {
+    index: String
+    meta: String
+    method: String
+    section: String
+    args: [ProposalArg!]
+    hash: String
+    endPeriod: [String!]
+    activatePeriod: [String!]
+    votedAye: String
+    votedNay: String
+    voteCountAye: String
+    voteCountNay: String
+    ayePercent: Float
     balance: String
-    formattedBalance: String
-    seconds: [AccountInfo!]!
-    meta: String
-    method: String
-    section: String
-    args: [ProposalArg!]
-    hash: String!
-    proposer: AccountInfo!
-  }
-
-  type DemocracyReferendum {
-    index: String!
-    meta: String
-    method: String
-    section: String
-    args: [ProposalArg!]
-    hash: String!
-    endPeriod: [String!]!
-    activatePeriod: [String!]!
-    votedAye: String!
-    formattedVotedAye: String!
-    votedNay: String!
-    formattedVotedNay: String!
-    voteCountAye: String!
-    voteCountNay: String!
-    ayePercent: Float!
+    payout: String
+    value: String
+    bond: String
+    seconds: [AccountInfo!]
+    proposer: AccountInfo
+    beneficiary: AccountInfo
   }
 
   type Query {
     democracySummary: DemocracySummary!
-    democracyProposals: [DemocracyProposal!]!
-    democracyReferendums: [DemocracyReferendum!]!
-    democracyProposal(index: String!): DemocracyProposal
-    democracyReferendum(index: String!): DemocracyReferendum
+    democracyProposals: [Proposal!]!
+    democracyReferendums: [Proposal!]!
+    democracyProposal(index: String!): Proposal
+    democracyReferendum(index: String!): Proposal
   }
 `;
