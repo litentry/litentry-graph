@@ -1,7 +1,7 @@
 {
-  "name": "uniswap",
+  "name": "evm-chain",
   "version": "0.0.1",
-  "description": "Uniswap LP graphql schema",
+  "description": "Queries to EVM based chains",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
