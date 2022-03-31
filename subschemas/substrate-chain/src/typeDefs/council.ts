@@ -28,11 +28,12 @@ export default /* GraphQL */ `
     termProgress: TermProgress!
   }
 
-  type MotionVotes {
-    threshold: Int!
-    ayes: [AccountInfo!]!
-    nays: [AccountInfo!]!
-    end: String!
+  type ProposalVotes {
+    hash: String!
+    threshold: Int
+    ayes: [AccountInfo!]
+    nays: [AccountInfo!]
+    end: String
     endTime: [String!]!
   }
 
@@ -60,7 +61,7 @@ export default /* GraphQL */ `
 
   type CouncilMotion {
     proposal: MotionProposal!
-    votes: MotionVotes
+    votes: ProposalVotes
     votingStatus: VotingStatus
   }
 

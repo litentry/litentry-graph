@@ -3,8 +3,9 @@ import type {
   TreasurySummary,
   Treasury,
   SpendPeriod,
+  TreasuryProposals,
   TreasuryProposal,
-  PalletProposal,
+  ProposalVotes,
 } from '../../generated/resolvers-types';
 import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
 import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
@@ -75,52 +76,55 @@ function createSpendPeriod(api: Context['api'], bestNumber: BlockNumber): SpendP
   };
 }
 
-function processTreasuryCouncils(councils: DeriveCollectiveProposal[]) {
+function processProposalVotes(councils: DeriveCollectiveProposal[], api: Context['api']) {
   return councils.map((council) => ({
     hash: council.hash.toString(),
-    votes: {
-      index: council.votes?.index.toString(),
-      threshold: council.votes?.threshold.toString(),
-      ayes: council.votes?.ayes.map((aye) => aye.toString()),
-      nays: council.votes?.nays.map((nay) => nay.toString()),
-      end: council.votes?.end.toString(),
-    },
-    callIndex: council.proposal.callIndex.toString(),
+    threshold: council.votes?.threshold.toNumber(),
+    ayes: council.votes?.ayes.map((aye) => ({address: aye.toString()})),
+    nays: council.votes?.nays.map((nay) => ({address: nay.toString()})),
+    end: council.votes?.end.toString(),
+    endTime: getBlockTime(api, council.votes?.end).timeStringParts,
   }));
 }
 
 function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal[]) {
   return proposals.map((data) => ({
-    id: data.id.toString(),
     proposal: {
+      index: data.id.toString(),
       proposer: {address: data.proposal.proposer.toString()},
       value: formatBalance(api, data.proposal.value),
       beneficiary: {address: data.proposal.beneficiary.toString()},
       bond: formatBalance(api, data.proposal.bond),
     },
-    councils: processTreasuryCouncils(data.council),
+    votes: processProposalVotes(data.council, api),
   }));
 }
 
-interface PartialPalletProposal extends Omit<PalletProposal, 'proposer' | 'beneficiary'> {
+interface PartialProposalVotes extends Omit<ProposalVotes, 'ayes' | 'nays'> {
+  ayes?: PartialAccountInfo[];
+  nays?: PartialAccountInfo[];
+}
+
+interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposer' | 'beneficiary'> {
   proposer: PartialAccountInfo;
   beneficiary: PartialAccountInfo;
 }
 
-interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposal'> {
-  proposal: PartialPalletProposal;
+interface PartialTreasury extends Omit<Treasury, 'proposal' | 'votes'> {
+  proposal: PartialTreasuryProposal;
+  votes: PartialProposalVotes[];
 }
 
-interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
-  proposals: PartialTreasuryProposal[];
-  approvals: PartialTreasuryProposal[];
+interface PartialTreasuryProposals extends Omit<TreasuryProposals, 'proposals' | 'approvals'> {
+  proposals: PartialTreasury[];
+  approvals: PartialTreasury[];
 }
 
-export async function treasury(
+export async function treasuryProposals(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<PartialTreasury> {
+): Promise<PartialTreasuryProposals> {
   const treasuryProposals = await api.derive.treasury.proposals();
 
   const approvals = processProposals(api, treasuryProposals.approvals);

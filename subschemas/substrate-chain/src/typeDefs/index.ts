@@ -17,8 +17,10 @@ import tips from './tips';
 import treasury from './treasury';
 import registrars from './registrars';
 import technicalCommittee from './technicalCommittee';
+import unionTypes from './unionTypes';
 
 export default [
+  unionTypes,
   account,
   auctions,
   balance,
