@@ -508,6 +508,10 @@ export type QueryBountyArgs = {
   index: Scalars['String'];
 };
 
+export type QueryCouncilArgs = {
+  address?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryCouncilMotionDetailArgs = {
   hash: Scalars['String'];
 };
@@ -1573,7 +1577,7 @@ export type QueryResolvers<
   calendarEvents?: Resolver<Array<ResolversTypes['CalendarEvent']>, ParentType, ContextType>;
   chainInfo?: Resolver<ResolversTypes['ChainInfo'], ParentType, ContextType>;
   convictions?: Resolver<Maybe<Array<ResolversTypes['Conviction']>>, ParentType, ContextType>;
-  council?: Resolver<ResolversTypes['Council'], ParentType, ContextType>;
+  council?: Resolver<ResolversTypes['Council'], ParentType, ContextType, RequireFields<QueryCouncilArgs, never>>;
   councilMotionDetail?: Resolver<
     Maybe<ResolversTypes['CouncilMotion']>,
     ParentType,
