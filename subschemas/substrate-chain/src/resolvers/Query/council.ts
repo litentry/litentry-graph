@@ -17,8 +17,8 @@ interface CouncilInfo extends PartialCouncil {
 }
 
 export async function council(
-    _: Record<string, never>,
-  args: {address?: string | null},
+  _: Record<string, never>,
+  {address: addressFilter}: {address?: string | null},
   {api}: Context,
 ): Promise<CouncilInfo> {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
@@ -27,8 +27,6 @@ export async function council(
     api.derive.council.prime(),
     api.derive.chain.bestNumber(),
   ]);
-
-  const {address: addressFilter} = args;
 
   const votesByCandidates = votes.reduce<Record<string, string[]>>((result, [voter, {votes}]) => {
     votes.forEach((candidate) => {
@@ -48,29 +46,29 @@ export async function council(
     return result;
   }, {});
 
-  const members = electionsInfo.members.filter(
-      ([accountId, _]) => (!addressFilter || addressFilter == String(accountId))
-    ).map<PartialCouncilMember>(([accountId, balance]) => ({
-    address: String(accountId),
-    backing: balance.toString(),
-    formattedBacking: formatBalance(api, balance),
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const members = electionsInfo.members
+    .filter(([accountId, _]) => !addressFilter || addressFilter == String(accountId))
+    .map<PartialCouncilMember>(([accountId, balance]) => ({
+      address: String(accountId),
+      backing: balance.toString(),
+      formattedBacking: formatBalance(api, balance),
+      voters: votesByCandidates[String(accountId)] || [],
+    }));
 
-  const runnersUp = electionsInfo.runnersUp.filter(
-      ([accountId, _]) => (!addressFilter || addressFilter == String(accountId))
-  ).map<PartialCouncilMember>(([accountId, balance]) => ({
-    address: String(accountId),
-    backing: balance.toString(),
-    formattedBacking: formatBalance(api, balance),
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const runnersUp = electionsInfo.runnersUp
+    .filter(([accountId, _]) => !addressFilter || addressFilter == String(accountId))
+    .map<PartialCouncilMember>(([accountId, balance]) => ({
+      address: String(accountId),
+      backing: balance.toString(),
+      formattedBacking: formatBalance(api, balance),
+      voters: votesByCandidates[String(accountId)] || [],
+    }));
 
-  const candidates = electionsInfo.candidates.filter(
-      (accountId) => (!addressFilter || addressFilter == String(accountId))
-  ).map<PartialAccountInfo>((accountId) => ({
-    address: String(accountId),
-  }));
+  const candidates = electionsInfo.candidates
+    .filter((accountId) => !addressFilter || addressFilter == String(accountId))
+    .map<PartialAccountInfo>((accountId) => ({
+      address: String(accountId),
+    }));
 
   let primeMember: PartialCouncilMember | null = null;
   if (prime) {
