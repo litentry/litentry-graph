@@ -268,7 +268,7 @@ export type DemocracyProposal = {
   args?: Maybe<Array<ProposalArg>>;
   balance?: Maybe<Scalars['String']>;
   formattedBalance?: Maybe<Scalars['String']>;
-  hash: Scalars['String'];
+  hash?: Maybe<Scalars['String']>;
   index: Scalars['String'];
   meta?: Maybe<Scalars['String']>;
   method?: Maybe<Scalars['String']>;
@@ -285,7 +285,8 @@ export type DemocracyReferendum = {
   endPeriod: Array<Scalars['String']>;
   formattedVotedAye: Scalars['String'];
   formattedVotedNay: Scalars['String'];
-  hash: Scalars['String'];
+  hash?: Maybe<Scalars['String']>;
+  imageHash: Scalars['String'];
   index: Scalars['String'];
   meta?: Maybe<Scalars['String']>;
   method?: Maybe<Scalars['String']>;
@@ -1314,7 +1315,7 @@ export type DemocracyProposalResolvers<
   args?: Resolver<Maybe<Array<ResolversTypes['ProposalArg']>>, ParentType, ContextType>;
   balance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   formattedBalance?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1334,7 +1335,8 @@ export type DemocracyReferendumResolvers<
   endPeriod?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   formattedVotedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedVotedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  imageHash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   meta?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   method?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
