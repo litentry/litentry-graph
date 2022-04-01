@@ -408,8 +408,6 @@ export type Parathread = {
   name?: Maybe<Scalars['String']>;
 };
 
-export type Proposal = DemocracyProposal | DemocracyReferendum | MotionProposal | TreasuryProposal;
-
 export type ProposalArg = {
   __typename?: 'ProposalArg';
   name?: Maybe<Scalars['String']>;
@@ -825,11 +823,6 @@ export type ResolversTypes = {
   >;
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['AccountInfo']>}>;
-  Proposal:
-    | ResolversTypes['DemocracyProposal']
-    | ResolversTypes['DemocracyReferendum']
-    | ResolversTypes['MotionProposal']
-    | ResolversTypes['TreasuryProposal'];
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
   ProposalSubCall: ResolverTypeWrapper<ProposalSubCall>;
   ProposalVotes: ResolverTypeWrapper<
@@ -952,11 +945,6 @@ export type ResolversParentTypes = {
   };
   ParachainsInfo: ParachainsInfo;
   Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['AccountInfo']>};
-  Proposal:
-    | ResolversParentTypes['DemocracyProposal']
-    | ResolversParentTypes['DemocracyReferendum']
-    | ResolversParentTypes['MotionProposal']
-    | ResolversParentTypes['TreasuryProposal'];
   ProposalArg: ProposalArg;
   ProposalSubCall: ProposalSubCall;
   ProposalVotes: Omit<ProposalVotes, 'ayes' | 'nays'> & {
@@ -1492,17 +1480,6 @@ export type ParathreadResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ProposalResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal'],
-> = {
-  __resolveType: TypeResolveFn<
-    'DemocracyProposal' | 'DemocracyReferendum' | 'MotionProposal' | 'TreasuryProposal',
-    ParentType,
-    ContextType
-  >;
-};
-
 export type ProposalArgResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['ProposalArg'] = ResolversParentTypes['ProposalArg'],
@@ -1847,7 +1824,6 @@ export type Resolvers<ContextType = any> = {
   Parachain?: ParachainResolvers<ContextType>;
   ParachainsInfo?: ParachainsInfoResolvers<ContextType>;
   Parathread?: ParathreadResolvers<ContextType>;
-  Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
   ProposalSubCall?: ProposalSubCallResolvers<ContextType>;
   ProposalVotes?: ProposalVotesResolvers<ContextType>;
