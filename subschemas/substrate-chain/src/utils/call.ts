@@ -54,6 +54,7 @@ export async function getMotionProposalTreasuryInfo(proposal: Proposal, api: Api
       beneficiary: {address: treasuryProposal.beneficiary.toString()},
       proposer: {address: treasuryProposal.proposer.toString()},
       payout: formatBalance(api, treasuryProposal.value),
+      bond: formatBalance(api, treasuryProposal.bond),
     };
   }
 

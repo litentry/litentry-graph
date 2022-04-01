@@ -47,6 +47,7 @@ export default /* GraphQL */ `
     proposer: AccountInfo
     beneficiary: AccountInfo
     payout: String
+    bond: String
   }
 
   type VotingStatus {

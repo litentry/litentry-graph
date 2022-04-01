@@ -369,6 +369,7 @@ export type MotionProposal = {
   __typename?: 'MotionProposal';
   args: Array<ProposalArg>;
   beneficiary?: Maybe<AccountInfo>;
+  bond?: Maybe<Scalars['String']>;
   hash: Scalars['String'];
   index?: Maybe<Scalars['String']>;
   meta: Scalars['String'];
@@ -1431,6 +1432,7 @@ export type MotionProposalResolvers<
 > = {
   args?: Resolver<Array<ResolversTypes['ProposalArg']>, ParentType, ContextType>;
   beneficiary?: Resolver<Maybe<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  bond?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   index?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
