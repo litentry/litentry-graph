@@ -1,8 +1,8 @@
-import type {Context} from '../../types';
-import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Council, TermProgress, CouncilMember} from '../../generated/resolvers-types';
+import {BN, bnToBn} from '@polkadot/util';
+import type {Council, CouncilMember, TermProgress} from '../../generated/resolvers-types';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import type {Context} from '../../types';
 import type {PartialAccountInfo} from './account';
 
 export type PartialCouncilMember = Omit<CouncilMember, 'account'>;
@@ -47,27 +47,27 @@ export async function council(
   }, {});
 
   const members = electionsInfo.members
-    .filter(([accountId, _]) => !addressFilter || addressFilter == String(accountId))
+    .filter(([accountId, _]) => !addressFilter || addressFilter == accountId.toString())
     .map<PartialCouncilMember>(([accountId, balance]) => ({
-      address: String(accountId),
+      address: accountId.toString(),
       backing: balance.toString(),
       formattedBacking: formatBalance(api, balance),
       voters: votesByCandidates[String(accountId)] || [],
     }));
 
   const runnersUp = electionsInfo.runnersUp
-    .filter(([accountId, _]) => !addressFilter || addressFilter == String(accountId))
+    .filter(([accountId, _]) => !addressFilter || addressFilter == accountId.toString())
     .map<PartialCouncilMember>(([accountId, balance]) => ({
-      address: String(accountId),
+      address: accountId.toString(),
       backing: balance.toString(),
       formattedBacking: formatBalance(api, balance),
       voters: votesByCandidates[String(accountId)] || [],
     }));
 
   const candidates = electionsInfo.candidates
-    .filter((accountId) => !addressFilter || addressFilter == String(accountId))
+    .filter((accountId) => !addressFilter || addressFilter == accountId.toString())
     .map<PartialAccountInfo>((accountId) => ({
-      address: String(accountId),
+      address: accountId.toString(),
     }));
 
   let primeMember: PartialCouncilMember | null = null;
