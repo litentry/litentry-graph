@@ -132,6 +132,7 @@ function formatReferendumData(
     ayePercent,
     index: referendum.index.toString(),
     hash: imageProposal?.hash.toString() || '',
+    imageHash: referendum.imageHash.toString(),
     ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
 }

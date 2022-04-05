@@ -36,17 +36,18 @@ export default /* GraphQL */ `
     method: String
     section: String
     args: [ProposalArg!]
-    hash: String!
+    hash: String
     proposer: AccountInfo!
   }
 
   type DemocracyReferendum {
     index: String!
+    imageHash: String!
     meta: String
     method: String
     section: String
     args: [ProposalArg!]
-    hash: String!
+    hash: String
     endPeriod: [String!]!
     activatePeriod: [String!]!
     votedAye: String!

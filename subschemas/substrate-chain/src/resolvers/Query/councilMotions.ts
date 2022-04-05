@@ -1,5 +1,5 @@
 import type {Context} from '../../types';
-import type {CouncilMotion, MotionProposal, VotingStatus, MotionVotes} from '../../generated/resolvers-types';
+import type {CouncilMotion, MotionProposal, VotingStatus, ProposalVotes} from '../../generated/resolvers-types';
 import type {BlockNumber} from '@polkadot/types/interfaces';
 import type {Votes} from '@polkadot/types/interfaces';
 import {getCallParams, getMotionProposalTreasuryInfo} from '../../utils/call';
@@ -9,7 +9,7 @@ import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
 import type {AccountId, Balance} from '@polkadot/types/interfaces';
 import type {PartialAccountInfo} from './account';
 
-interface PartialMotionVotes extends Omit<MotionVotes, 'ayes' | 'nays'> {
+interface PartialMotionVotes extends Omit<ProposalVotes, 'ayes' | 'nays'> {
   ayes: PartialAccountInfo[];
   nays: PartialAccountInfo[];
 }
@@ -66,6 +66,7 @@ export async function councilMotionDetail(
 
 function getVotes(votes: Votes, api: Context['api']): PartialMotionVotes {
   return {
+    hash: votes.hash.toString(),
     threshold: votes.threshold.toNumber(),
     ayes: votes.ayes.map((accountId) => ({address: accountId.toString()})),
     nays: votes.nays.map((accountId) => ({address: accountId.toString()})),
