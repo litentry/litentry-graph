@@ -17,7 +17,7 @@ export default /* GraphQL */ `
     bond: String!
   }
 
-  type Treasury {
+  type Proposal {
     proposal: TreasuryProposal!
     votes: [ProposalVotes!]!
   }
@@ -38,13 +38,13 @@ export default /* GraphQL */ `
     period: String!
   }
 
-  type TreasuryProposals {
-    approvals: [Treasury!]!
-    proposals: [Treasury!]!
+  type Treasury {
+    approvals: [Proposal!]!
+    proposals: [Proposal!]!
   }
 
   type Query {
     treasurySummary: TreasurySummary!
-    treasuryProposals: TreasuryProposals!
+    treasury: Treasury!
   }
 `;

@@ -20,7 +20,7 @@ import {calendarEvents} from './events';
 import moduleElection from './moduleElection';
 import {parachainsInfo, parachains, parachain} from './parachains';
 import {tips, tip} from './tips';
-import {treasurySummary, treasuryProposals} from './treasury';
+import {treasurySummary, treasury} from './treasury';
 import {registrarsSummary} from './registrars';
 import {parathreads} from './parathreads';
 import {technicalCommitteeSummary} from './technicalCommittee';
@@ -59,6 +59,6 @@ export const Query = {
   tip,
   tips,
   treasurySummary,
-  treasuryProposals,
+  treasury,
   technicalCommitteeSummary,
 };

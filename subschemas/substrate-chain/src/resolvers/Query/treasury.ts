@@ -3,8 +3,8 @@ import type {
   TreasurySummary,
   Treasury,
   SpendPeriod,
-  TreasuryProposals,
   TreasuryProposal,
+  Proposal,
   ProposalVotes,
 } from '../../generated/resolvers-types';
 import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
@@ -110,21 +110,21 @@ interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposer' | 'b
   beneficiary: PartialAccountInfo;
 }
 
-interface PartialTreasury extends Omit<Treasury, 'proposal' | 'votes'> {
+interface PartialProposal extends Omit<Proposal, 'proposal' | 'votes'> {
   proposal: PartialTreasuryProposal;
   votes: PartialProposalVotes[];
 }
 
-interface PartialTreasuryProposals extends Omit<TreasuryProposals, 'proposals' | 'approvals'> {
-  proposals: PartialTreasury[];
-  approvals: PartialTreasury[];
+interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
+  proposals: PartialProposal[];
+  approvals: PartialProposal[];
 }
 
-export async function treasuryProposals(
+export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
   {api}: Context,
-): Promise<PartialTreasuryProposals> {
+): Promise<PartialTreasury> {
   const treasuryProposals = await api.derive.treasury.proposals();
 
   const approvals = processProposals(api, treasuryProposals.approvals);
