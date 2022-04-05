@@ -105,19 +105,19 @@ interface PartialProposalVotes extends Omit<ProposalVotes, 'ayes' | 'nays'> {
   nays?: PartialAccountInfo[];
 }
 
-interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposer' | 'beneficiary'> {
+interface PartialProposal extends Omit<Proposal, 'proposer' | 'beneficiary'> {
   proposer: PartialAccountInfo;
   beneficiary: PartialAccountInfo;
 }
 
-interface PartialProposal extends Omit<Proposal, 'proposal' | 'votes'> {
-  proposal: PartialTreasuryProposal;
+interface PartialTreasuryProposal extends Omit<TreasuryProposal, 'proposal' | 'votes'> {
+  proposal: PartialProposal;
   votes: PartialProposalVotes[];
 }
 
 interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
-  proposals: PartialProposal[];
-  approvals: PartialProposal[];
+  proposals: PartialTreasuryProposal[];
+  approvals: PartialTreasuryProposal[];
 }
 
 export async function treasury(

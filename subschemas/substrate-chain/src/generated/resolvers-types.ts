@@ -411,8 +411,11 @@ export type Parathread = {
 
 export type Proposal = {
   __typename?: 'Proposal';
-  proposal: TreasuryProposal;
-  votes: Array<ProposalVotes>;
+  beneficiary: AccountInfo;
+  bond: Scalars['String'];
+  index: Scalars['String'];
+  proposer: AccountInfo;
+  value: Scalars['String'];
 };
 
 export type ProposalArg = {
@@ -615,8 +618,8 @@ export type Tipper = {
 
 export type Treasury = {
   __typename?: 'Treasury';
-  approvals: Array<Proposal>;
-  proposals: Array<Proposal>;
+  approvals: Array<TreasuryProposal>;
+  proposals: Array<TreasuryProposal>;
 };
 
 export type TreasuryBalance = {
@@ -632,11 +635,8 @@ export type TreasuryBalance = {
 
 export type TreasuryProposal = {
   __typename?: 'TreasuryProposal';
-  beneficiary: AccountInfo;
-  bond: Scalars['String'];
-  index: Scalars['String'];
-  proposer: AccountInfo;
-  value: Scalars['String'];
+  proposal: Proposal;
+  votes: Array<ProposalVotes>;
 };
 
 export type TreasurySummary = {
@@ -825,9 +825,9 @@ export type ResolversTypes = {
   ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
   Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['AccountInfo']>}>;
   Proposal: ResolverTypeWrapper<
-    Omit<Proposal, 'proposal' | 'votes'> & {
-      proposal: ResolversTypes['TreasuryProposal'];
-      votes: Array<ResolversTypes['ProposalVotes']>;
+    Omit<Proposal, 'beneficiary' | 'proposer'> & {
+      beneficiary: ResolversTypes['AccountInfo'];
+      proposer: ResolversTypes['AccountInfo'];
     }
   >;
   ProposalArg: ResolverTypeWrapper<ProposalArg>;
@@ -859,15 +859,15 @@ export type ResolversTypes = {
   Tipper: ResolverTypeWrapper<PartialTipper>;
   Treasury: ResolverTypeWrapper<
     Omit<Treasury, 'approvals' | 'proposals'> & {
-      approvals: Array<ResolversTypes['Proposal']>;
-      proposals: Array<ResolversTypes['Proposal']>;
+      approvals: Array<ResolversTypes['TreasuryProposal']>;
+      proposals: Array<ResolversTypes['TreasuryProposal']>;
     }
   >;
   TreasuryBalance: ResolverTypeWrapper<TreasuryBalance>;
   TreasuryProposal: ResolverTypeWrapper<
-    Omit<TreasuryProposal, 'beneficiary' | 'proposer'> & {
-      beneficiary: ResolversTypes['AccountInfo'];
-      proposer: ResolversTypes['AccountInfo'];
+    Omit<TreasuryProposal, 'proposal' | 'votes'> & {
+      proposal: ResolversTypes['Proposal'];
+      votes: Array<ResolversTypes['ProposalVotes']>;
     }
   >;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
@@ -946,9 +946,9 @@ export type ResolversParentTypes = {
   };
   ParachainsInfo: ParachainsInfo;
   Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['AccountInfo']>};
-  Proposal: Omit<Proposal, 'proposal' | 'votes'> & {
-    proposal: ResolversParentTypes['TreasuryProposal'];
-    votes: Array<ResolversParentTypes['ProposalVotes']>;
+  Proposal: Omit<Proposal, 'beneficiary' | 'proposer'> & {
+    beneficiary: ResolversParentTypes['AccountInfo'];
+    proposer: ResolversParentTypes['AccountInfo'];
   };
   ProposalArg: ProposalArg;
   ProposalSubCall: ProposalSubCall;
@@ -974,13 +974,13 @@ export type ResolversParentTypes = {
   };
   Tipper: PartialTipper;
   Treasury: Omit<Treasury, 'approvals' | 'proposals'> & {
-    approvals: Array<ResolversParentTypes['Proposal']>;
-    proposals: Array<ResolversParentTypes['Proposal']>;
+    approvals: Array<ResolversParentTypes['TreasuryProposal']>;
+    proposals: Array<ResolversParentTypes['TreasuryProposal']>;
   };
   TreasuryBalance: TreasuryBalance;
-  TreasuryProposal: Omit<TreasuryProposal, 'beneficiary' | 'proposer'> & {
-    beneficiary: ResolversParentTypes['AccountInfo'];
-    proposer: ResolversParentTypes['AccountInfo'];
+  TreasuryProposal: Omit<TreasuryProposal, 'proposal' | 'votes'> & {
+    proposal: ResolversParentTypes['Proposal'];
+    votes: Array<ResolversParentTypes['ProposalVotes']>;
   };
   TreasurySummary: TreasurySummary;
   ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['AccountInfo']>};
@@ -1486,8 +1486,11 @@ export type ProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Proposal'] = ResolversParentTypes['Proposal'],
 > = {
-  proposal?: Resolver<ResolversTypes['TreasuryProposal'], ParentType, ContextType>;
-  votes?: Resolver<Array<ResolversTypes['ProposalVotes']>, ParentType, ContextType>;
+  beneficiary?: Resolver<ResolversTypes['AccountInfo'], ParentType, ContextType>;
+  bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposer?: Resolver<ResolversTypes['AccountInfo'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1721,8 +1724,8 @@ export type TreasuryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Treasury'] = ResolversParentTypes['Treasury'],
 > = {
-  approvals?: Resolver<Array<ResolversTypes['Proposal']>, ParentType, ContextType>;
-  proposals?: Resolver<Array<ResolversTypes['Proposal']>, ParentType, ContextType>;
+  approvals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
+  proposals?: Resolver<Array<ResolversTypes['TreasuryProposal']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1744,11 +1747,8 @@ export type TreasuryProposalResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['TreasuryProposal'] = ResolversParentTypes['TreasuryProposal'],
 > = {
-  beneficiary?: Resolver<ResolversTypes['AccountInfo'], ParentType, ContextType>;
-  bond?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  index?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  proposer?: Resolver<ResolversTypes['AccountInfo'], ParentType, ContextType>;
-  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  proposal?: Resolver<ResolversTypes['Proposal'], ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['ProposalVotes']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

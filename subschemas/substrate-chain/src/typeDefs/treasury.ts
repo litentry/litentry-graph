@@ -9,7 +9,7 @@ export default /* GraphQL */ `
     votingBalance: String!
   }
 
-  type TreasuryProposal {
+  type Proposal {
     index: String!
     proposer: AccountInfo!
     value: String!
@@ -17,8 +17,8 @@ export default /* GraphQL */ `
     bond: String!
   }
 
-  type Proposal {
-    proposal: TreasuryProposal!
+  type TreasuryProposal {
+    proposal: Proposal!
     votes: [ProposalVotes!]!
   }
 
@@ -39,8 +39,8 @@ export default /* GraphQL */ `
   }
 
   type Treasury {
-    approvals: [Proposal!]!
-    proposals: [Proposal!]!
+    approvals: [TreasuryProposal!]!
+    proposals: [TreasuryProposal!]!
   }
 
   type Query {
