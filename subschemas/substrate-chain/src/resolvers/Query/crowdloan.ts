@@ -1,14 +1,13 @@
+import {LinkOption} from '@polkadot/apps-config/endpoints/types';
+import type {BlockNumber, ParaId} from '@polkadot/types/interfaces';
 import {BN, BN_ZERO} from '@polkadot/util';
-import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {ParaId} from '@polkadot/types/interfaces';
-import type {Context} from '../../types';
-import {CrowdloanSummary, CrowdloanStatus, Crowdloan} from '../../generated/resolvers-types';
-import {getFunds, extractActiveFunds, extractEndedFunds, extractFunds} from '../../services/crowdloanService';
+import {Crowdloan, CrowdloanStatus, CrowdloanSummary} from '../../generated/resolvers-types';
+import type {Campaign} from '../../services/crowdloanService';
+import {extractActiveFunds, extractEndedFunds, extractFunds, getFunds} from '../../services/crowdloanService';
 import {getLeasePeriod} from '../../services/parachainsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
+import type {Context} from '../../types';
 import {getEndpoints} from '../../utils/endpoints';
-import {LinkOption} from '@polkadot/apps-config/endpoints/types';
-import type {Campaign} from '../../services/crowdloanService';
 import {PartialAccountInfo} from './account';
 import {PartialCrowdloanContribution} from './crowdloanContribution';
 
@@ -176,7 +175,7 @@ function getCrowdloanDetail(
     lastPeriod: lastPeriod.toString(),
     raised: raised.toString(),
     formattedRaised: formatBalance(api, raised),
-    raisedPercentage: String(raisedPercentage),
+    raisedPercentage: raisedPercentage.toString(),
     cap: cap.toString(),
     formattedCap: formatBalance(api, cap),
     contribution: {paraId: paraId.toString()},
