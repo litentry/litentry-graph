@@ -9,6 +9,19 @@ export class AccountsService {
     this.#api = api;
   }
 
+  public async getAccountDisplay(address: string): Promise<Account> {
+    const account = await this.#api.derive.accounts.hasIdentity(address);
+    return {
+      address,
+      display: account.display ?? address.toUpperCase(),
+      hasIdentity: account.hasIdentity,
+    };
+  }
+
+  public async getAccounts(addressList: string[]): Promise<Account[]> {
+    return Promise.all(addressList.map((address) => this.getAccountDisplay(address)));
+  }
+
   public async getAccount(address: string): Promise<Account> {
     const accountInfo = await this.#api.derive.accounts.info(address);
     const {data: accountData} = await this.#api.query.system.account(address);
@@ -23,7 +36,7 @@ export class AccountsService {
       : accountInfo.identity.display;
 
     return {
-      address: address,
+      address,
       registration: {
         ...accountInfo.identity,
         judgements: accountInfo.identity.judgements.map<RegistrationJudgement>(([index, judgement]) => ({

@@ -42,8 +42,8 @@ export default /* GraphQL */ `
     address: String!
     display: String!
     hasIdentity: Boolean!
-    registration: DeriveAccountRegistration!
-    balance: AccountBalance!
+    registration: DeriveAccountRegistration
+    balance: AccountBalance
     subAccounts: [AccountInfo!]
   }
 

@@ -75,10 +75,12 @@ export async function parathreads(
         manager: {address: optInfo.isSome ? optInfo.unwrap().manager.toString() : ''},
         name: parathreadLink?.text ?? null,
         homepage: parathreadLink?.homepage ?? null,
-        lease: blocks ? {
-          period: periodString,
-          blockTime: getBlockTime(api, blocks).timeStringParts,
-        } : undefined,
+        lease: blocks
+          ? {
+              period: periodString,
+              blockTime: getBlockTime(api, blocks).timeStringParts,
+            }
+          : undefined,
       };
     }),
   );

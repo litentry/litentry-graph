@@ -9,7 +9,6 @@ generates:
       # more info also on the https://www.graphql-code-generator.com/plugins/typescript-resolvers
       mappers:
         AccountInfo: ../resolvers/Query/account#PartialAccountInfo
-        CouncilMember: ../resolvers/Query/council#PartialCouncilMember
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
         Tipper: ../resolvers/Query/tips#PartialTipper
         CrowdloanContribution: ../resolvers/Query/crowdloanContribution#PartialCrowdloanContribution

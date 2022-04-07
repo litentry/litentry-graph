@@ -1,6 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql';
 import {PartialAccountInfo} from '../resolvers/Query/account';
-import {PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
 import {PartialTipper} from '../resolvers/Query/tips';
 import {PartialCrowdloanContribution} from '../resolvers/Query/crowdloanContribution';
@@ -23,10 +22,10 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
-  balance: AccountBalance;
+  balance?: Maybe<AccountBalance>;
   display: Scalars['String'];
   hasIdentity: Scalars['Boolean'];
-  registration: DeriveAccountRegistration;
+  registration?: Maybe<DeriveAccountRegistration>;
   subAccounts?: Maybe<Array<AccountInfo>>;
 };
 
@@ -184,7 +183,7 @@ export type Conviction = {
 
 export type Council = {
   __typename?: 'Council';
-  candidates: Array<AccountInfo>;
+  candidates: Array<CouncilMember>;
   desiredRunnersUp: Scalars['Int'];
   desiredSeats: Scalars['Int'];
   members: Array<CouncilMember>;
@@ -199,10 +198,9 @@ export type Council = {
 export type CouncilMember = {
   __typename?: 'CouncilMember';
   account: Account;
-  address: Scalars['String'];
   backing: Scalars['String'];
   formattedBacking: Scalars['String'];
-  voters: Array<Scalars['String']>;
+  voters: Array<Account>;
 };
 
 export type CouncilMotion = {
@@ -770,13 +768,18 @@ export type ResolversTypes = {
   Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-      candidates: Array<ResolversTypes['AccountInfo']>;
+      candidates: Array<ResolversTypes['CouncilMember']>;
       members: Array<ResolversTypes['CouncilMember']>;
       primeMember?: Maybe<ResolversTypes['CouncilMember']>;
       runnersUp: Array<ResolversTypes['CouncilMember']>;
     }
   >;
-  CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
+  CouncilMember: ResolverTypeWrapper<
+    Omit<CouncilMember, 'account' | 'voters'> & {
+      account: ResolversTypes['Account'];
+      voters: Array<ResolversTypes['Account']>;
+    }
+  >;
   CouncilMotion: ResolverTypeWrapper<
     Omit<CouncilMotion, 'proposal' | 'votes'> & {
       proposal: ResolversTypes['MotionProposal'];
@@ -904,12 +907,15 @@ export type ResolversParentTypes = {
   ChainInfo: ChainInfo;
   Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-    candidates: Array<ResolversParentTypes['AccountInfo']>;
+    candidates: Array<ResolversParentTypes['CouncilMember']>;
     members: Array<ResolversParentTypes['CouncilMember']>;
     primeMember?: Maybe<ResolversParentTypes['CouncilMember']>;
     runnersUp: Array<ResolversParentTypes['CouncilMember']>;
   };
-  CouncilMember: PartialCouncilMember;
+  CouncilMember: Omit<CouncilMember, 'account' | 'voters'> & {
+    account: ResolversParentTypes['Account'];
+    voters: Array<ResolversParentTypes['Account']>;
+  };
   CouncilMotion: Omit<CouncilMotion, 'proposal' | 'votes'> & {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['ProposalVotes']>;
@@ -992,10 +998,10 @@ export type AccountResolvers<
   ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account'],
 > = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
+  balance?: Resolver<Maybe<ResolversTypes['AccountBalance']>, ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasIdentity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  registration?: Resolver<Maybe<ResolversTypes['DeriveAccountRegistration']>, ParentType, ContextType>;
   subAccounts?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1204,7 +1210,7 @@ export type CouncilResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
 > = {
-  candidates?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  candidates?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   desiredRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   desiredSeats?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
@@ -1222,10 +1228,9 @@ export type CouncilMemberResolvers<
   ParentType extends ResolversParentTypes['CouncilMember'] = ResolversParentTypes['CouncilMember'],
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  voters?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  voters?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
