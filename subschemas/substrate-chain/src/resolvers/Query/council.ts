@@ -40,6 +40,7 @@ export async function council(
     memberAccounts.map<Promise<CouncilMember>>(async ([accountId, balance]) => {
       const account = await accountsService.getAccountDisplay(accountId.toString());
       return {
+        address: accountId.toString(),
         account,
         backing: balance.toString(),
         formattedBacking: formatBalance(api, balance),
@@ -55,6 +56,7 @@ export async function council(
     runnersUpAccounts.map<Promise<CouncilMember>>(async ([accountId, balance]) => {
       const account = await accountsService.getAccountDisplay(accountId.toString());
       return {
+        address: accountId.toString(),
         account,
         backing: balance.toString(),
         formattedBacking: formatBalance(api, balance),
@@ -70,6 +72,7 @@ export async function council(
     candidateAccounts.map<Promise<CouncilMember>>(async ([accountId]) => {
       const account = await accountsService.getAccountDisplay(accountId.toString());
       return {
+        address: accountId.toString(),
         account,
         backing: '0',
         formattedBacking: formatBalance(api, 0),
@@ -84,6 +87,7 @@ export async function council(
     const primeAccount = await accountsService.getAccount(prime.toString());
     if (backing) {
       primeMember = {
+        address: prime.toString(),
         account: primeAccount,
         backing: backing?.toString() as string,
         formattedBacking: formatBalance(api, backing),

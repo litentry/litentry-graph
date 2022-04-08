@@ -198,6 +198,7 @@ export type Council = {
 export type CouncilMember = {
   __typename?: 'CouncilMember';
   account: Account;
+  address: Scalars['String'];
   backing: Scalars['String'];
   formattedBacking: Scalars['String'];
   voters: Array<Account>;
@@ -1228,6 +1229,7 @@ export type CouncilMemberResolvers<
   ParentType extends ResolversParentTypes['CouncilMember'] = ResolversParentTypes['CouncilMember'],
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   voters?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
