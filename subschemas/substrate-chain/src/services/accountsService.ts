@@ -18,8 +18,8 @@ export class AccountsService {
     };
   }
 
-  public async getAccounts(addressList: string[]): Promise<Account[]> {
-    return Promise.all(addressList.map((address) => this.getAccountDisplay(address)));
+  public async getAccounts(addresses: string[]): Promise<Account[]> {
+    return Promise.all(addresses.map((address) => this.getAccountDisplay(address)));
   }
 
   public async getAccount(address: string): Promise<Account> {
