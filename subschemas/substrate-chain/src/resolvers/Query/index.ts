@@ -18,7 +18,7 @@ import {
 } from './democracy';
 import {calendarEvents} from './events';
 import moduleElection from './moduleElection';
-import {parachainsInfo, parachains, parachain} from './parachains';
+import {parachainsSummary, parachains, parachain} from './parachains';
 import {tips, tip} from './tips';
 import {treasurySummary, treasury} from './treasury';
 import {registrarsSummary} from './registrars';
@@ -51,7 +51,7 @@ export const Query = {
   democracyReferendum,
   calendarEvents,
   moduleElection,
-  parachainsInfo,
+  parachainsSummary,
   parachains,
   parachain,
   parathreads,

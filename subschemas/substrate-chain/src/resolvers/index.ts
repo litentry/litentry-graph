@@ -7,9 +7,6 @@ export const resolvers: Resolvers<Context> = {
   AccountInfo: {
     account: Query.account,
   },
-  CouncilMember: {
-    account: Query.account,
-  },
   Registrar: {
     account: Query.account,
   },

@@ -1,7 +1,7 @@
 import type {ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
 import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
 import type {Context} from '../../types';
-import type {Parachain, ParachainsInfo, ValidatorsGroup} from '../../generated/resolvers-types';
+import type {Parachain, ParachainsSummary} from '../../generated/resolvers-types';
 import {
   ValidatorsInfo,
   getParachainValidators,
@@ -18,21 +18,13 @@ import {getBlockTime} from '../../services/substrateChainService';
 import {bnToBn} from '@polkadot/util';
 import type {Option} from '@polkadot/types';
 import {getEndpoints} from '../../utils/endpoints';
-import type {PartialAccountInfo} from './account';
+import {AccountsService} from '../../services/accountsService';
 
-interface PartialValidatorsGroup extends Omit<ValidatorsGroup, 'validators'> {
-  validators: PartialAccountInfo[];
-}
-interface PartialParachain extends Omit<Parachain, 'nonVoters' | 'validators'> {
-  nonVoters: PartialAccountInfo[];
-  validators: PartialValidatorsGroup;
-}
-
-export async function parachainsInfo(
+export async function parachainsSummary(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<ParachainsInfo> {
+): Promise<ParachainsSummary> {
   const [parachainIds, proposals, upcomingParaIds, leasePeriod] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     api.query.proposeParachain?.proposals?.entries(),
@@ -52,10 +44,9 @@ export async function parachains(
   _: Record<string, never>,
   __: Record<string, never>,
   {api}: Context,
-): Promise<Promise<PartialParachain>[]> {
-  const [parachainIds, genesisHash, lastEvents, validators] = await Promise.all([
+): Promise<Promise<Parachain>[]> {
+  const [parachainIds, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
-    api.genesisHash.toHex(),
     getLastEvents(api),
     getParachainValidators(api),
   ]);
@@ -72,7 +63,7 @@ export async function parachain(
   _: Record<string, never>,
   params: {id: string},
   {api}: Context,
-): Promise<PartialParachain | null> {
+): Promise<Parachain | null> {
   const [parachainIds, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
     getLastEvents(api),
@@ -96,7 +87,8 @@ const extractParachainData = async (
   parachain: LinkOption | undefined,
   lastEvents: LastEvents,
   validators: ValidatorsInfo,
-): Promise<PartialParachain> => {
+): Promise<Parachain> => {
+  const accountsService = new AccountsService(api);
   const [leases, leasePeriod, optLifecycle, optPending] = await Promise.all([
     api.query.slots?.leases?.(id) as any,
     getLeasePeriod(api),
@@ -111,11 +103,12 @@ const extractParachainData = async (
     .filter((period: number) => period !== -1);
   const period =
     leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);
-  const validatorInfo = getValidatorInfo(id.toString(), validators);
-  const nonVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
 
-  const validatorsAccounts = validatorInfo?.validators?.map((accountId) => ({address: accountId.toString()})) || [];
-  const nonVotersAccounts = nonVoters.map((accountId) => ({address: accountId.toString()}));
+  const notVoters = getNonVoters(validators.validators, optPending?.unwrapOr(undefined));
+  const validatorInfo = getValidatorInfo(id.toString(), validators);
+
+  const nonVoterAccounts = await accountsService.getAccounts(notVoters);
+  const validatorAccounts = await accountsService.getAccounts(validatorInfo.validators);
 
   return {
     id,
@@ -129,9 +122,9 @@ const extractParachainData = async (
     lastBackedBlock: lastEvents.lastBacked[id]?.blockNumber?.toString() ?? '',
     homepage: parachain?.homepage,
     validators: {
-      groupIndex: validatorInfo?.groupIndex.toString(),
-      validators: validatorsAccounts,
+      groupIndex: validatorInfo.groupIndex,
+      validators: validatorAccounts,
     },
-    nonVoters: nonVotersAccounts,
+    nonVoters: nonVoterAccounts,
   };
 };

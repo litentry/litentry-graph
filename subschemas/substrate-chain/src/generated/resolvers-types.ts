@@ -1,6 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql';
 import {PartialAccountInfo} from '../resolvers/Query/account';
-import {PartialCouncilMember} from '../resolvers/Query/council';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
 import {PartialTipper} from '../resolvers/Query/tips';
 import {PartialCrowdloanContribution} from '../resolvers/Query/crowdloanContribution';
@@ -23,10 +22,10 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
-  balance: AccountBalance;
+  balance?: Maybe<AccountBalance>;
   display: Scalars['String'];
   hasIdentity: Scalars['Boolean'];
-  registration: DeriveAccountRegistration;
+  registration?: Maybe<DeriveAccountRegistration>;
   subAccounts?: Maybe<Array<AccountInfo>>;
 };
 
@@ -184,7 +183,7 @@ export type Conviction = {
 
 export type Council = {
   __typename?: 'Council';
-  candidates: Array<AccountInfo>;
+  candidates: Array<CouncilMember>;
   desiredRunnersUp: Scalars['Int'];
   desiredSeats: Scalars['Int'];
   members: Array<CouncilMember>;
@@ -202,7 +201,7 @@ export type CouncilMember = {
   address: Scalars['String'];
   backing: Scalars['String'];
   formattedBacking: Scalars['String'];
-  voters: Array<Scalars['String']>;
+  voters: Array<Account>;
 };
 
 export type CouncilMotion = {
@@ -388,12 +387,12 @@ export type Parachain = {
   lease?: Maybe<Lease>;
   lifecycle: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-  nonVoters: Array<AccountInfo>;
+  nonVoters: Array<Account>;
   validators?: Maybe<ValidatorsGroup>;
 };
 
-export type ParachainsInfo = {
-  __typename?: 'ParachainsInfo';
+export type ParachainsSummary = {
+  __typename?: 'ParachainsSummary';
   leasePeriod: LeasePeriod;
   parachainsCount: Scalars['Int'];
   parathreadsCount: Scalars['Int'];
@@ -473,7 +472,7 @@ export type Query = {
   moduleElection: ModuleElection;
   parachain?: Maybe<Parachain>;
   parachains?: Maybe<Array<Parachain>>;
-  parachainsInfo: ParachainsInfo;
+  parachainsSummary: ParachainsSummary;
   parathreads: Array<Parathread>;
   registrarsSummary: RegistrarsSummary;
   technicalCommitteeSummary: TechnicalCommitteeSummary;
@@ -652,7 +651,7 @@ export type TreasurySummary = {
 export type ValidatorsGroup = {
   __typename?: 'ValidatorsGroup';
   groupIndex?: Maybe<Scalars['String']>;
-  validators: Array<AccountInfo>;
+  validators: Array<Account>;
 };
 
 export type VotingStatus = {
@@ -770,13 +769,18 @@ export type ResolversTypes = {
   Conviction: ResolverTypeWrapper<Conviction>;
   Council: ResolverTypeWrapper<
     Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-      candidates: Array<ResolversTypes['AccountInfo']>;
+      candidates: Array<ResolversTypes['CouncilMember']>;
       members: Array<ResolversTypes['CouncilMember']>;
       primeMember?: Maybe<ResolversTypes['CouncilMember']>;
       runnersUp: Array<ResolversTypes['CouncilMember']>;
     }
   >;
-  CouncilMember: ResolverTypeWrapper<PartialCouncilMember>;
+  CouncilMember: ResolverTypeWrapper<
+    Omit<CouncilMember, 'account' | 'voters'> & {
+      account: ResolversTypes['Account'];
+      voters: Array<ResolversTypes['Account']>;
+    }
+  >;
   CouncilMotion: ResolverTypeWrapper<
     Omit<CouncilMotion, 'proposal' | 'votes'> & {
       proposal: ResolversTypes['MotionProposal'];
@@ -818,11 +822,11 @@ export type ResolversTypes = {
   >;
   Parachain: ResolverTypeWrapper<
     Omit<Parachain, 'nonVoters' | 'validators'> & {
-      nonVoters: Array<ResolversTypes['AccountInfo']>;
+      nonVoters: Array<ResolversTypes['Account']>;
       validators?: Maybe<ResolversTypes['ValidatorsGroup']>;
     }
   >;
-  ParachainsInfo: ResolverTypeWrapper<ParachainsInfo>;
+  ParachainsSummary: ResolverTypeWrapper<ParachainsSummary>;
   Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['AccountInfo']>}>;
   Proposal: ResolverTypeWrapper<
     Omit<Proposal, 'beneficiary' | 'proposer'> & {
@@ -872,7 +876,7 @@ export type ResolversTypes = {
   >;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
   ValidatorsGroup: ResolverTypeWrapper<
-    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['AccountInfo']>}
+    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['Account']>}
   >;
   VotingStatus: ResolverTypeWrapper<VotingStatus>;
 };
@@ -904,12 +908,15 @@ export type ResolversParentTypes = {
   ChainInfo: ChainInfo;
   Conviction: Conviction;
   Council: Omit<Council, 'candidates' | 'members' | 'primeMember' | 'runnersUp'> & {
-    candidates: Array<ResolversParentTypes['AccountInfo']>;
+    candidates: Array<ResolversParentTypes['CouncilMember']>;
     members: Array<ResolversParentTypes['CouncilMember']>;
     primeMember?: Maybe<ResolversParentTypes['CouncilMember']>;
     runnersUp: Array<ResolversParentTypes['CouncilMember']>;
   };
-  CouncilMember: PartialCouncilMember;
+  CouncilMember: Omit<CouncilMember, 'account' | 'voters'> & {
+    account: ResolversParentTypes['Account'];
+    voters: Array<ResolversParentTypes['Account']>;
+  };
   CouncilMotion: Omit<CouncilMotion, 'proposal' | 'votes'> & {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['ProposalVotes']>;
@@ -941,10 +948,10 @@ export type ResolversParentTypes = {
     proposer?: Maybe<ResolversParentTypes['AccountInfo']>;
   };
   Parachain: Omit<Parachain, 'nonVoters' | 'validators'> & {
-    nonVoters: Array<ResolversParentTypes['AccountInfo']>;
+    nonVoters: Array<ResolversParentTypes['Account']>;
     validators?: Maybe<ResolversParentTypes['ValidatorsGroup']>;
   };
-  ParachainsInfo: ParachainsInfo;
+  ParachainsSummary: ParachainsSummary;
   Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['AccountInfo']>};
   Proposal: Omit<Proposal, 'beneficiary' | 'proposer'> & {
     beneficiary: ResolversParentTypes['AccountInfo'];
@@ -983,7 +990,7 @@ export type ResolversParentTypes = {
     votes: Array<ResolversParentTypes['ProposalVotes']>;
   };
   TreasurySummary: TreasurySummary;
-  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['AccountInfo']>};
+  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['Account']>};
   VotingStatus: VotingStatus;
 };
 
@@ -992,10 +999,10 @@ export type AccountResolvers<
   ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account'],
 > = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  balance?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
+  balance?: Resolver<Maybe<ResolversTypes['AccountBalance']>, ParentType, ContextType>;
   display?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   hasIdentity?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  registration?: Resolver<ResolversTypes['DeriveAccountRegistration'], ParentType, ContextType>;
+  registration?: Resolver<Maybe<ResolversTypes['DeriveAccountRegistration']>, ParentType, ContextType>;
   subAccounts?: Resolver<Maybe<Array<ResolversTypes['AccountInfo']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1204,7 +1211,7 @@ export type CouncilResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Council'] = ResolversParentTypes['Council'],
 > = {
-  candidates?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  candidates?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   desiredRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   desiredSeats?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
@@ -1225,7 +1232,7 @@ export type CouncilMemberResolvers<
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  voters?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  voters?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1454,14 +1461,14 @@ export type ParachainResolvers<
   lease?: Resolver<Maybe<ResolversTypes['Lease']>, ParentType, ContextType>;
   lifecycle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  nonVoters?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  nonVoters?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   validators?: Resolver<Maybe<ResolversTypes['ValidatorsGroup']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ParachainsInfoResolvers<
+export type ParachainsSummaryResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['ParachainsInfo'] = ResolversParentTypes['ParachainsInfo'],
+  ParentType extends ResolversParentTypes['ParachainsSummary'] = ResolversParentTypes['ParachainsSummary'],
 > = {
   leasePeriod?: Resolver<ResolversTypes['LeasePeriod'], ParentType, ContextType>;
   parachainsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -1605,7 +1612,7 @@ export type QueryResolvers<
     RequireFields<QueryParachainArgs, 'id'>
   >;
   parachains?: Resolver<Maybe<Array<ResolversTypes['Parachain']>>, ParentType, ContextType>;
-  parachainsInfo?: Resolver<ResolversTypes['ParachainsInfo'], ParentType, ContextType>;
+  parachainsSummary?: Resolver<ResolversTypes['ParachainsSummary'], ParentType, ContextType>;
   parathreads?: Resolver<Array<ResolversTypes['Parathread']>, ParentType, ContextType>;
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   technicalCommitteeSummary?: Resolver<ResolversTypes['TechnicalCommitteeSummary'], ParentType, ContextType>;
@@ -1770,7 +1777,7 @@ export type ValidatorsGroupResolvers<
   ParentType extends ResolversParentTypes['ValidatorsGroup'] = ResolversParentTypes['ValidatorsGroup'],
 > = {
   groupIndex?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  validators?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
+  validators?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1824,7 +1831,7 @@ export type Resolvers<ContextType = any> = {
   ModuleElection?: ModuleElectionResolvers<ContextType>;
   MotionProposal?: MotionProposalResolvers<ContextType>;
   Parachain?: ParachainResolvers<ContextType>;
-  ParachainsInfo?: ParachainsInfoResolvers<ContextType>;
+  ParachainsSummary?: ParachainsSummaryResolvers<ContextType>;
   Parathread?: ParathreadResolvers<ContextType>;
   Proposal?: ProposalResolvers<ContextType>;
   ProposalArg?: ProposalArgResolvers<ContextType>;
