@@ -28,3 +28,13 @@ export async function account(
     subAccounts,
   };
 }
+
+export async function accounts(
+  _: Record<string, string>,
+  args: {addresses: string[]},
+  {api}: Context,
+): Promise<Account[]> {
+
+  const accountsService = new AccountsService(api);
+  return accountsService.getAccounts(args.addresses);
+}

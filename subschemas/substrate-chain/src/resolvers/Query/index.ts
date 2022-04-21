@@ -1,4 +1,4 @@
-import {account} from './account';
+import {account, accounts} from './account';
 import {auctionsSummary} from './auctions';
 import balance from './balance';
 import {bountiesSummary, bounties, bounty} from './bounties';
@@ -27,6 +27,7 @@ import {technicalCommitteeSummary} from './technicalCommittee';
 
 export const Query = {
   account,
+  accounts,
   auctionsSummary,
   balance,
   bountiesSummary,

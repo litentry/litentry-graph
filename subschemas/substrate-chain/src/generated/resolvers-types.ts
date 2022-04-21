@@ -446,6 +446,7 @@ export type ProposalVotes = {
 export type Query = {
   __typename?: 'Query';
   account?: Maybe<Account>;
+  accounts: Array<Account>;
   activeCrowdloans: Array<Crowdloan>;
   auctionsSummary: AuctionsSummary;
   balance: Balance;
@@ -484,6 +485,10 @@ export type Query = {
 
 export type QueryAccountArgs = {
   address: Scalars['String'];
+};
+
+export type QueryAccountsArgs = {
+  addresses: Array<Scalars['String']>;
 };
 
 export type QueryBalanceArgs = {
@@ -1545,6 +1550,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryAccountArgs, 'address'>
+  >;
+  accounts?: Resolver<
+    Array<ResolversTypes['Account']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryAccountsArgs, 'addresses'>
   >;
   activeCrowdloans?: Resolver<Array<ResolversTypes['Crowdloan']>, ParentType, ContextType>;
   auctionsSummary?: Resolver<ResolversTypes['AuctionsSummary'], ParentType, ContextType>;
