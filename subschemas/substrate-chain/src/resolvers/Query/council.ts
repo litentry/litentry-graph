@@ -69,7 +69,7 @@ export async function council(
     (accountId) => !addressFilter || addressFilter === accountId.toString(),
   );
   const candidates = await Promise.all(
-    candidateAccounts.map<Promise<CouncilMember>>(async ([accountId]) => {
+    candidateAccounts.map<Promise<CouncilMember>>(async (accountId) => {
       const account = await accountsService.getAccountDisplay(accountId.toString());
       return {
         address: accountId.toString(),
