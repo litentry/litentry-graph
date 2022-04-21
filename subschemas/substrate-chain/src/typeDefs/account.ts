@@ -54,5 +54,6 @@ export default /* GraphQL */ `
 
   type Query {
     account(address: String!): Account
+    accounts(addresses: [String!]!): [Account!]!
   }
 `;
