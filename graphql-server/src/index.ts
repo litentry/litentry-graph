@@ -74,7 +74,7 @@ async function makeAggregatedSchema() {
 
 async function run() {
   const app = express();
-  const schema = await makeAggregatedSchema();
+  let schema = await makeAggregatedSchema();
   const getSubstrateApi = await initSubstrateApi();
   const web3 = new Web3(config.ethMainnetProvider);
 
@@ -93,10 +93,15 @@ async function run() {
       };
     })
   );
+
   const listener = app.listen(config.apiPort, () => {
     const { port } = listener.address() as AddressInfo;
     console.log(`listening on port: ${port}`);
   });
+
+  setInterval(async () => {
+    schema = await makeAggregatedSchema();
+  }, 1000 * 60);
 }
 
 run().catch(console.dir);
