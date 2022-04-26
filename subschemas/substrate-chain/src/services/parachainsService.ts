@@ -51,13 +51,14 @@ export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> 
     .div(leasePeriodLength ?? BN_ONE)
     .toNumber();
   const periodRemainder = leasePeriodLength.sub(progress);
-  const {formattedTime: remainder} = getBlockTime(api, periodRemainder);
+  const {timeStringParts, formattedTime} = getBlockTime(api, periodRemainder);
 
   return {
     currentLease: formatNumber(currentPeriod),
     totalPeriod,
     progressPercent,
-    remainder,
+    remainder: formattedTime,
+    remainderParts: timeStringParts,
     remainderBlockTime: periodRemainder.toString(),
   };
 }
