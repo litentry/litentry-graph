@@ -42,8 +42,8 @@ export default /* GraphQL */ `
     address: String!
     display: String!
     hasIdentity: Boolean!
-    registration: DeriveAccountRegistration!
-    balance: AccountBalance!
+    registration: DeriveAccountRegistration
+    balance: AccountBalance
     subAccounts: [AccountInfo!]
   }
 
@@ -54,5 +54,6 @@ export default /* GraphQL */ `
 
   type Query {
     account(address: String!): Account
+    accounts(addresses: [String!]!): [Account!]!
   }
 `;

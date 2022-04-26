@@ -1,26 +1,15 @@
-import type {Context} from '../../types';
-import {BN, bnToBn} from '@polkadot/util';
 import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Council, TermProgress, CouncilMember} from '../../generated/resolvers-types';
+import {BN, bnToBn} from '@polkadot/util';
+import type {Council, CouncilMember, TermProgress} from '../../generated/resolvers-types';
+import {AccountsService} from '../../services/accountsService';
 import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import type {PartialAccountInfo} from './account';
-
-export type PartialCouncilMember = Omit<CouncilMember, 'account'>;
-
-type PartialCouncil = Omit<Council, 'members' | 'runnersUp' | 'candidates' | 'primeMember'>;
-
-interface CouncilInfo extends PartialCouncil {
-  members: PartialCouncilMember[];
-  runnersUp: PartialCouncilMember[];
-  candidates: PartialAccountInfo[];
-  primeMember: PartialCouncilMember | null;
-}
+import type {Context} from '../../types';
 
 export async function council(
   _: Record<string, never>,
-  __: Record<string, never>,
+  {address: addressFilter}: {address?: string | null},
   {api}: Context,
-): Promise<CouncilInfo> {
+): Promise<Council> {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),
     api.derive.council.votes(),
@@ -28,44 +17,78 @@ export async function council(
     api.derive.chain.bestNumber(),
   ]);
 
+  const accountsService = new AccountsService(api);
+
   const votesByCandidates = votes.reduce<Record<string, string[]>>((result, [voter, {votes}]) => {
     votes.forEach((candidate) => {
-      const address = candidate.toString();
-
-      if (!result[address]) {
-        result[address] = [];
+      const candidateAddress = candidate.toString();
+      if (addressFilter && candidateAddress !== addressFilter) {
+        return;
       }
-
-      result[address]?.push(voter.toString());
+      if (!result[candidateAddress]) {
+        result[candidateAddress] = [];
+      }
+      result[candidateAddress]?.push(voter.toString());
     });
-
     return result;
   }, {});
 
-  const members = electionsInfo.members.map<PartialCouncilMember>(([accountId, balance]) => ({
-    address: String(accountId),
-    backing: balance.toString(),
-    formattedBacking: formatBalance(api, balance),
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const memberAccounts = electionsInfo.members.filter(
+    ([accountId, _]) => !addressFilter || addressFilter === accountId.toString(),
+  );
+  const members = await Promise.all(
+    memberAccounts.map<Promise<CouncilMember>>(async ([accountId, balance]) => {
+      const account = await accountsService.getAccountDisplay(accountId.toString());
+      return {
+        address: accountId.toString(),
+        account,
+        backing: balance.toString(),
+        formattedBacking: formatBalance(api, balance),
+        voters: await accountsService.getAccounts(votesByCandidates[String(accountId)] || []),
+      };
+    }),
+  );
 
-  const runnersUp = electionsInfo.runnersUp.map<PartialCouncilMember>(([accountId, balance]) => ({
-    address: String(accountId),
-    backing: balance.toString(),
-    formattedBacking: formatBalance(api, balance),
-    voters: votesByCandidates[String(accountId)] || [],
-  }));
+  const runnersUpAccounts = electionsInfo.runnersUp.filter(
+    ([accountId, _]) => !addressFilter || addressFilter === accountId.toString(),
+  );
+  const runnersUp = await Promise.all(
+    runnersUpAccounts.map<Promise<CouncilMember>>(async ([accountId, balance]) => {
+      const account = await accountsService.getAccountDisplay(accountId.toString());
+      return {
+        address: accountId.toString(),
+        account,
+        backing: balance.toString(),
+        formattedBacking: formatBalance(api, balance),
+        voters: await accountsService.getAccounts(votesByCandidates[String(accountId)] || []),
+      };
+    }),
+  );
 
-  const candidates = electionsInfo.candidates.map<PartialAccountInfo>((accountId) => ({
-    address: String(accountId),
-  }));
+  const candidateAccounts = electionsInfo.candidates.filter(
+    (accountId) => !addressFilter || addressFilter === accountId.toString(),
+  );
+  const candidates = await Promise.all(
+    candidateAccounts.map<Promise<CouncilMember>>(async (accountId) => {
+      const account = await accountsService.getAccountDisplay(accountId.toString());
+      return {
+        address: accountId.toString(),
+        account,
+        backing: '0',
+        formattedBacking: formatBalance(api, 0),
+        voters: [],
+      };
+    }),
+  );
 
-  let primeMember: PartialCouncilMember | null = null;
+  let primeMember: CouncilMember | null = null;
   if (prime) {
     const backing = electionsInfo.members.find(([accountId]) => accountId.eq(prime))?.[1];
+    const primeAccount = await accountsService.getAccount(prime.toString());
     if (backing) {
       primeMember = {
         address: prime.toString(),
+        account: primeAccount,
         backing: backing?.toString() as string,
         formattedBacking: formatBalance(api, backing),
         voters: [],

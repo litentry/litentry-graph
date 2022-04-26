@@ -51,13 +51,14 @@ export async function getLeasePeriod(api: Context['api']): Promise<LeasePeriod> 
     .div(leasePeriodLength ?? BN_ONE)
     .toNumber();
   const periodRemainder = leasePeriodLength.sub(progress);
-  const {formattedTime: remainder} = getBlockTime(api, periodRemainder);
+  const {timeStringParts, formattedTime} = getBlockTime(api, periodRemainder);
 
   return {
     currentLease: formatNumber(currentPeriod),
     totalPeriod,
     progressPercent,
-    remainder,
+    remainder: formattedTime,
+    remainderParts: timeStringParts,
     remainderBlockTime: periodRemainder.toString(),
   };
 }
@@ -147,7 +148,7 @@ export async function getParachainValidators(api: Context['api']): Promise<Valid
 }
 
 export function getNonVoters(validators?: AccountId[], pendingAvail?: CandidatePendingAvailability) {
-  let list: AccountId[] = [];
+  let list: string[] = [];
 
   if (validators && pendingAvail) {
     list = pendingAvail.availabilityVotes
@@ -155,8 +156,12 @@ export function getNonVoters(validators?: AccountId[], pendingAvail?: CandidateP
       .slice(2)
       .replace(/_/g, '')
       .split('')
-      .map((c, index) => (c === '0' ? validators[index] : null))
-      .filter((v, index): v is AccountId => !!v && index < validators.length);
+      .reduce((list, c, index) => {
+        if (c === '0' && index < validators.length && validators[index] != null) {
+          list.push(validators[index].toString());
+        }
+        return list;
+      }, [] as string[]);
   }
 
   return list;
@@ -165,19 +170,21 @@ export function getNonVoters(validators?: AccountId[], pendingAvail?: CandidateP
 export function getValidatorInfo(id: string, parachainValidators?: ValidatorsInfo) {
   const assignment = parachainValidators?.assignments?.find(({paraId}) => paraId.eq(id));
 
-  if (!assignment) {
-    return undefined;
-  }
-
   return {
-    groupIndex: assignment.groupIdx,
-    validators: parachainValidators?.validatorGroups[assignment.groupIdx.toNumber()]
-      ?.map((indexActive) => [indexActive, parachainValidators?.validatorIndices?.[indexActive.toNumber()]])
-      .filter(([, a]) => a)
-      .map(([, indexValidator]) =>
-        indexValidator ? parachainValidators.validators[indexValidator?.toNumber()] : undefined,
-      )
-      .filter(notEmpty),
+    groupIndex: assignment?.groupIdx.toString(),
+    validators: assignment
+      ? parachainValidators?.validatorGroups[assignment?.groupIdx.toNumber()]
+        ? parachainValidators?.validatorGroups[assignment?.groupIdx.toNumber()]
+            .map((indexActive) => [indexActive, parachainValidators?.validatorIndices?.[indexActive.toNumber()]])
+            .filter(([, a]) => a)
+            .reduce((list, [, indexValidator]) => {
+              if (indexValidator) {
+                list.push(parachainValidators.validators[indexValidator.toNumber()].toString());
+              }
+              return list;
+            }, [] as string[])
+        : []
+      : [],
   };
 }
 

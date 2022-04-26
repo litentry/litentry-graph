@@ -1,6 +1,11 @@
 export default /* GraphQL */ `
+  enum SwapPlatform {
+    pancakeswap
+    uniswap
+  }
+
   type Query {
-    liquidityProvidedByAccount(contract: String!, address: String!): LPData!
+    liquidityProvidedByAccount(platform: SwapPlatform!, contract: String!, address: String!): LPData!
   }
 
   type LPData {

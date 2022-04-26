@@ -1,5 +1,5 @@
 export default /* GraphQL */ `
-  type ParachainsInfo {
+  type ParachainsSummary {
     parachainsCount: Int!
     parathreadsCount: Int!
     proposalsCount: Int!
@@ -10,6 +10,7 @@ export default /* GraphQL */ `
     totalPeriod: String!
     progressPercent: Int!
     remainder: String!
+    remainderParts: [String!]!
     remainderBlockTime: String!
   }
   type Parachain {
@@ -21,7 +22,7 @@ export default /* GraphQL */ `
     lastBackedBlock: String!
     homepage: String
     validators: ValidatorsGroup
-    nonVoters: [AccountInfo!]!
+    nonVoters: [Account!]!
   }
   type Lease {
     period: String
@@ -29,11 +30,11 @@ export default /* GraphQL */ `
   }
   type ValidatorsGroup {
     groupIndex: String
-    validators: [AccountInfo!]!
+    validators: [Account!]!
   }
 
   type Query {
-    parachainsInfo: ParachainsInfo!
+    parachainsSummary: ParachainsSummary!
     parachains: [Parachain!]
     parachain(id: String!): Parachain
   }

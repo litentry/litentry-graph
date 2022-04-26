@@ -4,7 +4,7 @@ export default /* GraphQL */ `
     account: Account!
     backing: String!
     formattedBacking: String!
-    voters: [String!]!
+    voters: [Account!]!
   }
 
   type TermProgress {
@@ -18,7 +18,7 @@ export default /* GraphQL */ `
   type Council {
     members: [CouncilMember!]!
     runnersUp: [CouncilMember!]!
-    candidates: [AccountInfo!]!
+    candidates: [CouncilMember!]!
     totalCandidates: Int!
     primeMember: CouncilMember
     desiredSeats: Int!
@@ -28,11 +28,12 @@ export default /* GraphQL */ `
     termProgress: TermProgress!
   }
 
-  type MotionVotes {
-    threshold: Int!
-    ayes: [AccountInfo!]!
-    nays: [AccountInfo!]!
-    end: String!
+  type ProposalVotes {
+    hash: String!
+    threshold: Int
+    ayes: [AccountInfo!]
+    nays: [AccountInfo!]
+    end: String
     endTime: [String!]!
   }
 
@@ -46,6 +47,7 @@ export default /* GraphQL */ `
     proposer: AccountInfo
     beneficiary: AccountInfo
     payout: String
+    bond: String
   }
 
   type VotingStatus {
@@ -60,12 +62,12 @@ export default /* GraphQL */ `
 
   type CouncilMotion {
     proposal: MotionProposal!
-    votes: MotionVotes
+    votes: ProposalVotes
     votingStatus: VotingStatus
   }
 
   type Query {
-    council: Council!
+    council(address: String): Council!
     councilMotions: [CouncilMotion!]!
     councilMotionDetail(hash: String!): CouncilMotion
   }

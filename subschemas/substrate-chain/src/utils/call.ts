@@ -1,7 +1,7 @@
-import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
-import type {Compact} from '@polkadot/types';
-import type {FunctionMetadataLatest, ProposalIndex, Proposal} from '@polkadot/types/interfaces';
 import {ApiPromise} from '@polkadot/api';
+import type {Compact} from '@polkadot/types';
+import type {FunctionMetadataLatest, Proposal, ProposalIndex} from '@polkadot/types/interfaces';
+import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
 import {formatBalance} from '../services/substrateChainService';
 
 export function getCallParams(call: Proposal) {
@@ -54,6 +54,7 @@ export async function getMotionProposalTreasuryInfo(proposal: Proposal, api: Api
       beneficiary: {address: treasuryProposal.beneficiary.toString()},
       proposer: {address: treasuryProposal.proposer.toString()},
       payout: formatBalance(api, treasuryProposal.value),
+      bond: formatBalance(api, treasuryProposal.bond),
     };
   }
 

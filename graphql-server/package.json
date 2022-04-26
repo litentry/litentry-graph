@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.4",
     "dotenv": "^10.0.0",
+    "evm-chain": "0.0.1",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
     "graphql": "^16.0.1",
@@ -31,7 +32,6 @@
     "poap-credential": "0.0.1",
     "galaxy-credential": "0.0.1",
     "typescript": "^4.3.5",
-    "uniswap": "0.0.1",
     "web3": "^1.7.1"
   },
   "devDependencies": {

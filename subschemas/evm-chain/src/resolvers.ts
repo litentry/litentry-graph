@@ -1,15 +1,29 @@
 import Web3 from 'web3';
+import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
-import abi from './uniswap-abi.json';
+import abiPancakeswap from './pancakeswap-abi.json';
+import abiUniswap from './uniswap-abi.json';
 import BigNumber from 'bignumber.js';
+
+enum Platform {
+  uniswap = 'uniswap',
+  pancakeswap = 'pancakeswap',
+}
 
 export async function liquidityProvidedByAccount(
   parent: unknown,
-  {address, contract: contractAddress}: {address: string; contract: string},
-  {web3}: {web3: Web3},
+  {platform, address, contract: contractAddress}: {platform: Platform; address: string; contract: string},
+  {web3, web3BSC}: {web3: Web3; web3BSC: Web3},
 ) {
   try {
-    const contract = new web3.eth.Contract(abi as unknown as AbiItem, contractAddress);
+    let contract: Contract;
+    if (platform === Platform.uniswap) {
+      contract = new web3.eth.Contract(abiUniswap as unknown as AbiItem, contractAddress);
+    } else if (platform === Platform.pancakeswap) {
+      contract = new web3BSC.eth.Contract(abiPancakeswap as unknown as AbiItem, contractAddress);
+    } else {
+      throw new Error('Platform not supported');
+    }
 
     const decimals = await contract.methods.decimals().call();
     const balance = await contract.methods.balanceOf(address).call();

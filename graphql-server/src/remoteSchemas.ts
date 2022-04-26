@@ -12,6 +12,10 @@ export default [
     url: 'https://squid.litentry.io/governance/graphql',
   },
   {
+    name: 'substrate-tips',
+    url: 'https://squid.litentry.io/tips/graphql',
+  },
+  {
     name: 'eth',
     url: 'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph',
   },
