@@ -103,7 +103,7 @@ async function run() {
   setInterval(async () => {
     try {
       schema = await makeAggregatedSchema();
-    } catch (e) {
+    } catch (e: any) {
       console.warn(`Failed to update schema - ${e?.message}`);
     }
   }, 1000 * 60);
