@@ -74,7 +74,7 @@ async function makeAggregatedSchema() {
 
 async function run() {
   const app = express();
-  const schema = await makeAggregatedSchema();
+  let schema = await makeAggregatedSchema();
   const getSubstrateApi = await initSubstrateApi();
   const web3 = new Web3(config.ethMainnetProvider);
   const web3BSC = new Web3(config.bscProvider);
@@ -94,10 +94,19 @@ async function run() {
       };
     })
   );
+
   const listener = app.listen(config.apiPort, () => {
     const { port } = listener.address() as AddressInfo;
     console.log(`listening on port: ${port}`);
   });
+
+  setInterval(async () => {
+    try {
+      schema = await makeAggregatedSchema();
+    } catch (e) {
+      console.warn(`Failed to update schema - ${e.message}`);
+    }
+  }, 1000 * 60);
 }
 
 run().catch(console.dir);
