@@ -61,6 +61,26 @@ async function makeAggregatedSchema() {
     ],
   });
 
+  const polkassemblyExecutorPolkadot = makeRemoteExecutor(config.polkassemblyUrls.polkadot);
+  const polkassemblySchemaPolkadot = wrapSchema({
+    schema: await introspectSchema(polkassemblyExecutorPolkadot),
+    executor: polkassemblyExecutorPolkadot,
+    transforms: [
+      new RenameTypes((name) => `Polkadot${capitalize(name)}`),
+      new RenameRootFields((_, name) => `Polkadot${capitalize(name)}`),
+    ],
+  })
+
+  const polkassemblyExecutorKusama = makeRemoteExecutor(config.polkassemblyUrls.kusama);
+  const polkassemblySchemaKusama = wrapSchema({
+    schema: await introspectSchema(polkassemblyExecutorKusama),
+    executor: polkassemblyExecutorKusama,
+    transforms: [
+      new RenameTypes((name) => `Kusama${capitalize(name)}`),
+      new RenameRootFields((_, name) => `Kusama${capitalize(name)}`),
+    ],
+  })
+
   return stitchSchemas({
     subschemas: [
       wrappedSubstrateChainSchema,
@@ -68,6 +88,8 @@ async function makeAggregatedSchema() {
       wrappedGalaxySchema,
       wrappedEvmChainSchemaSchema,
       ...remoteSchemas,
+      polkassemblySchemaPolkadot,
+      polkassemblySchemaKusama,
     ],
   });
 }

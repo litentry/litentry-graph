@@ -24,3 +24,8 @@ export default [
     url: 'https://api.thegraph.com/subgraphs/name/litentry/identity-subgraph-bsc',
   },
 ];
+
+export const POLKASSEMBLY_URLS = {
+  polkadot: 'https://polkadot.polkassembly.io/v1/graphql',
+  kusama: 'https://kusama.polkassembly.io/v1/graphql'
+}
