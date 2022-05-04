@@ -4,6 +4,7 @@ import type {Context} from '../../types';
 import {gql, request} from 'graphql-request';
 import {AccountsService} from '../../services/accountsService';
 import {processTip} from '../../services/tipsService';
+import {getChain} from '../../services/substrateChainService';
 
 const TIPS_ENDPOINT = 'https://squid.litentry.io/tips/graphql';
 
@@ -34,11 +35,11 @@ const TIPS_QUERY = gql`
 
 export async function tips(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Tip[]> {
   const accountsService = new AccountsService(api);
-  const network = api.runtimeChain.toString() === 'Polkadot' ? SubstrateNetwork.Polkadot : SubstrateNetwork.Kusama;
+  const chain = getChain(api);
 
   const variables = {
     status: SubstrateTipStatus.Opened,
-    network,
+    network: chain === 'polkadot' ? SubstrateNetwork.Polkadot : SubstrateNetwork.Kusama,
   };
 
   const {substrateTips} = await request<{substrateTips: SubstrateTip[]}>(TIPS_ENDPOINT, TIPS_QUERY, variables);

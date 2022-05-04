@@ -7,15 +7,11 @@ export default async function chainInfo(
   __: Record<string, never>,
   {api}: Context,
 ): Promise<ChainInfo> {
-  const [chain, nodeName, nodeVersion] = await Promise.all([
-    api.rpc.system.chain(),
-    api.rpc.system.name(),
-    api.rpc.system.version(),
-  ]);
+  const [nodeName, nodeVersion] = await Promise.all([api.rpc.system.name(), api.rpc.system.version()]);
   const registry = api.registry;
 
   return {
-    chain: chain.toString(),
+    chain: api.runtimeChain.toString(),
     nodeName: nodeName.toString(),
     nodeVersion: nodeVersion.toString(),
     democracyEnactmentPeriod: api.consts?.democracy?.enactmentPeriod?.toString(),
