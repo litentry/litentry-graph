@@ -1,6 +1,5 @@
 export default /* GraphQL */ `
   type Tipper {
-    address: String!
     account: Account!
     balance: String!
     formattedBalance: String!
@@ -9,11 +8,13 @@ export default /* GraphQL */ `
   type Tip {
     "id: Tip Hash"
     id: String!
-    who: AccountInfo!
-    finder: AccountInfo
+    who: Account!
+    finder: Account
     reason: String!
     deposit: String
+    formattedDeposit: String
     closes: String
+    createdAt: String!
     median: String
     formattedMedian: String
     tippersCount: Int!
