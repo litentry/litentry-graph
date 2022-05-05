@@ -1,4 +1,11 @@
 export default /* GraphQL */ `
+  enum TipStatus {
+    Closed
+    Opened
+    Retracted
+    Slashed
+  }
+
   type Tipper {
     account: Account!
     balance: String!
@@ -11,9 +18,11 @@ export default /* GraphQL */ `
     who: Account!
     finder: Account
     reason: String!
+    status: TipStatus!
     deposit: String
     formattedDeposit: String
     closes: String
+    closesTime: [String!]
     createdAt: String!
     median: String
     formattedMedian: String
@@ -21,7 +30,7 @@ export default /* GraphQL */ `
     tippers: [Tipper!]!
   }
   type Query {
-    tips: [Tip!]
+    tips(status: [TipStatus!]): [Tip!]
     tip(id: String!): Tip
   }
 `;

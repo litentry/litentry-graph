@@ -1,5 +1,5 @@
 import {SubstrateTip, SubstrateNetwork, SubstrateTipStatus} from '../../generated/tips-types';
-import type {Tip} from '../../generated/resolvers-types';
+import type {Tip, TipStatus} from '../../generated/resolvers-types';
 import type {Context} from '../../types';
 import {gql, request} from 'graphql-request';
 import {AccountsService} from '../../services/accountsService';
@@ -9,8 +9,8 @@ import {getChain} from '../../services/substrateChainService';
 const TIPS_ENDPOINT = 'https://squid.litentry.io/tips/graphql';
 
 const TIPS_QUERY = gql`
-  query getTips($status: SubstrateTipStatus!, $network: SubstrateNetwork!) {
-    substrateTips(where: {status_eq: $status, network_eq: $network}) {
+  query getTips($status: [SubstrateTipStatus!]!, $network: SubstrateNetwork!) {
+    substrateTips(where: {status_in: $status, network_eq: $network}) {
       id
       account
       blockNumber
@@ -33,12 +33,26 @@ const TIPS_QUERY = gql`
   }
 `;
 
-export async function tips(_: Record<string, never>, __: Record<string, never>, {api}: Context): Promise<Tip[]> {
+export async function tips(
+  _: Record<string, never>,
+  {status}: {status?: TipStatus[] | null},
+  {api}: Context,
+): Promise<Tip[]> {
   const accountsService = new AccountsService(api);
   const chain = getChain(api);
 
+  let tipStatus = [
+    SubstrateTipStatus.Closed,
+    SubstrateTipStatus.Opened,
+    SubstrateTipStatus.Retracted,
+    SubstrateTipStatus.Slashed,
+  ];
+  if (status) {
+    tipStatus = status.map((st) => SubstrateTipStatus[st]);
+  }
+
   const variables = {
-    status: SubstrateTipStatus.Opened,
+    status: tipStatus,
     network: chain === 'polkadot' ? SubstrateNetwork.Polkadot : SubstrateNetwork.Kusama,
   };
 
