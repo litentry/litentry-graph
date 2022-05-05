@@ -609,10 +609,10 @@ export type Tip = {
   deposit?: Maybe<Scalars['String']>;
   finder?: Maybe<Account>;
   formattedDeposit?: Maybe<Scalars['String']>;
-  formattedMedian?: Maybe<Scalars['String']>;
+  formattedMedianTipValue?: Maybe<Scalars['String']>;
   /** id: Tip Hash */
   id: Scalars['String'];
-  median?: Maybe<Scalars['String']>;
+  medianTipValue?: Maybe<Scalars['String']>;
   reason: Scalars['String'];
   status: TipStatus;
   tippers: Array<Tipper>;
@@ -1736,9 +1736,9 @@ export type TipResolvers<
   deposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   finder?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
   formattedDeposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  formattedMedian?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  formattedMedianTipValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  median?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  medianTipValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['TipStatus'], ParentType, ContextType>;
   tippers?: Resolver<Array<ResolversTypes['Tipper']>, ParentType, ContextType>;

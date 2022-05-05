@@ -24,8 +24,8 @@ export default /* GraphQL */ `
     closes: String
     closesTime: [String!]
     createdAt: String!
-    median: String
-    formattedMedian: String
+    medianTipValue: String
+    formattedMedianTipValue: String
     tippersCount: Int!
     tippers: [Tipper!]!
   }

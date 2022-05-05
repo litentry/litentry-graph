@@ -4,7 +4,6 @@ import type {AccountsService} from './accountsService';
 import {formatBalance, getBlockTime} from './substrateChainService';
 import {TipStatus} from '../generated/resolvers-types';
 import {bnToBn} from '@polkadot/util';
-import {tips} from '../resolvers/Query/tips';
 
 async function processTippers(tippers: SubstrateTipper[], accountsService: AccountsService, api: ApiPromise) {
   return Promise.all(
@@ -19,21 +18,21 @@ async function processTippers(tippers: SubstrateTipper[], accountsService: Accou
 function processTipMedian(tippers: SubstrateTipper[], api: ApiPromise) {
   if (tippers.length === 0) {
     return {
-      median: null,
-      formattedMedian: null,
+      medianTipValue: null,
+      formattedMedianTipValue: null,
     };
   }
 
   const median = tippers.map((tipper) => Number(tipper.tipValue)).sort((a, b) => a - b)[Math.floor(tippers.length / 2)];
 
   return {
-    median: median.toString(),
-    formattedMedian: formatBalance(api, median),
+    medianTipValue: median.toString(),
+    formattedMedianTipValue: formatBalance(api, median),
   };
 }
 
 export async function processTip(tip: SubstrateTip, api: ApiPromise, accountsService: AccountsService) {
-  const {median, formattedMedian} = processTipMedian(tip.tippers, api);
+  const {medianTipValue, formattedMedianTipValue} = processTipMedian(tip.tippers, api);
 
   return {
     id: tip.id,
@@ -46,8 +45,8 @@ export async function processTip(tip: SubstrateTip, api: ApiPromise, accountsSer
     closes: tip.closes,
     closesTime: Boolean(tip.closes) ? getBlockTime(api, bnToBn(tip.closes)).timeStringParts : null,
     createdAt: tip.createdAt,
-    median,
-    formattedMedian,
+    medianTipValue,
+    formattedMedianTipValue,
     tippersCount: tip.tippers.length,
     tippers: await processTippers(tip.tippers, accountsService, api),
   };
