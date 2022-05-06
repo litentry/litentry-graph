@@ -1,8 +1,7 @@
 overwrite: true
-schema: './src/typeDefs/*.ts'
-documents: null
 generates:
   src/generated/resolvers-types.ts:
+    schema: './src/typeDefs/*.ts'
     config:
       # mappers are used when GQL fills the field for us using chain resolvers
       # eg: https://the-guild.dev/blog/better-type-safety-for-resolvers-with-graphql-codegen
@@ -10,8 +9,13 @@ generates:
       mappers:
         AccountInfo: ../resolvers/Query/account#PartialAccountInfo
         Registrar: ../resolvers/Query/registrars#PartialRegistrar
-        Tipper: ../resolvers/Query/tips#PartialTipper
         CrowdloanContribution: ../resolvers/Query/crowdloanContribution#PartialCrowdloanContribution
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'
+      
+  src/generated/tips-types.ts:
+    schema: https://squid.litentry.io/tips/graphql
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
