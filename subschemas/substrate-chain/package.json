@@ -24,7 +24,8 @@
     "@polkadot/api": "^7.10.1",
     "@polkadot/apps-config": "^0.112.1",
     "bignumber.js": "^9.0.2",
-    "graphql": "^16.0.1"
+    "graphql": "^16.0.1",
+    "graphql-request": "^4.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.3.0",

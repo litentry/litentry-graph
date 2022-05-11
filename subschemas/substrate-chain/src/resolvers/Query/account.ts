@@ -34,7 +34,6 @@ export async function accounts(
   args: {addresses: string[]},
   {api}: Context,
 ): Promise<Account[]> {
-
   const accountsService = new AccountsService(api);
   return accountsService.getAccounts(args.addresses);
 }

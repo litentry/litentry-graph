@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'phala';
+export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'khala';
 
 // TODO: get ws providers from .env
 const polkadotWsProvider = new WsProvider('wss://rpc.polkadot.io');
@@ -8,6 +8,9 @@ const kusamaWsProvider = new WsProvider(
   'wss://kusama.api.onfinality.io/public-ws',
 );
 const phalaWsProvider = new WsProvider(
+  'wss://khala.api.onfinality.io/public-ws',
+);
+const khalaWsProvider = new WsProvider(
   'wss://khala.api.onfinality.io/public-ws',
 );
 const litmusWsProvider = new WsProvider(
@@ -21,8 +24,8 @@ export async function initSubstrateApi() {
   const kusamaApi = await ApiPromise.create({ provider: kusamaWsProvider });
   await kusamaApi.isReady;
 
-  const phalaApi = await ApiPromise.create({ provider: phalaWsProvider });
-  await phalaApi.isReady;
+  const khalaApi = await ApiPromise.create({ provider: khalaWsProvider });
+  await khalaApi.isReady;
 
   const litmusApi = await ApiPromise.create({ provider: litmusWsProvider });
   await litmusApi.isReady;
@@ -33,8 +36,8 @@ export async function initSubstrateApi() {
         return kusamaApi;
       case 'litmus':
         return litmusApi;
-      case 'phala':
-        return phalaApi;
+      case 'khala':
+        return khalaApi;
 
       default:
         return polkadotApi;
