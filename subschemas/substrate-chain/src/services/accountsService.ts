@@ -71,8 +71,6 @@ export class AccountsService {
         formattedReserved: formatBalance(this.#api, reserved),
         free: free.toString(),
         formattedFree: formatBalance(this.#api, free),
-        freeFrozen: feeFrozen.toString(),
-        formattedFreeFrozen: formatBalance(this.#api, feeFrozen),
         feeFrozen: feeFrozen.toString(),
         formattedFeeFrozen: formatBalance(this.#api, feeFrozen),
         miscFrozen: miscFrozen.toString(),

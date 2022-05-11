@@ -34,8 +34,6 @@ export default /* GraphQL */ `
     formattedReserved: String!
     free: String!
     formattedFree: String!
-    freeFrozen: String!
-    formattedFreeFrozen: String!
     feeFrozen: String!
     formattedFeeFrozen: String!
     miscFrozen: String!
