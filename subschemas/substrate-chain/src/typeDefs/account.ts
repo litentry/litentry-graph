@@ -36,6 +36,10 @@ export default /* GraphQL */ `
     formattedFree: String!
     freeFrozen: String!
     formattedFreeFrozen: String!
+    feeFrozen: String!
+    formattedFeeFrozen: String!
+    miscFrozen: String!
+    formattedMiscFrozen: String!
   }
 
   type Account {
