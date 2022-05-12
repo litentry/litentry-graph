@@ -30,12 +30,16 @@ export type Account = {
 
 export type AccountBalance = {
   __typename?: 'AccountBalance';
+  feeFrozen: Scalars['String'];
+  formattedFeeFrozen: Scalars['String'];
   formattedFree: Scalars['String'];
   formattedFreeFrozen: Scalars['String'];
+  formattedMiscFrozen: Scalars['String'];
   formattedReserved: Scalars['String'];
   formattedTotal: Scalars['String'];
   free: Scalars['String'];
   freeFrozen: Scalars['String'];
+  miscFrozen: Scalars['String'];
   reserved: Scalars['String'];
   total: Scalars['String'];
 };
@@ -1037,12 +1041,16 @@ export type AccountBalanceResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AccountBalance'] = ResolversParentTypes['AccountBalance'],
 > = {
+  feeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFeeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedMiscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  miscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
