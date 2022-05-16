@@ -3,38 +3,42 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'khala';
 
 // TODO: get ws providers from .env
-const polkadotWsProvider = new WsProvider('wss://rpc.polkadot.io');
-const kusamaWsProvider = new WsProvider(
-  'wss://kusama.api.onfinality.io/public-ws'
-);
-const khalaWsProvider = new WsProvider(
-  'wss://khala.api.onfinality.io/public-ws'
-);
-const litmusWsProvider = new WsProvider(
-  'wss://rpc.litmus-parachain.litentry.io'
-);
-
 export async function initSubstrateApi() {
-  const polkadotApi = await ApiPromise.create({ provider: polkadotWsProvider });
-  await polkadotApi.isReady;
 
-  const kusamaApi = await ApiPromise.create({ provider: kusamaWsProvider });
-  await kusamaApi.isReady;
-
-  const khalaApi = await ApiPromise.create({ provider: khalaWsProvider });
-  await khalaApi.isReady;
-
-  const litmusApi = await ApiPromise.create({ provider: litmusWsProvider });
-  await litmusApi.isReady;
-
-  return (network?: SubstrateNetwork) => {
-    if (network === 'kusama') {
-      return kusamaApi;
-    } else if (network === 'khala') {
-      return khalaApi;
-    } else if (network === 'litmus') {
-      return litmusApi;
-    }
-    return polkadotApi;
+  const providers = {
+    polkadot: new WsProvider('wss://rpc.polkadot.io'),
+    kusama: new WsProvider(
+      'wss://kusama.api.onfinality.io/public-ws'
+    ),
+    khala: new WsProvider(
+      'wss://khala.api.onfinality.io/public-ws'
+    ),
+    litmus: new WsProvider(
+      'wss://rpc.litmus-parachain.litentry.io'
+    )
   };
+
+  const apiPromises = [];
+  const apis = {};
+
+  for (const [network, wsProvider] of Object.entries(providers)) {
+    apiPromises.push(async () => {
+      const api = await ApiPromise.create({provider: wsProvider});
+      await api.isReady;
+      api.once('error', async error => {
+        console.error(error);
+        if (!api.isConnected) {
+          console.log("Disconnected - reconnecting");
+          await api.connect();
+        }
+      });
+
+      api.once('disconnected', () => api.connect())
+
+      apis[network] = api;
+    })
+  }
+
+  await Promise.allSettled(apiPromises);
+  return (network?: SubstrateNetwork) => apis[network];
 }
