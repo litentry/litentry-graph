@@ -22,7 +22,6 @@ export async function initSubstrateApi() {
   const apis = {};
 
   const reconnect = async (api, network) => {
-
     if (api.isConnected) {
       console.log(`${network} is connected`);
       return;

@@ -1,9 +1,15 @@
 export default /* GraphQL */ `
   type BalanceData {
-    free: Float!
-    reserved: Float!
-    miscFrozen: Float!
-    feeFrozen: Float!
+    total: String!
+    formattedTotal: String!
+    reserved: String!
+    formattedReserved: String!
+    free: String!
+    formattedFree: String!
+    feeFrozen: String!
+    formattedFeeFrozen: String!
+    miscFrozen: String!
+    formattedMiscFrozen: String!
   }
   type Balance {
     nonce: Int!

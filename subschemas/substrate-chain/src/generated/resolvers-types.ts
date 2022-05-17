@@ -1,7 +1,6 @@
 import {GraphQLResolveInfo} from 'graphql';
 import {PartialAccountInfo} from '../resolvers/Query/account';
 import {PartialRegistrar} from '../resolvers/Query/registrars';
-import {PartialTipper} from '../resolvers/Query/tips';
 import {PartialCrowdloanContribution} from '../resolvers/Query/crowdloanContribution';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -31,12 +30,16 @@ export type Account = {
 
 export type AccountBalance = {
   __typename?: 'AccountBalance';
+  feeFrozen: Scalars['String'];
+  formattedFeeFrozen: Scalars['String'];
   formattedFree: Scalars['String'];
   formattedFreeFrozen: Scalars['String'];
+  formattedMiscFrozen: Scalars['String'];
   formattedReserved: Scalars['String'];
   formattedTotal: Scalars['String'];
   free: Scalars['String'];
   freeFrozen: Scalars['String'];
+  miscFrozen: Scalars['String'];
   reserved: Scalars['String'];
   total: Scalars['String'];
 };
@@ -103,10 +106,16 @@ export type Balance = {
 
 export type BalanceData = {
   __typename?: 'BalanceData';
-  feeFrozen: Scalars['Float'];
-  free: Scalars['Float'];
-  miscFrozen: Scalars['Float'];
-  reserved: Scalars['Float'];
+  feeFrozen: Scalars['String'];
+  formattedFeeFrozen: Scalars['String'];
+  formattedFree: Scalars['String'];
+  formattedMiscFrozen: Scalars['String'];
+  formattedReserved: Scalars['String'];
+  formattedTotal: Scalars['String'];
+  free: Scalars['String'];
+  miscFrozen: Scalars['String'];
+  reserved: Scalars['String'];
+  total: Scalars['String'];
 };
 
 export type BountiesSummary = {
@@ -541,6 +550,10 @@ export type QueryTipArgs = {
   id: Scalars['String'];
 };
 
+export type QueryTipsArgs = {
+  status?: InputMaybe<Array<TipStatus>>;
+};
+
 export type Registrar = {
   __typename?: 'Registrar';
   account: Account;
@@ -601,22 +614,32 @@ export type TermProgress = {
 export type Tip = {
   __typename?: 'Tip';
   closes?: Maybe<Scalars['String']>;
+  closesTime?: Maybe<Array<Scalars['String']>>;
+  createdAt: Scalars['String'];
   deposit?: Maybe<Scalars['String']>;
-  finder?: Maybe<AccountInfo>;
-  formattedMedian?: Maybe<Scalars['String']>;
+  finder?: Maybe<Account>;
+  formattedDeposit?: Maybe<Scalars['String']>;
+  formattedMedianTipValue?: Maybe<Scalars['String']>;
   /** id: Tip Hash */
   id: Scalars['String'];
-  median?: Maybe<Scalars['String']>;
+  medianTipValue?: Maybe<Scalars['String']>;
   reason: Scalars['String'];
+  status: TipStatus;
   tippers: Array<Tipper>;
   tippersCount: Scalars['Int'];
-  who: AccountInfo;
+  who: Account;
 };
+
+export enum TipStatus {
+  Closed = 'Closed',
+  Opened = 'Opened',
+  Retracted = 'Retracted',
+  Slashed = 'Slashed',
+}
 
 export type Tipper = {
   __typename?: 'Tipper';
   account: Account;
-  address: Scalars['String'];
   balance: Scalars['String'];
   formattedBalance: Scalars['String'];
 };
@@ -861,12 +884,13 @@ export type ResolversTypes = {
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
     Omit<Tip, 'finder' | 'tippers' | 'who'> & {
-      finder?: Maybe<ResolversTypes['AccountInfo']>;
+      finder?: Maybe<ResolversTypes['Account']>;
       tippers: Array<ResolversTypes['Tipper']>;
-      who: ResolversTypes['AccountInfo'];
+      who: ResolversTypes['Account'];
     }
   >;
-  Tipper: ResolverTypeWrapper<PartialTipper>;
+  TipStatus: TipStatus;
+  Tipper: ResolverTypeWrapper<Omit<Tipper, 'account'> & {account: ResolversTypes['Account']}>;
   Treasury: ResolverTypeWrapper<
     Omit<Treasury, 'approvals' | 'proposals'> & {
       approvals: Array<ResolversTypes['TreasuryProposal']>;
@@ -981,11 +1005,11 @@ export type ResolversParentTypes = {
   };
   TermProgress: TermProgress;
   Tip: Omit<Tip, 'finder' | 'tippers' | 'who'> & {
-    finder?: Maybe<ResolversParentTypes['AccountInfo']>;
+    finder?: Maybe<ResolversParentTypes['Account']>;
     tippers: Array<ResolversParentTypes['Tipper']>;
-    who: ResolversParentTypes['AccountInfo'];
+    who: ResolversParentTypes['Account'];
   };
-  Tipper: PartialTipper;
+  Tipper: Omit<Tipper, 'account'> & {account: ResolversParentTypes['Account']};
   Treasury: Omit<Treasury, 'approvals' | 'proposals'> & {
     approvals: Array<ResolversParentTypes['TreasuryProposal']>;
     proposals: Array<ResolversParentTypes['TreasuryProposal']>;
@@ -1017,12 +1041,16 @@ export type AccountBalanceResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['AccountBalance'] = ResolversParentTypes['AccountBalance'],
 > = {
+  feeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFeeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedMiscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  miscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1116,10 +1144,16 @@ export type BalanceDataResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['BalanceData'] = ResolversParentTypes['BalanceData'],
 > = {
-  feeFrozen?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  free?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  miscFrozen?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  reserved?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  feeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFeeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedMiscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  miscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1630,7 +1664,7 @@ export type QueryResolvers<
   registrarsSummary?: Resolver<ResolversTypes['RegistrarsSummary'], ParentType, ContextType>;
   technicalCommitteeSummary?: Resolver<ResolversTypes['TechnicalCommitteeSummary'], ParentType, ContextType>;
   tip?: Resolver<Maybe<ResolversTypes['Tip']>, ParentType, ContextType, RequireFields<QueryTipArgs, 'id'>>;
-  tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType>;
+  tips?: Resolver<Maybe<Array<ResolversTypes['Tip']>>, ParentType, ContextType, RequireFields<QueryTipsArgs, never>>;
   treasury?: Resolver<ResolversTypes['Treasury'], ParentType, ContextType>;
   treasurySummary?: Resolver<ResolversTypes['TreasurySummary'], ParentType, ContextType>;
 };
@@ -1717,15 +1751,19 @@ export type TipResolvers<
   ParentType extends ResolversParentTypes['Tip'] = ResolversParentTypes['Tip'],
 > = {
   closes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  closesTime?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   deposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  finder?: Resolver<Maybe<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
-  formattedMedian?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  finder?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  formattedDeposit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  formattedMedianTipValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  median?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  medianTipValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reason?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['TipStatus'], ParentType, ContextType>;
   tippers?: Resolver<Array<ResolversTypes['Tipper']>, ParentType, ContextType>;
   tippersCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  who?: Resolver<ResolversTypes['AccountInfo'], ParentType, ContextType>;
+  who?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1734,7 +1772,6 @@ export type TipperResolvers<
   ParentType extends ResolversParentTypes['Tipper'] = ResolversParentTypes['Tipper'],
 > = {
   account?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   balance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedBalance?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

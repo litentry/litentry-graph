@@ -1,5 +1,4 @@
 import type BN from 'bn.js';
-
 import {Compact} from '@polkadot/types';
 import {BlockNumber} from '@polkadot/types/interfaces';
 import {Registry} from '@polkadot/types/types';
@@ -81,4 +80,8 @@ function getFormat(registry: Registry) {
 
 function formatDisplay(prefix: string, postfix: string, unit: string, isShort = false): string {
   return `${prefix}${isShort ? '' : '.'}${!isShort ? ('0000' + postfix).slice(-4) : ''} ${unit}`;
+}
+
+export function getChain(api: Context['api']) {
+  return api.runtimeChain.toString().toLowerCase();
 }
