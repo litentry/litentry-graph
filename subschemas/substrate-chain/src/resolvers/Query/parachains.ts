@@ -1,7 +1,7 @@
-import type {ParaId, ParaLifecycle, CandidatePendingAvailability} from '@polkadot/types/interfaces';
-import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
-import type {Context} from '../../types';
-import type {Parachain, ParachainsSummary} from '../../generated/resolvers-types';
+import type { ParaId, ParaLifecycle, CandidatePendingAvailability } from '@polkadot/types/interfaces';
+import type { LinkOption } from '@polkadot/apps-config/endpoints/types';
+import type { Context } from '../../types';
+import type { Parachain, ParachainsSummary } from '../../generated/resolvers-types';
 import {
   ValidatorsInfo,
   getParachainValidators,
@@ -14,16 +14,16 @@ import {
   getNonVoters,
   getValidatorInfo,
 } from '../../services/parachainsService';
-import {getBlockTime} from '../../services/substrateChainService';
-import {bnToBn} from '@polkadot/util';
-import type {Option} from '@polkadot/types';
-import {getEndpoints} from '../../utils/endpoints';
-import {AccountsService} from '../../services/accountsService';
+import { getBlockTime } from '../../services/substrateChainService';
+import { bnToBn } from '@polkadot/util';
+import type { Option } from '@polkadot/types';
+import { getEndpoints } from '../../utils/endpoints';
+import { AccountsService } from '../../services/accountsService';
 
 export async function parachainsSummary(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<ParachainsSummary> {
   const [parachainIds, proposals, upcomingParaIds, leasePeriod] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
@@ -43,7 +43,7 @@ export async function parachainsSummary(
 export async function parachains(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<Promise<Parachain>[]> {
   const [parachainIds, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
@@ -61,8 +61,8 @@ export async function parachains(
 
 export async function parachain(
   _: Record<string, never>,
-  params: {id: string},
-  {api}: Context,
+  params: { id: string },
+  { api }: Context,
 ): Promise<Parachain | null> {
   const [parachainIds, lastEvents, validators] = await Promise.all([
     api.query.paras?.parachains?.<ParaId[]>(),
@@ -99,7 +99,7 @@ const extractParachainData = async (
   ]);
 
   const filteredLeases = leases
-    .map((opt: {isSome: any}, index: any) => (opt.isSome ? index : -1))
+    .map((opt: { isSome: any }, index: any) => (opt.isSome ? index : -1))
     .filter((period: number) => period !== -1);
   const period =
     leasePeriod?.currentLease && leases && getLeasePeriodString(bnToBn(leasePeriod.currentLease), filteredLeases);

@@ -1,4 +1,4 @@
-import type {Context} from '../../types';
+import type { Context } from '../../types';
 import type {
   TreasurySummary,
   Treasury,
@@ -7,18 +7,18 @@ import type {
   Proposal,
   ProposalVotes,
 } from '../../generated/resolvers-types';
-import {u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO} from '@polkadot/util';
-import {AccountId, BlockNumber} from '@polkadot/types/interfaces';
-import {DeriveTreasuryProposal, DeriveCollectiveProposal} from '@polkadot/api-derive/types';
-import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import type {PartialAccountInfo} from './account';
+import { u8aConcat, bnToBn, BN_MILLION, BN_ONE, BN_ZERO } from '@polkadot/util';
+import { AccountId, BlockNumber } from '@polkadot/types/interfaces';
+import { DeriveTreasuryProposal, DeriveCollectiveProposal } from '@polkadot/api-derive/types';
+import { formatBalance, getBlockTime } from '../../services/substrateChainService';
+import type { PartialAccountInfo } from './account';
 
 const EMPTY_U8A_32 = new Uint8Array(32);
 
 export async function treasurySummary(
   _: Record<string, string>,
   __: Record<string, string>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<TreasurySummary> {
   const proposals = await api.derive.treasury.proposals();
 
@@ -56,7 +56,7 @@ export async function treasurySummary(
 
 function createSpendPeriod(api: Context['api'], bestNumber: BlockNumber): SpendPeriod {
   const spendPeriod = api.consts.treasury.spendPeriod;
-  const {timeStringParts: periodParts} = getBlockTime(api, spendPeriod);
+  const { timeStringParts: periodParts } = getBlockTime(api, spendPeriod);
   const total = spendPeriod || BN_ONE;
   const value = bestNumber?.mod(spendPeriod?.toBn() ?? BN_ONE);
   const angle = total.gtn(0)
@@ -66,7 +66,7 @@ function createSpendPeriod(api: Context['api'], bestNumber: BlockNumber): SpendP
         .toNumber() / 100
     : 0;
   const percentage = Math.floor((angle * 100) / 360);
-  const {formattedTime: termLeft, timeStringParts: termLeftParts} = getBlockTime(api, total.sub(value || BN_ONE));
+  const { formattedTime: termLeft, timeStringParts: termLeftParts } = getBlockTime(api, total.sub(value || BN_ONE));
 
   return {
     period: periodParts[0],
@@ -80,8 +80,8 @@ function processProposalVotes(councils: DeriveCollectiveProposal[], api: Context
   return councils.map((council) => ({
     hash: council.hash.toString(),
     threshold: council.votes?.threshold.toNumber(),
-    ayes: council.votes?.ayes.map((aye) => ({address: aye.toString()})),
-    nays: council.votes?.nays.map((nay) => ({address: nay.toString()})),
+    ayes: council.votes?.ayes.map((aye) => ({ address: aye.toString() })),
+    nays: council.votes?.nays.map((nay) => ({ address: nay.toString() })),
     end: council.votes?.end.toString(),
     endTime: getBlockTime(api, council.votes?.end).timeStringParts,
   }));
@@ -91,9 +91,9 @@ function processProposals(api: Context['api'], proposals: DeriveTreasuryProposal
   return proposals.map((data) => ({
     proposal: {
       index: data.id.toString(),
-      proposer: {address: data.proposal.proposer.toString()},
+      proposer: { address: data.proposal.proposer.toString() },
       value: formatBalance(api, data.proposal.value),
-      beneficiary: {address: data.proposal.beneficiary.toString()},
+      beneficiary: { address: data.proposal.beneficiary.toString() },
       bond: formatBalance(api, data.proposal.bond),
     },
     votes: processProposalVotes(data.council, api),
@@ -123,7 +123,7 @@ interface PartialTreasury extends Omit<Treasury, 'proposals' | 'approvals'> {
 export async function treasury(
   _: Record<string, string>,
   __: Record<string, string>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<PartialTreasury> {
   const treasuryProposals = await api.derive.treasury.proposals();
 

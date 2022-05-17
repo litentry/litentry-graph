@@ -1,5 +1,5 @@
-import {request, gql} from 'graphql-request';
-import {Account} from '../types/interface';
+import { request, gql } from 'graphql-request';
+import { Account } from '../types/interface';
 
 const subgraphEndpoints = [
   'https://api.thegraph.com/subgraphs/name/poap-xyz/poap',
@@ -50,7 +50,7 @@ export async function queryPoapGraphQL(address: string, endpoints: string[]) {
     );
 
     return result as Account[];
-  } catch ({message}) {
+  } catch ({ message }) {
     throw new Error(message as string);
   }
 }
@@ -75,13 +75,13 @@ export function sortPoapData(data: Account[], address: string) {
 }
 
 /* Query poap and return data */
-export async function tokensByAddress(parent: unknown, {address}: {address: string}) {
+export async function tokensByAddress(parent: unknown, { address }: { address: string }) {
   try {
     const poapData = await queryPoapGraphQL(address, subgraphEndpoints);
     const result = sortPoapData(poapData, address);
 
     return result;
-  } catch ({message}) {
+  } catch ({ message }) {
     throw new Error(message as string);
   }
 }

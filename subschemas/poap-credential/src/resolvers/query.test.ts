@@ -1,6 +1,6 @@
-import {Account} from '../types/interface';
-import {queryPoapGraphQL, sortPoapData, tokensByAddress} from './query';
-import {request} from 'graphql-request';
+import { Account } from '../types/interface';
+import { queryPoapGraphQL, sortPoapData, tokensByAddress } from './query';
+import { request } from 'graphql-request';
 
 jest.mock('graphql-request');
 
@@ -163,9 +163,9 @@ describe('POAP GraphQL', () => {
         id: '0x000001f568875f378bf6d170b790967fe429c81a',
         tokensOwned: '3',
         tokens: [
-          {id: '1677705', event: {id: '9016'}, created: '1632964873'},
-          {id: '1668075', event: {id: '8975'}, created: '1632938735'},
-          {id: '705819', event: {id: '5146'}, created: '1628167308'},
+          { id: '1677705', event: { id: '9016' }, created: '1632964873' },
+          { id: '1668075', event: { id: '8975' }, created: '1632938735' },
+          { id: '705819', event: { id: '5146' }, created: '1628167308' },
         ],
       });
     });
@@ -218,7 +218,7 @@ describe('POAP GraphQL', () => {
         account: null,
       });
 
-      expect(await tokensByAddress({}, {address})).toEqual({
+      expect(await tokensByAddress({}, { address })).toEqual({
         id: '0x000001f568875f378bf6d170b790967fe429c81a',
         tokensOwned: '3',
         tokens: [
@@ -261,7 +261,7 @@ describe('POAP GraphQL', () => {
         account: null,
       });
 
-      expect(await tokensByAddress({}, {address})).toEqual({
+      expect(await tokensByAddress({}, { address })).toEqual({
         id: '0x000001f568875f378bf6d170b790967fe429c81a',
         tokensOwned: 0,
         tokens: [],
@@ -274,7 +274,7 @@ describe('POAP GraphQL', () => {
       (request as jest.Mock).mockRejectedValueOnce(null);
 
       try {
-        await tokensByAddress({}, {address});
+        await tokensByAddress({}, { address });
       } catch (err) {
         expect(err).toEqual(new Error('Error calling https://api.thegraph.com/subgraphs/name/poap-xyz/poap-xdai'));
       }
@@ -294,7 +294,7 @@ describe('POAP GraphQL', () => {
       });
 
       try {
-        await tokensByAddress({}, {address});
+        await tokensByAddress({}, { address });
       } catch (err) {
         expect(err).toEqual(new Error('some error'));
       }

@@ -1,9 +1,9 @@
-import {ApiPromise} from '@polkadot/api';
-import {SubstrateTipper, SubstrateTip} from '../generated/tips-types';
-import type {AccountsService} from './accountsService';
-import {formatBalance, getBlockTime} from './substrateChainService';
-import {TipStatus} from '../generated/resolvers-types';
-import {bnToBn} from '@polkadot/util';
+import { ApiPromise } from '@polkadot/api';
+import { SubstrateTipper, SubstrateTip } from '../generated/tips-types';
+import type { AccountsService } from './accountsService';
+import { formatBalance, getBlockTime } from './substrateChainService';
+import { TipStatus } from '../generated/resolvers-types';
+import { bnToBn } from '@polkadot/util';
 
 async function processTippers(tippers: SubstrateTipper[], accountsService: AccountsService, api: ApiPromise) {
   return Promise.all(
@@ -32,7 +32,7 @@ function processTipMedian(tippers: SubstrateTipper[], api: ApiPromise) {
 }
 
 export async function processTip(tip: SubstrateTip, api: ApiPromise, accountsService: AccountsService) {
-  const {medianTipValue, formattedMedianTipValue} = processTipMedian(tip.tippers, api);
+  const { medianTipValue, formattedMedianTipValue } = processTipMedian(tip.tippers, api);
 
   return {
     id: tip.id,

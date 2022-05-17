@@ -1,14 +1,16 @@
-import {GraphQLResolveInfo} from 'graphql';
-import {PartialAccountInfo} from '../resolvers/Query/account';
-import {PartialRegistrar} from '../resolvers/Query/registrars';
-import {PartialCrowdloanContribution} from '../resolvers/Query/crowdloanContribution';
+import { GraphQLResolveInfo } from 'graphql';
+import { PartialAccountInfo } from '../resolvers/Query/account';
+import { PartialRegistrar } from '../resolvers/Query/registrars';
+import { PartialCrowdloanContribution } from '../resolvers/Query/crowdloanContribution';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>};
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & {
+  [P in K]-?: NonNullable<T[P]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -725,8 +727,8 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
 ) => TResult | Promise<TResult>;
 
 export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{[key in TKey]: TResult}, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, {[key in TKey]: TResult}, TContext, TArgs>;
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -767,7 +769,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<
-    Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversTypes['AccountInfo']>>}
+    Omit<Account, 'subAccounts'> & { subAccounts?: Maybe<Array<ResolversTypes['AccountInfo']>> }
   >;
   AccountBalance: ResolverTypeWrapper<AccountBalance>;
   AccountInfo: ResolverTypeWrapper<PartialAccountInfo>;
@@ -816,7 +818,7 @@ export type ResolversTypes = {
       votes?: Maybe<ResolversTypes['ProposalVotes']>;
     }
   >;
-  CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & {votes: Array<ResolversTypes['AccountInfo']>}>;
+  CouncilVote: ResolverTypeWrapper<Omit<CouncilVote, 'votes'> & { votes: Array<ResolversTypes['AccountInfo']> }>;
   Crowdloan: ResolverTypeWrapper<
     Omit<Crowdloan, 'contribution' | 'depositor'> & {
       contribution: ResolversTypes['CrowdloanContribution'];
@@ -856,7 +858,7 @@ export type ResolversTypes = {
     }
   >;
   ParachainsSummary: ResolverTypeWrapper<ParachainsSummary>;
-  Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversTypes['AccountInfo']>}>;
+  Parathread: ResolverTypeWrapper<Omit<Parathread, 'manager'> & { manager?: Maybe<ResolversTypes['AccountInfo']> }>;
   Proposal: ResolverTypeWrapper<
     Omit<Proposal, 'beneficiary' | 'proposer'> & {
       beneficiary: ResolversTypes['AccountInfo'];
@@ -873,13 +875,15 @@ export type ResolversTypes = {
   >;
   Query: ResolverTypeWrapper<{}>;
   Registrar: ResolverTypeWrapper<PartialRegistrar>;
-  RegistrarsSummary: ResolverTypeWrapper<Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversTypes['Registrar']>}>;
+  RegistrarsSummary: ResolverTypeWrapper<
+    Omit<RegistrarsSummary, 'list'> & { list: Array<ResolversTypes['Registrar']> }
+  >;
   RegistrationJudgement: ResolverTypeWrapper<RegistrationJudgement>;
   Registry: ResolverTypeWrapper<Registry>;
   SpendPeriod: ResolverTypeWrapper<SpendPeriod>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TechnicalCommitteeSummary: ResolverTypeWrapper<
-    Omit<TechnicalCommitteeSummary, 'members'> & {members: Array<ResolversTypes['AccountInfo']>}
+    Omit<TechnicalCommitteeSummary, 'members'> & { members: Array<ResolversTypes['AccountInfo']> }
   >;
   TermProgress: ResolverTypeWrapper<TermProgress>;
   Tip: ResolverTypeWrapper<
@@ -890,7 +894,7 @@ export type ResolversTypes = {
     }
   >;
   TipStatus: TipStatus;
-  Tipper: ResolverTypeWrapper<Omit<Tipper, 'account'> & {account: ResolversTypes['Account']}>;
+  Tipper: ResolverTypeWrapper<Omit<Tipper, 'account'> & { account: ResolversTypes['Account'] }>;
   Treasury: ResolverTypeWrapper<
     Omit<Treasury, 'approvals' | 'proposals'> & {
       approvals: Array<ResolversTypes['TreasuryProposal']>;
@@ -906,14 +910,14 @@ export type ResolversTypes = {
   >;
   TreasurySummary: ResolverTypeWrapper<TreasurySummary>;
   ValidatorsGroup: ResolverTypeWrapper<
-    Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversTypes['Account']>}
+    Omit<ValidatorsGroup, 'validators'> & { validators: Array<ResolversTypes['Account']> }
   >;
   VotingStatus: ResolverTypeWrapper<VotingStatus>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Account: Omit<Account, 'subAccounts'> & {subAccounts?: Maybe<Array<ResolversParentTypes['AccountInfo']>>};
+  Account: Omit<Account, 'subAccounts'> & { subAccounts?: Maybe<Array<ResolversParentTypes['AccountInfo']>> };
   AccountBalance: AccountBalance;
   AccountInfo: PartialAccountInfo;
   Auction: Auction;
@@ -951,7 +955,7 @@ export type ResolversParentTypes = {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['ProposalVotes']>;
   };
-  CouncilVote: Omit<CouncilVote, 'votes'> & {votes: Array<ResolversParentTypes['AccountInfo']>};
+  CouncilVote: Omit<CouncilVote, 'votes'> & { votes: Array<ResolversParentTypes['AccountInfo']> };
   Crowdloan: Omit<Crowdloan, 'contribution' | 'depositor'> & {
     contribution: ResolversParentTypes['CrowdloanContribution'];
     depositor: ResolversParentTypes['AccountInfo'];
@@ -982,7 +986,7 @@ export type ResolversParentTypes = {
     validators?: Maybe<ResolversParentTypes['ValidatorsGroup']>;
   };
   ParachainsSummary: ParachainsSummary;
-  Parathread: Omit<Parathread, 'manager'> & {manager?: Maybe<ResolversParentTypes['AccountInfo']>};
+  Parathread: Omit<Parathread, 'manager'> & { manager?: Maybe<ResolversParentTypes['AccountInfo']> };
   Proposal: Omit<Proposal, 'beneficiary' | 'proposer'> & {
     beneficiary: ResolversParentTypes['AccountInfo'];
     proposer: ResolversParentTypes['AccountInfo'];
@@ -995,7 +999,7 @@ export type ResolversParentTypes = {
   };
   Query: {};
   Registrar: PartialRegistrar;
-  RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & {list: Array<ResolversParentTypes['Registrar']>};
+  RegistrarsSummary: Omit<RegistrarsSummary, 'list'> & { list: Array<ResolversParentTypes['Registrar']> };
   RegistrationJudgement: RegistrationJudgement;
   Registry: Registry;
   SpendPeriod: SpendPeriod;
@@ -1009,7 +1013,7 @@ export type ResolversParentTypes = {
     tippers: Array<ResolversParentTypes['Tipper']>;
     who: ResolversParentTypes['Account'];
   };
-  Tipper: Omit<Tipper, 'account'> & {account: ResolversParentTypes['Account']};
+  Tipper: Omit<Tipper, 'account'> & { account: ResolversParentTypes['Account'] };
   Treasury: Omit<Treasury, 'approvals' | 'proposals'> & {
     approvals: Array<ResolversParentTypes['TreasuryProposal']>;
     proposals: Array<ResolversParentTypes['TreasuryProposal']>;
@@ -1020,7 +1024,7 @@ export type ResolversParentTypes = {
     votes: Array<ResolversParentTypes['ProposalVotes']>;
   };
   TreasurySummary: TreasurySummary;
-  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & {validators: Array<ResolversParentTypes['Account']>};
+  ValidatorsGroup: Omit<ValidatorsGroup, 'validators'> & { validators: Array<ResolversParentTypes['Account']> };
   VotingStatus: VotingStatus;
 };
 

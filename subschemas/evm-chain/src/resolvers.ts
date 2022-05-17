@@ -1,6 +1,6 @@
 import Web3 from 'web3';
-import {Contract} from 'web3-eth-contract';
-import {AbiItem} from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
 import abiPancakeswap from './pancakeswap-abi.json';
 import abiUniswap from './uniswap-abi.json';
 import BigNumber from 'bignumber.js';
@@ -12,8 +12,8 @@ enum Platform {
 
 export async function liquidityProvidedByAccount(
   parent: unknown,
-  {platform, address, contract: contractAddress}: {platform: Platform; address: string; contract: string},
-  {web3, web3BSC}: {web3: Web3; web3BSC: Web3},
+  { platform, address, contract: contractAddress }: { platform: Platform; address: string; contract: string },
+  { web3, web3BSC }: { web3: Web3; web3BSC: Web3 },
 ) {
   try {
     let contract: Contract;
@@ -40,7 +40,7 @@ export async function liquidityProvidedByAccount(
       liquidityProvided,
       percentageOfPool,
     };
-  } catch ({message}) {
+  } catch ({ message }) {
     throw new Error(message as string);
   }
 }

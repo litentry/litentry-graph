@@ -1,22 +1,22 @@
-import {Context} from '../../types';
-import {getBlockTime} from '../../services/substrateChainService';
-import {BN, BN_ONE, formatNumber} from '@polkadot/util';
-import {BlockNumber, LeasePeriodOf} from '@polkadot/types/interfaces';
-import {u32} from '@polkadot/types';
-import type {Option} from '@polkadot/types';
-import {notEmpty} from '../../utils/notEmpty';
-import type {ITuple} from '@polkadot/types/types';
-import type {CalendarEvent} from '../../generated/resolvers-types';
+import { Context } from '../../types';
+import { getBlockTime } from '../../services/substrateChainService';
+import { BN, BN_ONE, formatNumber } from '@polkadot/util';
+import { BlockNumber, LeasePeriodOf } from '@polkadot/types/interfaces';
+import { u32 } from '@polkadot/types';
+import type { Option } from '@polkadot/types';
+import { notEmpty } from '../../utils/notEmpty';
+import type { ITuple } from '@polkadot/types/types';
+import type { CalendarEvent } from '../../generated/resolvers-types';
 
 export async function calendarEvents(
   _: Record<string, never>,
   __: Record<string, never>,
   context: Context,
 ): Promise<CalendarEvent[]> {
-  const {api} = context;
+  const { api } = context;
   const bestNumber = await api.derive.chain.bestNumber();
-  const {blockTime} = getBlockTime(api);
-  const getterContext = {api, bestNumber, blockTime};
+  const { blockTime } = getBlockTime(api);
+  const getterContext = { api, bestNumber, blockTime };
 
   const constEvents = [
     getCouncilElection(getterContext),
@@ -42,7 +42,7 @@ export async function calendarEvents(
 }
 
 function dateToIsoString(event: EVENT) {
-  return {...event, date: event.date.toISOString()};
+  return { ...event, date: event.date.toISOString() };
 }
 
 function sortByDate(a: EVENT, b: EVENT): number {
@@ -64,7 +64,7 @@ type CouncilElectionContext = {
 };
 
 function getCouncilElection(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = (api.consts.elections || api.consts.phragmenElection || api.consts.electionsPhragmen)?.termDuration;
 
   if (duration === undefined) {
@@ -83,7 +83,7 @@ function getCouncilElection(context: CouncilElectionContext): EVENT | undefined 
 }
 
 function getDemocracyLaunch(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = api.consts.democracy?.launchPeriod;
 
   if (duration === undefined) {
@@ -102,7 +102,7 @@ function getDemocracyLaunch(context: CouncilElectionContext): EVENT | undefined 
 }
 
 function getParachainLease(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = api.consts.parachain?.leasePeriod as BlockNumber | undefined;
 
   if (duration === undefined) {
@@ -123,7 +123,7 @@ function getParachainLease(context: CouncilElectionContext): EVENT | undefined {
 }
 
 function getSocietyChallenge(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = api.consts.society?.challengePeriod;
 
   if (duration === undefined) {
@@ -142,7 +142,7 @@ function getSocietyChallenge(context: CouncilElectionContext): EVENT | undefined
 }
 
 function getSocietyRotate(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = api.consts.society?.rotationPeriod;
 
   if (duration === undefined) {
@@ -161,7 +161,7 @@ function getSocietyRotate(context: CouncilElectionContext): EVENT | undefined {
 }
 
 function getTreasurySpend(context: CouncilElectionContext): EVENT | undefined {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const duration = api.consts.treasury?.spendPeriod;
 
   if (duration === undefined) {
@@ -180,14 +180,14 @@ function getTreasurySpend(context: CouncilElectionContext): EVENT | undefined {
 }
 
 async function getDemocracyDispatches(context: CouncilElectionContext): Promise<EVENT[]> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const dispatches = await api.derive.democracy?.dispatchQueue();
 
   if (dispatches === undefined) {
     return [];
   }
 
-  return dispatches.map(({at, index}) => {
+  return dispatches.map(({ at, index }) => {
     const blocks = at.sub(bestNumber);
 
     return {
@@ -201,7 +201,7 @@ async function getDemocracyDispatches(context: CouncilElectionContext): Promise<
 }
 
 async function getCouncilMotions(context: CouncilElectionContext): Promise<EVENT[]> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const motions = await api.derive.council.proposals();
 
   if (motions === undefined) {
@@ -209,7 +209,7 @@ async function getCouncilMotions(context: CouncilElectionContext): Promise<EVENT
   }
 
   return motions
-    .map(({hash, votes}) => {
+    .map(({ hash, votes }) => {
       if (!votes) {
         return undefined;
       }
@@ -231,14 +231,14 @@ async function getCouncilMotions(context: CouncilElectionContext): Promise<EVENT
 }
 
 async function getReferendums(context: CouncilElectionContext): Promise<EVENT[]> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const referendums = await api.derive.democracy?.referendums();
 
   if (referendums === undefined) {
     return [];
   }
 
-  return referendums.flatMap(({index, status}) => {
+  return referendums.flatMap(({ index, status }) => {
     const enactBlocks = status.end.add(status.delay).isub(bestNumber);
     const voteBlocks = status.end.sub(bestNumber).isub(BN_ONE);
 
@@ -295,7 +295,7 @@ function getLeaseRanges(api: Context['api']) {
 }
 
 async function getAuctionInfo(context: CouncilElectionContext): Promise<EVENT | undefined> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
 
   const leaseRanges = getLeaseRanges(api);
   const rangeMax = new BN(leaseRanges[leaseRanges.length - 1][1]);
@@ -321,7 +321,7 @@ async function getAuctionInfo(context: CouncilElectionContext): Promise<EVENT | 
 }
 
 async function getSchedule(context: CouncilElectionContext): Promise<EVENT[] | undefined> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const scheduled = await api.query.scheduler?.agenda?.entries();
 
   if (scheduled === undefined) {
@@ -336,7 +336,7 @@ async function getSchedule(context: CouncilElectionContext): Promise<EVENT[] | u
       return vecSchedOpt
         .filter((schedOpt) => schedOpt.isSome)
         .map((schedOpt) => schedOpt.unwrap())
-        .reduce((items, {maybeId}) => {
+        .reduce((items, { maybeId }) => {
           const idOrNull = maybeId.unwrapOr(null);
           const blocks = blockNumber.sub(bestNumber);
           const id = idOrNull ? (idOrNull.isAscii ? idOrNull.toUtf8() : idOrNull.toHex()) : null;
@@ -355,7 +355,7 @@ async function getSchedule(context: CouncilElectionContext): Promise<EVENT[] | u
 }
 
 async function getStackingInfo(context: CouncilElectionContext): Promise<EVENT[]> {
-  const {api, bestNumber, blockTime} = context;
+  const { api, bestNumber, blockTime } = context;
   const slashDeferDuration = api.consts.staking?.slashDeferDuration;
   const [sessionInfo, slashes] = await Promise.all([
     api.derive.session.progress(),

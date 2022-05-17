@@ -1,17 +1,17 @@
-import {BN} from '@polkadot/util';
-import type {BountyStatus as BountyStatusType, BlockNumber} from '@polkadot/types/interfaces';
-import type {Context} from '../../types';
-import type {BountiesSummary, Bounty, BountyStatus} from '../../generated/resolvers-types';
-import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn} from '@polkadot/util';
-import type {DeriveBounty} from '@polkadot/api-derive/types';
-import type {ApiPromise} from '@polkadot/api';
-import type {PartialAccountInfo} from './account';
+import { BN } from '@polkadot/util';
+import type { BountyStatus as BountyStatusType, BlockNumber } from '@polkadot/types/interfaces';
+import type { Context } from '../../types';
+import type { BountiesSummary, Bounty, BountyStatus } from '../../generated/resolvers-types';
+import { formatBalance, getBlockTime } from '../../services/substrateChainService';
+import { BN_ONE, BN_ZERO, BN_HUNDRED, bnToBn } from '@polkadot/util';
+import type { DeriveBounty } from '@polkadot/api-derive/types';
+import type { ApiPromise } from '@polkadot/api';
+import type { PartialAccountInfo } from './account';
 
 export async function bountiesSummary(
   _: Record<string, string>,
   __: Record<string, string>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<BountiesSummary> {
   const [bestNumber, deriveBounties, bountyCount] = await Promise.all([
     api.derive.chain.bestNumber(),
@@ -20,12 +20,12 @@ export async function bountiesSummary(
   ]);
   const activeBounties = deriveBounties.length;
   const pastBounties = bountyCount.subn(activeBounties);
-  const totalValue = (deriveBounties || []).reduce((total, {bounty: {value}}) => total.iadd(value), new BN(0));
+  const totalValue = (deriveBounties || []).reduce((total, { bounty: { value } }) => total.iadd(value), new BN(0));
 
   const spendPeriod = api.consts.treasury.spendPeriod;
   const progress = spendPeriod && bestNumber ? bestNumber.mod(spendPeriod).iadd(BN_ONE) : BN_ZERO;
   const timeLeft = spendPeriod?.sub(progress);
-  const {timeStringParts} = getBlockTime(api, timeLeft);
+  const { timeStringParts } = getBlockTime(api, timeLeft);
   const progressPercent = progress
     .mul(BN_HUNDRED)
     .div(spendPeriod ?? BN_ONE)
@@ -62,13 +62,13 @@ interface PartialBounty extends Omit<Bounty, 'proposer' | 'bountyStatus'> {
 }
 
 function extractBountyData(
-  {bounty, description, index}: DeriveBounty,
+  { bounty, description, index }: DeriveBounty,
   api: ApiPromise,
   bestNumber: BlockNumber,
 ): PartialBounty {
   return {
     index: index.toString(),
-    proposer: {address: bounty.proposer.toString()},
+    proposer: { address: bounty.proposer.toString() },
     value: bounty.value.toString(),
     formattedValue: formatBalance(api, bounty.value),
     fee: bounty.fee.toString(),
@@ -85,7 +85,7 @@ function extractBountyData(
 export async function bounties(
   _: Record<string, string>,
   __: Record<string, string>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<PartialBounty[]> {
   const deriveBounties = await api.derive.bounties.bounties();
   const bestNumber = await api.derive.chain.bestNumber();
@@ -94,8 +94,8 @@ export async function bounties(
 
 export async function bounty(
   _: Record<string, string>,
-  {index}: {index: string},
-  {api}: Context,
+  { index }: { index: string },
+  { api }: Context,
 ): Promise<PartialBounty | null> {
   const bestNumber = await api.derive.chain.bestNumber();
   const deriveBounties = await api.derive.bounties.bounties();
@@ -117,19 +117,19 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: 
     result = {
       ...result,
       status: 'CuratorProposed',
-      curator: {address: status.asCuratorProposed.curator.toString()},
+      curator: { address: status.asCuratorProposed.curator.toString() },
     };
   }
 
   if (status.isActive) {
     const updateDue = status.asActive.updateDue;
     const blocksUntilUpdate = updateDue?.sub(bnToBn(bestNumber));
-    const {timeStringParts} = getBlockTime(api, blocksUntilUpdate);
+    const { timeStringParts } = getBlockTime(api, blocksUntilUpdate);
 
     result = {
       ...result,
       status: 'Active',
-      curator: {address: status.asActive.curator.toString()},
+      curator: { address: status.asActive.curator.toString() },
       updateDue: status.asActive.updateDue.toString(),
       updateDueTime: timeStringParts,
     };
@@ -138,13 +138,13 @@ const getBountyStatus = (status: BountyStatusType, api: ApiPromise, bestNumber: 
   if (status.isPendingPayout) {
     const unlockAt = status.asPendingPayout.unlockAt;
     const blocksUntilPayout = unlockAt?.sub(bnToBn(bestNumber));
-    const {timeStringParts} = getBlockTime(api, blocksUntilPayout);
+    const { timeStringParts } = getBlockTime(api, blocksUntilPayout);
 
     result = {
       ...result,
-      beneficiary: {address: status.asPendingPayout.beneficiary.toString()},
+      beneficiary: { address: status.asPendingPayout.beneficiary.toString() },
       status: 'PendingPayout',
-      curator: {address: status.asPendingPayout.curator.toString()},
+      curator: { address: status.asPendingPayout.curator.toString() },
       unlockAt: status.asPendingPayout.unlockAt.toString(),
       unlockAtTime: timeStringParts,
     };

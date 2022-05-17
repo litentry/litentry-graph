@@ -25,7 +25,7 @@ async function makeAggregatedSchema() {
       wrapSchema({
         schema,
         executor,
-      })
+      }),
     );
   }
 
@@ -82,9 +82,7 @@ async function run() {
   app.use(
     '/graphql',
     graphqlHTTP((request) => {
-      const substrateNetwork = request.headers[
-        'substrate-network'
-      ] as SubstrateNetwork;
+      const substrateNetwork = request.headers['substrate-network'] as SubstrateNetwork;
       const api = getSubstrateApi(substrateNetwork);
 
       return {
@@ -92,7 +90,7 @@ async function run() {
         graphiql: { headerEditorEnabled: true },
         context: { api, web3, web3BSC },
       };
-    })
+    }),
   );
 
   const listener = app.listen(config.apiPort, () => {

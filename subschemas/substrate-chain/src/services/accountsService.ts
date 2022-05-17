@@ -1,8 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import type {
-  Account,
-  RegistrationJudgement,
-} from '../generated/resolvers-types';
+import type { Account, RegistrationJudgement } from '../generated/resolvers-types';
 import { formatBalance } from './substrateChainService';
 
 export class AccountsService {
@@ -22,9 +19,7 @@ export class AccountsService {
   }
 
   public async getAccounts(addresses: string[]): Promise<Account[]> {
-    return Promise.all(
-      addresses.map((address) => this.getAccountDisplay(address)),
-    );
+    return Promise.all(addresses.map((address) => this.getAccountDisplay(address)));
   }
 
   public async getAccount(address: string): Promise<Account> {
@@ -38,29 +33,25 @@ export class AccountsService {
     const miscFrozen = accountData.miscFrozen;
 
     const display = accountInfo.identity.displayParent
-      ? `${accountInfo.identity.displayParent}/${
-          accountInfo.identity.display || accountInfo.identity.displayParent
-        }`
+      ? `${accountInfo.identity.displayParent}/${accountInfo.identity.display || accountInfo.identity.displayParent}`
       : accountInfo.identity.display;
 
     return {
       address,
       registration: {
         ...accountInfo.identity,
-        judgements: accountInfo.identity.judgements.map<RegistrationJudgement>(
-          ([index, judgement]) => ({
-            registrarIndex: index.toNumber(),
-            judgement: {
-              isErroneous: judgement.isErroneous,
-              isFeePaid: judgement.isFeePaid,
-              isKnownGood: judgement.isKnownGood,
-              isLowQuality: judgement.isLowQuality,
-              isOutOfDate: judgement.isOutOfDate,
-              isReasonable: judgement.isReasonable,
-              isUnknown: judgement.isUnknown,
-            },
-          }),
-        ),
+        judgements: accountInfo.identity.judgements.map<RegistrationJudgement>(([index, judgement]) => ({
+          registrarIndex: index.toNumber(),
+          judgement: {
+            isErroneous: judgement.isErroneous,
+            isFeePaid: judgement.isFeePaid,
+            isKnownGood: judgement.isKnownGood,
+            isLowQuality: judgement.isLowQuality,
+            isOutOfDate: judgement.isOutOfDate,
+            isReasonable: judgement.isReasonable,
+            isUnknown: judgement.isUnknown,
+          },
+        })),
       },
       display: display ?? address.toUpperCase(),
       hasIdentity: Boolean(display),

@@ -1,20 +1,20 @@
-import type {Option, StorageKey} from '@polkadot/types';
-import type {ITuple} from '@polkadot/types/types';
-import type {ParaId, AccountId, BalanceOf, BlockNumber} from '@polkadot/types/interfaces';
+import type { Option, StorageKey } from '@polkadot/types';
+import type { ITuple } from '@polkadot/types/types';
+import type { ParaId, AccountId, BalanceOf, BlockNumber } from '@polkadot/types/interfaces';
 import type {
   PolkadotRuntimeParachainsParasParaLifecycle,
   PolkadotRuntimeCommonParasRegistrarParaInfo,
 } from '@polkadot/types/lookup';
-import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
-import {BN, BN_ONE} from '@polkadot/util';
-import {bnToBn} from '@polkadot/util';
-import {Parathread} from '../../generated/resolvers-types';
-import {Context} from '../../types';
-import {getLeasePeriodString} from '../../services/parachainsService';
-import {notEmpty} from '../../utils/notEmpty';
-import {getBlockTime} from '../../services/substrateChainService';
-import {getEndpoints} from '../../utils/endpoints';
-import type {PartialAccountInfo} from './account';
+import type { LinkOption } from '@polkadot/apps-config/endpoints/types';
+import { BN, BN_ONE } from '@polkadot/util';
+import { bnToBn } from '@polkadot/util';
+import { Parathread } from '../../generated/resolvers-types';
+import { Context } from '../../types';
+import { getLeasePeriodString } from '../../services/parachainsService';
+import { notEmpty } from '../../utils/notEmpty';
+import { getBlockTime } from '../../services/substrateChainService';
+import { getEndpoints } from '../../utils/endpoints';
+import type { PartialAccountInfo } from './account';
 
 type ParaIdEntries = [StorageKey<[ParaId]>, Option<PolkadotRuntimeParachainsParasParaLifecycle>][];
 
@@ -45,7 +45,7 @@ interface ParathreadData extends Omit<Parathread, 'manager'> {
 export async function parathreads(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<ParathreadData[]> {
   const paraLifecycles = (await api.query.paras?.paraLifecycles?.entries()) as ParaIdEntries;
   const parathreadIds = paraLifecycles ? extractIds(paraLifecycles) : [];
@@ -68,11 +68,11 @@ export async function parathreads(
         progress,
         remainder: length.sub(progress),
       };
-      const {periodString, blocks} = parseLeases({leasePeriod, leases: para.leases});
+      const { periodString, blocks } = parseLeases({ leasePeriod, leases: para.leases });
 
       return {
         id: para.id.toString(),
-        manager: {address: optInfo.isSome ? optInfo.unwrap().manager.toString() : ''},
+        manager: { address: optInfo.isSome ? optInfo.unwrap().manager.toString() : '' },
         name: parathreadLink?.text ?? null,
         homepage: parathreadLink?.homepage ?? null,
         lease: blocks
@@ -98,7 +98,7 @@ function isParasLinked(ids: ParaId[], endpoints: LinkOption[]) {
   );
 }
 
-function parseLeases({leases, leasePeriod}: {leases: LeaseInfo[]; leasePeriod: LeasePeriod}) {
+function parseLeases({ leases, leasePeriod }: { leases: LeaseInfo[]; leasePeriod: LeasePeriod }) {
   const leasesPeriods = leases?.map((lease) => lease?.period).filter(notEmpty);
   const periodString = getLeasePeriodString(leasePeriod.currentPeriod, leasesPeriods);
 
@@ -108,13 +108,13 @@ function parseLeases({leases, leasePeriod}: {leases: LeaseInfo[]; leasePeriod: L
   const blocks =
     leasePeriod && firstPeriod && bnToBn(firstPeriod).sub(BN_ONE).imul(leasePeriod.length).iadd(leasePeriod.remainder);
 
-  return {periodString, blocks};
+  return { periodString, blocks };
 }
 
 function extractParaEndpoints(allEndpoints: LinkOption[], paraId: BN | number): LinkOption[] {
   const numId = bnToBn(paraId).toNumber();
 
-  return allEndpoints.filter(({paraId}) => paraId === numId);
+  return allEndpoints.filter(({ paraId }) => paraId === numId);
 }
 
 function extractIds(entries: ParaIdEntries): ParaId[] {
@@ -162,7 +162,7 @@ function extractParaMap(hasLinksMap: Record<string, boolean>, paraIds: ParaId[],
 
       return all;
     }, [])
-    .sort(({id: aId, leases: aLeases}, {id: bId, leases: bLeases}): number => {
+    .sort(({ id: aId, leases: aLeases }, { id: bId, leases: bLeases }): number => {
       const aKnown = hasLinksMap[aId.toString()] || false;
       const bKnown = hasLinksMap[bId.toString()] || false;
 

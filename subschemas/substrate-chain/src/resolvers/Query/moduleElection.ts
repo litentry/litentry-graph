@@ -1,12 +1,12 @@
-import type {Context} from '../../types';
-import type {ModuleElection} from '../../generated/resolvers-types';
-import {BN_ZERO, BN} from '@polkadot/util';
-import {formatBalance} from '../../services/substrateChainService';
+import type { Context } from '../../types';
+import type { ModuleElection } from '../../generated/resolvers-types';
+import { BN_ZERO, BN } from '@polkadot/util';
+import { formatBalance } from '../../services/substrateChainService';
 
 export default async function moduleElection(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<ModuleElection> {
   const moduleElections = api.tx.phragmenElection
     ? 'phragmenElection'
