@@ -56,5 +56,5 @@ export async function initSubstrateApi() {
   }
 
   await Promise.allSettled(apiPromises);
-  return (network?: SubstrateNetwork) => apis[network];
+  return (network?: SubstrateNetwork) => apis[network || 'polkadot'];
 }
