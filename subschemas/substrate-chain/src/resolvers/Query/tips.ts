@@ -1,16 +1,16 @@
-import {SubstrateTip, SubstrateNetwork, SubstrateTipStatus} from '../../generated/tips-types';
-import type {Tip, TipStatus} from '../../generated/resolvers-types';
-import type {Context} from '../../types';
-import {gql, request} from 'graphql-request';
-import {AccountsService} from '../../services/accountsService';
-import {processTip} from '../../services/tipsService';
-import {getChain} from '../../services/substrateChainService';
+import { SubstrateTip, SubstrateNetwork, SubstrateTipStatus } from '../../generated/tips-types';
+import type { Tip, TipStatus } from '../../generated/resolvers-types';
+import type { Context } from '../../types';
+import { gql, request } from 'graphql-request';
+import { AccountsService } from '../../services/accountsService';
+import { processTip } from '../../services/tipsService';
+import { getChain } from '../../services/substrateChainService';
 
 const TIPS_ENDPOINT = 'https://squid.litentry.io/tips/graphql';
 
 const TIPS_QUERY = gql`
   query getTips($status: [SubstrateTipStatus!]!, $network: SubstrateNetwork!) {
-    substrateTips(where: {status_in: $status, network_eq: $network}) {
+    substrateTips(where: { status_in: $status, network_eq: $network }) {
       id
       account
       blockNumber
@@ -35,8 +35,8 @@ const TIPS_QUERY = gql`
 
 export async function tips(
   _: Record<string, never>,
-  {status}: {status?: TipStatus[] | null},
-  {api}: Context,
+  { status }: { status?: TipStatus[] | null },
+  { api }: Context,
 ): Promise<Tip[]> {
   const accountsService = new AccountsService(api);
   const chain = getChain(api);
@@ -56,7 +56,7 @@ export async function tips(
     network: chain === 'polkadot' ? SubstrateNetwork.Polkadot : SubstrateNetwork.Kusama,
   };
 
-  const {substrateTips} = await request<{substrateTips: SubstrateTip[]}>(TIPS_ENDPOINT, TIPS_QUERY, variables);
+  const { substrateTips } = await request<{ substrateTips: SubstrateTip[] }>(TIPS_ENDPOINT, TIPS_QUERY, variables);
   return Promise.all(substrateTips.map(async (tip) => processTip(tip, api, accountsService)));
 }
 
@@ -85,13 +85,13 @@ const TIP_QUERY = gql`
   }
 `;
 
-export async function tip(_: Record<string, never>, {id}: {id: string}, {api}: Context): Promise<Tip> {
+export async function tip(_: Record<string, never>, { id }: { id: string }, { api }: Context): Promise<Tip> {
   const accountsService = new AccountsService(api);
 
   const variables = {
     id,
   };
 
-  const {substrateTipById} = await request<{substrateTipById: SubstrateTip}>(TIPS_ENDPOINT, TIP_QUERY, variables);
+  const { substrateTipById } = await request<{ substrateTipById: SubstrateTip }>(TIPS_ENDPOINT, TIP_QUERY, variables);
   return processTip(substrateTipById, api, accountsService);
 }

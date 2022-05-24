@@ -1,18 +1,18 @@
-import type {DeriveProposal, DeriveReferendumExt} from '@polkadot/api-derive/types';
-import type {u32} from '@polkadot/types';
-import type {BlockNumber} from '@polkadot/types/interfaces';
-import {BN, BN_HUNDRED, BN_ONE} from '@polkadot/util';
+import type { DeriveProposal, DeriveReferendumExt } from '@polkadot/api-derive/types';
+import type { u32 } from '@polkadot/types';
+import type { BlockNumber } from '@polkadot/types/interfaces';
+import { BN, BN_HUNDRED, BN_ONE } from '@polkadot/util';
 import type {
   DemocracyProposal,
   DemocracyReferendum,
   DemocracySummary,
   LaunchPeriodInfo,
 } from '../../generated/resolvers-types';
-import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {Context} from '../../types';
-import {getCallParams} from '../../utils/call';
-import {notEmpty} from '../../utils/notEmpty';
-import type {PartialAccountInfo} from './account';
+import { formatBalance, getBlockTime } from '../../services/substrateChainService';
+import { Context } from '../../types';
+import { getCallParams } from '../../utils/call';
+import { notEmpty } from '../../utils/notEmpty';
+import type { PartialAccountInfo } from './account';
 
 interface ProposalInfo extends Omit<DemocracyProposal, 'seconds' | 'proposer'> {
   seconds: PartialAccountInfo[];
@@ -24,7 +24,7 @@ export async function democracySummary(
   __: Record<string, never>,
   context: Context,
 ): Promise<DemocracySummary> {
-  const {api} = context;
+  const { api } = context;
   const [referendumIds, activeProposals, publicPropCount, referendumTotal, bestNumber] = await Promise.all([
     api.derive.democracy.referendumIds(),
     api.derive.democracy.proposals(),
@@ -45,7 +45,7 @@ export async function democracySummary(
 function getLaunchPeriodInfo(api: Context['api'], launchPeriod: u32, bestNumber: BlockNumber): LaunchPeriodInfo {
   const progress = bestNumber.mod(launchPeriod).iadd(BN_ONE);
   const timeLeft = launchPeriod.sub(progress);
-  const {timeStringParts, formattedTime} = getBlockTime(api, timeLeft);
+  const { timeStringParts, formattedTime } = getBlockTime(api, timeLeft);
 
   const progressPercent = progress
     .mul(BN_HUNDRED)
@@ -69,7 +69,7 @@ function formatProposalData(proposal: DeriveProposal, api: Context['api']): Prop
       address: account.toString(),
     })),
     index: proposal.index.toString(),
-    proposer: {address: proposal.proposer.toString()},
+    proposer: { address: proposal.proposer.toString() },
     hash: imageProposal?.hash.toString() || '',
     ...(imageProposal ? getCallParams(imageProposal) : {}),
   };
@@ -80,15 +80,15 @@ export async function democracyProposals(
   __: Record<string, never>,
   context: Context,
 ): Promise<ProposalInfo[]> {
-  const {api} = context;
+  const { api } = context;
   const activeProposals = await api.derive.democracy.proposals();
   return activeProposals.map((proposal) => formatProposalData(proposal, api)).filter(notEmpty);
 }
 
 export async function democracyProposal(
   _: Record<string, never>,
-  {index}: {index: string},
-  {api}: Context,
+  { index }: { index: string },
+  { api }: Context,
 ): Promise<ProposalInfo | null> {
   const activeProposals = await api.derive.democracy.proposals();
   const proposal = activeProposals.find((proposal) => proposal.index.toString() === index);
@@ -107,14 +107,14 @@ function formatReferendumData(
 ): DemocracyReferendum | null {
   const imageProposal = referendum.image?.proposal;
   const remainBlock = bestNumber ? referendum.status.end.sub(bestNumber).isub(BN_ONE) : undefined;
-  const {timeStringParts: endPeriod} = getBlockTime(api, remainBlock);
+  const { timeStringParts: endPeriod } = getBlockTime(api, remainBlock);
 
   const enactBlock = bestNumber ? referendum?.status.end.add(referendum.status.delay).sub(bestNumber) : undefined;
-  const {timeStringParts: activatePeriod} = getBlockTime(api, enactBlock);
+  const { timeStringParts: activatePeriod } = getBlockTime(api, enactBlock);
 
   const ayePercent = !referendum.votedTotal.isZero()
     ? referendum.allAye
-        .reduce((total: BN, {balance}) => total.add(balance), new BN(0))
+        .reduce((total: BN, { balance }) => total.add(balance), new BN(0))
         .muln(10000)
         .div(referendum.votedTotal)
         .toNumber() / 100
@@ -142,7 +142,7 @@ export async function democracyReferendums(
   __: Record<string, never>,
   context: Context,
 ): Promise<DemocracyReferendum[]> {
-  const {api} = context;
+  const { api } = context;
   const [activeReferendums, bestNumber] = await Promise.all([
     api.derive.democracy.referendums(),
     api.derive.chain.bestNumber(),
@@ -153,8 +153,8 @@ export async function democracyReferendums(
 
 export async function democracyReferendum(
   _: Record<string, never>,
-  {index}: {index: string},
-  {api}: Context,
+  { index }: { index: string },
+  { api }: Context,
 ): Promise<DemocracyReferendum | null> {
   const [activeReferendums, bestNumber] = await Promise.all([
     api.derive.democracy.referendums(),

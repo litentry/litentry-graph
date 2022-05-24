@@ -1,11 +1,11 @@
-import {ApiPromise} from '@polkadot/api';
-import type {Compact} from '@polkadot/types';
-import type {FunctionMetadataLatest, Proposal, ProposalIndex} from '@polkadot/types/interfaces';
-import {isAscii, isHex, isU8a, u8aToHex, u8aToString} from '@polkadot/util';
-import {formatBalance} from '../services/substrateChainService';
+import { ApiPromise } from '@polkadot/api';
+import type { Compact } from '@polkadot/types';
+import type { FunctionMetadataLatest, Proposal, ProposalIndex } from '@polkadot/types/interfaces';
+import { isAscii, isHex, isU8a, u8aToHex, u8aToString } from '@polkadot/util';
+import { formatBalance } from '../services/substrateChainService';
 
 export function getCallParams(call: Proposal) {
-  const {method, section} = call?.registry.findMetaCall(call.callIndex) ?? {};
+  const { method, section } = call?.registry.findMetaCall(call.callIndex) ?? {};
   const meta = formatCallMeta(call.registry.findMetaCall(call.callIndex).meta);
 
   return {
@@ -44,15 +44,15 @@ export function getCallParams(call: Proposal) {
 const METHOD_TREA = ['approveProposal', 'rejectProposal'];
 
 export async function getMotionProposalTreasuryInfo(proposal: Proposal, api: ApiPromise) {
-  const {method, section} = proposal.registry.findMetaCall(proposal.callIndex) ?? {};
+  const { method, section } = proposal.registry.findMetaCall(proposal.callIndex) ?? {};
   const isTreasury = section === 'treasury' && METHOD_TREA.includes(method);
   if (isTreasury) {
     const proposalId = (proposal.args[0] as Compact<ProposalIndex>).unwrap();
     const treasuryProposal = (await api.query.treasury.proposals(proposalId)).unwrap();
 
     return {
-      beneficiary: {address: treasuryProposal.beneficiary.toString()},
-      proposer: {address: treasuryProposal.proposer.toString()},
+      beneficiary: { address: treasuryProposal.beneficiary.toString() },
+      proposer: { address: treasuryProposal.proposer.toString() },
       payout: formatBalance(api, treasuryProposal.value),
       bond: formatBalance(api, treasuryProposal.bond),
     };

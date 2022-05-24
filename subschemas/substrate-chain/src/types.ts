@@ -1,4 +1,4 @@
-import type {ApiPromise} from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 
 export type Context = {
   api: ApiPromise;

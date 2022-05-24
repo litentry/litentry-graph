@@ -1,14 +1,14 @@
-import type {BlockNumber} from '@polkadot/types/interfaces';
-import {BN, bnToBn} from '@polkadot/util';
-import type {Council, CouncilMember, TermProgress} from '../../generated/resolvers-types';
-import {AccountsService} from '../../services/accountsService';
-import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import type {Context} from '../../types';
+import type { BlockNumber } from '@polkadot/types/interfaces';
+import { BN, bnToBn } from '@polkadot/util';
+import type { Council, CouncilMember, TermProgress } from '../../generated/resolvers-types';
+import { AccountsService } from '../../services/accountsService';
+import { formatBalance, getBlockTime } from '../../services/substrateChainService';
+import type { Context } from '../../types';
 
 export async function council(
   _: Record<string, never>,
-  {address: addressFilter}: {address?: string | null},
-  {api}: Context,
+  { address: addressFilter }: { address?: string | null },
+  { api }: Context,
 ): Promise<Council> {
   const [electionsInfo, votes, prime, bestNumber] = await Promise.all([
     api.derive.elections.info(),
@@ -19,7 +19,7 @@ export async function council(
 
   const accountsService = new AccountsService(api);
 
-  const votesByCandidates = votes.reduce<Record<string, string[]>>((result, [voter, {votes}]) => {
+  const votesByCandidates = votes.reduce<Record<string, string[]>>((result, [voter, { votes }]) => {
     votes.forEach((candidate) => {
       const candidateAddress = candidate.toString();
       if (addressFilter && candidateAddress !== addressFilter) {
@@ -96,9 +96,9 @@ export async function council(
     }
   }
 
-  const {termLeft, percentage} = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
-  const {formattedTime: formattedTermLeft, timeStringParts: termLeftParts} = getBlockTime(api, termLeft);
-  const {formattedTime: formattedTermDuration, timeStringParts: termDurationParts} = getBlockTime(
+  const { termLeft, percentage } = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
+  const { formattedTime: formattedTermLeft, timeStringParts: termLeftParts } = getBlockTime(api, termLeft);
+  const { formattedTime: formattedTermDuration, timeStringParts: termDurationParts } = getBlockTime(
     api,
     electionsInfo.termDuration,
   );

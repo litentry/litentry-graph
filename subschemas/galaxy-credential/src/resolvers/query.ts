@@ -1,5 +1,5 @@
-import {request, gql} from 'graphql-request';
-import {GalaxyResponse, GalaxyData, Chain} from '../types/interface';
+import { request, gql } from 'graphql-request';
+import { GalaxyResponse, GalaxyData, Chain } from '../types/interface';
 
 const galaxyEndpoint = 'https://graphigo.prd.galaxy.eco/query';
 
@@ -13,7 +13,7 @@ export async function queryGalaxyGraphQL(address: string, chain: Chain) {
           username
           hasEmail
           avatar
-          recentParticipation(input: {onlyGasless: false}) {
+          recentParticipation(input: { onlyGasless: false }) {
             totalCount
             list {
               tx
@@ -46,7 +46,7 @@ export async function queryGalaxyGraphQL(address: string, chain: Chain) {
               description
             }
           }
-          nfts(option: {chain: $chain, order: DESC, orderBy: CreateTime}) {
+          nfts(option: { chain: $chain, order: DESC, orderBy: CreateTime }) {
             totalCount
             list {
               id
@@ -78,12 +78,12 @@ export async function queryGalaxyGraphQL(address: string, chain: Chain) {
     }
 
     return response.addressInfo as GalaxyData;
-  } catch ({message}) {
+  } catch ({ message }) {
     throw new Error(message as string);
   }
 }
 
-export async function dataByAddress(parent: unknown, {address, chain}: {address: string; chain: Chain}) {
+export async function dataByAddress(parent: unknown, { address, chain }: { address: string; chain: Chain }) {
   try {
     const result = await queryGalaxyGraphQL(address, chain);
     return {
@@ -96,7 +96,7 @@ export async function dataByAddress(parent: unknown, {address, chain}: {address:
       eligibleCredentials: result.eligibleCredentials,
       nfts: result.nfts,
     } as GalaxyData;
-  } catch ({message}) {
+  } catch ({ message }) {
     throw new Error(message as string);
   }
 }

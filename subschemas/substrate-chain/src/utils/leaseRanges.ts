@@ -1,4 +1,4 @@
-import type {u32} from '@polkadot/types';
+import type { u32 } from '@polkadot/types';
 
 const RANGES_DEFAULT: [number, number][] = [
   [0, 0],

@@ -1,14 +1,14 @@
-import {account, accounts} from './account';
-import {auctionsSummary} from './auctions';
+import { account, accounts } from './account';
+import { auctionsSummary } from './auctions';
 import balance from './balance';
-import {bountiesSummary, bounties, bounty} from './bounties';
+import { bountiesSummary, bounties, bounty } from './bounties';
 import chainInfo from './chainInfo';
-import {council} from './council';
-import {councilVote} from './councilVote';
-import {convictions} from './convictions';
-import {crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan, crowdloans} from './crowdloan';
-import {councilMotions, councilMotionDetail} from './councilMotions';
-import {crowdloanContribution} from './crowdloanContribution';
+import { council } from './council';
+import { councilVote } from './councilVote';
+import { convictions } from './convictions';
+import { crowdloanSummary, activeCrowdloans, endedCrowdloans, crowdloan, crowdloans } from './crowdloan';
+import { councilMotions, councilMotionDetail } from './councilMotions';
+import { crowdloanContribution } from './crowdloanContribution';
 import {
   democracySummary,
   democracyProposals,
@@ -16,14 +16,14 @@ import {
   democracyReferendums,
   democracyReferendum,
 } from './democracy';
-import {calendarEvents} from './events';
+import { calendarEvents } from './events';
 import moduleElection from './moduleElection';
-import {parachainsSummary, parachains, parachain} from './parachains';
-import {tips, tip} from './tips';
-import {treasurySummary, treasury} from './treasury';
-import {registrarsSummary} from './registrars';
-import {parathreads} from './parathreads';
-import {technicalCommitteeSummary} from './technicalCommittee';
+import { parachainsSummary, parachains, parachain } from './parachains';
+import { tips, tip } from './tips';
+import { treasurySummary, treasury } from './treasury';
+import { registrarsSummary } from './registrars';
+import { parathreads } from './parathreads';
+import { technicalCommitteeSummary } from './technicalCommittee';
 
 export const Query = {
   account,

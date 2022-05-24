@@ -1,13 +1,13 @@
-import type {Context} from '../../types';
-import type {CouncilMotion, MotionProposal, VotingStatus, ProposalVotes} from '../../generated/resolvers-types';
-import type {BlockNumber} from '@polkadot/types/interfaces';
-import type {Votes} from '@polkadot/types/interfaces';
-import {getCallParams, getMotionProposalTreasuryInfo} from '../../utils/call';
-import {getBlockTime} from '../../services/substrateChainService';
-import {isFunction} from '@polkadot/util';
-import {DeriveCollectiveProposal} from '@polkadot/api-derive/types';
-import type {AccountId, Balance} from '@polkadot/types/interfaces';
-import type {PartialAccountInfo} from './account';
+import type { Context } from '../../types';
+import type { CouncilMotion, MotionProposal, VotingStatus, ProposalVotes } from '../../generated/resolvers-types';
+import type { BlockNumber } from '@polkadot/types/interfaces';
+import type { Votes } from '@polkadot/types/interfaces';
+import { getCallParams, getMotionProposalTreasuryInfo } from '../../utils/call';
+import { getBlockTime } from '../../services/substrateChainService';
+import { isFunction } from '@polkadot/util';
+import { DeriveCollectiveProposal } from '@polkadot/api-derive/types';
+import type { AccountId, Balance } from '@polkadot/types/interfaces';
+import type { PartialAccountInfo } from './account';
 
 interface PartialMotionVotes extends Omit<ProposalVotes, 'ayes' | 'nays'> {
   ayes: PartialAccountInfo[];
@@ -27,7 +27,7 @@ interface PartialCouncilMotion extends Omit<CouncilMotion, 'proposal' | 'votes'>
 export async function councilMotions(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<PartialCouncilMotion[]> {
   const [motions, electionsInfo, bestNumber] = await Promise.all([
     api.derive.council.proposals(),
@@ -46,8 +46,8 @@ export async function councilMotions(
 
 export async function councilMotionDetail(
   _: Record<string, never>,
-  params: {hash: string},
-  {api}: Context,
+  params: { hash: string },
+  { api }: Context,
 ): Promise<PartialCouncilMotion | null> {
   const [motion, electionsInfo, bestNumber] = await Promise.all([
     api.derive.council.proposal(params.hash),
@@ -68,8 +68,8 @@ function getVotes(votes: Votes, api: Context['api']): PartialMotionVotes {
   return {
     hash: votes.hash.toString(),
     threshold: votes.threshold.toNumber(),
-    ayes: votes.ayes.map((accountId) => ({address: accountId.toString()})),
-    nays: votes.nays.map((accountId) => ({address: accountId.toString()})),
+    ayes: votes.ayes.map((accountId) => ({ address: accountId.toString() })),
+    nays: votes.nays.map((accountId) => ({ address: accountId.toString() })),
     end: votes.end.toString(),
     endTime: getBlockTime(api, votes.end).timeStringParts,
   };

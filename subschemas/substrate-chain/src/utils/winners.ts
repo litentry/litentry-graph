@@ -1,12 +1,12 @@
-import type {Option, StorageKey} from '@polkadot/types';
-import type {AuctionIndex, BlockNumber, LeasePeriodOf, ParaId, WinningData} from '@polkadot/types/interfaces';
-import {BN, BN_ZERO, stringToU8a, u8aEq} from '@polkadot/util';
-import {getLeaseRanges} from './leaseRanges';
+import type { Option, StorageKey } from '@polkadot/types';
+import type { AuctionIndex, BlockNumber, LeasePeriodOf, ParaId, WinningData } from '@polkadot/types/interfaces';
+import { BN, BN_ZERO, stringToU8a, u8aEq } from '@polkadot/util';
+import { getLeaseRanges } from './leaseRanges';
 
 const CROWD_PREFIX = stringToU8a('modlpy/cfund');
 
 function isNewWinners(a: WinnerData[], b: WinnerData[]): boolean {
-  return JSON.stringify({w: a}) !== JSON.stringify({w: b});
+  return JSON.stringify({ w: a }) !== JSON.stringify({ w: b });
 }
 
 function extractWinners(
@@ -37,11 +37,11 @@ function extractWinners(
       }, []);
 }
 
-function createWinning({endBlock}: AuctionInfo, blockOffset: BN | null | undefined, winners: WinnerData[]): Winning {
+function createWinning({ endBlock }: AuctionInfo, blockOffset: BN | null | undefined, winners: WinnerData[]): Winning {
   return {
     blockNumber: endBlock && blockOffset ? blockOffset.add(endBlock) : blockOffset || BN_ZERO,
     blockOffset: blockOffset || BN_ZERO,
-    total: winners.reduce((total, {value}) => total.iadd(value), new BN(0)),
+    total: winners.reduce((total, { value }) => total.iadd(value), new BN(0)),
     winners,
   };
 }

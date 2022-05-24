@@ -1,19 +1,19 @@
-import {ApiPromise} from '@polkadot/api';
-import type {LinkOption} from '@polkadot/apps-config/endpoints/types';
-import type {ITuple, Codec} from '@polkadot/types/types';
-import type {u32, u128, Option, StorageKey} from '@polkadot/types';
-import type {AuctionIndex, BlockNumber, LeasePeriodOf, WinningData} from '@polkadot/types/interfaces';
-import {BN, BN_ONE, BN_ZERO, formatNumber} from '@polkadot/util';
-import type {Context} from '../../types';
-import type {AuctionsSummary, Auction} from '../../generated/resolvers-types';
-import {extractWinningData, Winning} from '../../utils/winners';
-import {formatBalance, getBlockTime} from '../../services/substrateChainService';
-import {getEndpoints} from '../../utils/endpoints';
+import { ApiPromise } from '@polkadot/api';
+import type { LinkOption } from '@polkadot/apps-config/endpoints/types';
+import type { ITuple, Codec } from '@polkadot/types/types';
+import type { u32, u128, Option, StorageKey } from '@polkadot/types';
+import type { AuctionIndex, BlockNumber, LeasePeriodOf, WinningData } from '@polkadot/types/interfaces';
+import { BN, BN_ONE, BN_ZERO, formatNumber } from '@polkadot/util';
+import type { Context } from '../../types';
+import type { AuctionsSummary, Auction } from '../../generated/resolvers-types';
+import { extractWinningData, Winning } from '../../utils/winners';
+import { formatBalance, getBlockTime } from '../../services/substrateChainService';
+import { getEndpoints } from '../../utils/endpoints';
 
 export async function auctionsSummary(
   _: Record<string, string>,
   __: Record<string, string>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<AuctionsSummary> {
   const [numAuctions, optInfo, leasePeriodsPerSlot, endingPeriod, winners, totalIssuance, bestNumber] =
     await Promise.all([
@@ -26,7 +26,7 @@ export async function auctionsSummary(
       api.derive.chain.bestNumber(),
     ]);
   const [leasePeriod, endBlock] = optInfo?.unwrapOr([null, null]) ?? [null, null];
-  const winningData = extractWinningData({endBlock, leasePeriod, numAuctions, leasePeriodsPerSlot}, winners);
+  const winningData = extractWinningData({ endBlock, leasePeriod, numAuctions, leasePeriodsPerSlot }, winners);
   const endpoints = getEndpoints(api);
 
   return {

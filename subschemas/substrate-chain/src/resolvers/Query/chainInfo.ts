@@ -1,11 +1,11 @@
-import type {ChainInfo} from '../../generated/resolvers-types';
-import {formatBalance} from '../../services/substrateChainService';
-import type {Context} from '../../types';
+import type { ChainInfo } from '../../generated/resolvers-types';
+import { formatBalance } from '../../services/substrateChainService';
+import type { Context } from '../../types';
 
 export default async function chainInfo(
   _: Record<string, never>,
   __: Record<string, never>,
-  {api}: Context,
+  { api }: Context,
 ): Promise<ChainInfo> {
   const [nodeName, nodeVersion] = await Promise.all([api.rpc.system.name(), api.rpc.system.version()]);
   const registry = api.registry;

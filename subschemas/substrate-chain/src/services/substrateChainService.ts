@@ -1,9 +1,9 @@
 import type BN from 'bn.js';
-import {Compact} from '@polkadot/types';
-import {BlockNumber} from '@polkadot/types/interfaces';
-import {Registry} from '@polkadot/types/types';
-import {formatBalance as format, BN as Bn, BN_ONE, extractTime} from '@polkadot/util';
-import {Context} from '../types';
+import { Compact } from '@polkadot/types';
+import { BlockNumber } from '@polkadot/types/interfaces';
+import { Registry } from '@polkadot/types/types';
+import { formatBalance as format, BN as Bn, BN_ONE, extractTime } from '@polkadot/util';
+import { Context } from '../types';
 
 type Balance = Compact<any> | BN | string | number;
 
@@ -33,7 +33,7 @@ export function getBlockTime(api: Context['api'], blockNumber: BlockNumber | 0 |
     api.consts.timestamp?.minimumPeriod.muln(2) ||
     DEFAULT_TIME;
 
-  const {days, hours, minutes, seconds} = extractTime(Math.abs(blockTime.mul(blockNumber).toNumber()));
+  const { days, hours, minutes, seconds } = extractTime(Math.abs(blockTime.mul(blockNumber).toNumber()));
 
   const timeStr = [
     days ? (days > 1 ? `${days} days` : '1 day') : null,
@@ -50,7 +50,7 @@ export function getBlockTime(api: Context['api'], blockNumber: BlockNumber | 0 |
 }
 
 export function formatBalance(api: Context['api'], value: Balance, isShort?: boolean): string {
-  const {decimals, token} = getFormat(api.registry);
+  const { decimals, token } = getFormat(api.registry);
   const [prefix = '', postfix = ''] = format(value, {
     decimals,
     forceUnit: '-',
@@ -75,7 +75,7 @@ function getFormat(registry: Registry) {
   const decimals = registry.chainDecimals[0] ?? 0;
   const token = registry.chainTokens[0] ?? '';
 
-  return {decimals, token};
+  return { decimals, token };
 }
 
 function formatDisplay(prefix: string, postfix: string, unit: string, isShort = false): string {
