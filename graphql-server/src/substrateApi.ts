@@ -1,24 +1,24 @@
-import { ApiPromise, HttpProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 
 export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'khala';
 
 // TODO: get ws providers from .env
-const polkadotHttpProvider = new HttpProvider('https://rpc.polkadot.io');
-const kusamaHttpProvider = new HttpProvider('https://kusama.api.onfinality.io/public');
-const khalaHttpProvider = new HttpProvider('https://khala.api.onfinality.io/public');
-const litmusHttpProvider = new HttpProvider('https://rpc.litmus-parachain.litentry.io');
+const polkadotWsProvider = new WsProvider('wss://rpc.polkadot.io');
+const kusamaWsProvider = new WsProvider('wss://kusama.api.onfinality.io/public-ws');
+const khalaWsProvider = new WsProvider('wss://khala.api.onfinality.io/public-ws');
+const litmusWsProvider = new WsProvider('wss://rpc.litmus-parachain.litentry.io');
 
 export async function initSubstrateApi() {
-  const polkadotApi = await ApiPromise.create({ provider: polkadotHttpProvider });
+  const polkadotApi = await ApiPromise.create({ provider: polkadotWsProvider });
   await polkadotApi.isReady;
 
-  const kusamaApi = await ApiPromise.create({ provider: kusamaHttpProvider });
+  const kusamaApi = await ApiPromise.create({ provider: kusamaWsProvider });
   await kusamaApi.isReady;
 
-  const khalaApi = await ApiPromise.create({ provider: khalaHttpProvider });
+  const khalaApi = await ApiPromise.create({ provider: khalaWsProvider });
   await khalaApi.isReady;
 
-  const litmusApi = await ApiPromise.create({ provider: litmusHttpProvider });
+  const litmusApi = await ApiPromise.create({ provider: litmusWsProvider });
   await litmusApi.isReady;
 
   return (network?: SubstrateNetwork) => {
