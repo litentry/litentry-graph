@@ -3,11 +3,10 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'khala';
 
 // TODO: get ws providers from .env
-const polkadotWsProvider = new WsProvider('wss://rpc.polkadot.io');
-const kusamaWsProvider = new WsProvider('wss://kusama.api.onfinality.io/public-ws');
-const phalaWsProvider = new WsProvider('wss://khala.api.onfinality.io/public-ws');
-const khalaWsProvider = new WsProvider('wss://khala.api.onfinality.io/public-ws');
-const litmusWsProvider = new WsProvider('wss://rpc.litmus-parachain.litentry.io');
+const polkadotWsProvider = new WsProvider('ws://rpc.polkadot.io');
+const kusamaWsProvider = new WsProvider('ws://kusama.api.onfinality.io/public-ws');
+const khalaWsProvider = new WsProvider('ws://khala.api.onfinality.io/public-ws');
+const litmusWsProvider = new WsProvider('ws://rpc.litmus-parachain.litentry.io');
 
 export async function initSubstrateApi() {
   const polkadotApi = await ApiPromise.create({ provider: polkadotWsProvider });
