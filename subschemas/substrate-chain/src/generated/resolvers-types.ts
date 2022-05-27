@@ -212,7 +212,7 @@ export type CouncilMember = {
   address: Scalars['String'];
   backing: Scalars['String'];
   formattedBacking: Scalars['String'];
-  voters: Array<Account>;
+  voters: Array<Scalars['String']>;
 };
 
 export type CouncilMotion = {
@@ -806,12 +806,7 @@ export type ResolversTypes = {
       runnersUp: Array<ResolversTypes['CouncilMember']>;
     }
   >;
-  CouncilMember: ResolverTypeWrapper<
-    Omit<CouncilMember, 'account' | 'voters'> & {
-      account: ResolversTypes['Account'];
-      voters: Array<ResolversTypes['Account']>;
-    }
-  >;
+  CouncilMember: ResolverTypeWrapper<Omit<CouncilMember, 'account'> & { account: ResolversTypes['Account'] }>;
   CouncilMotion: ResolverTypeWrapper<
     Omit<CouncilMotion, 'proposal' | 'votes'> & {
       proposal: ResolversTypes['MotionProposal'];
@@ -947,10 +942,7 @@ export type ResolversParentTypes = {
     primeMember?: Maybe<ResolversParentTypes['CouncilMember']>;
     runnersUp: Array<ResolversParentTypes['CouncilMember']>;
   };
-  CouncilMember: Omit<CouncilMember, 'account' | 'voters'> & {
-    account: ResolversParentTypes['Account'];
-    voters: Array<ResolversParentTypes['Account']>;
-  };
+  CouncilMember: Omit<CouncilMember, 'account'> & { account: ResolversParentTypes['Account'] };
   CouncilMotion: Omit<CouncilMotion, 'proposal' | 'votes'> & {
     proposal: ResolversParentTypes['MotionProposal'];
     votes?: Maybe<ResolversParentTypes['ProposalVotes']>;
@@ -1276,7 +1268,7 @@ export type CouncilMemberResolvers<
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   backing?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedBacking?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  voters?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
+  voters?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
