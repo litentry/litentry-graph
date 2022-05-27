@@ -44,7 +44,7 @@ export async function council(
         account,
         backing: balance.toString(),
         formattedBacking: formatBalance(api, balance),
-        voters: await accountsService.getAccounts(votesByCandidates[String(accountId)] || []),
+        voters: votesByCandidates[String(accountId)] || [],
       };
     }),
   );
@@ -60,7 +60,7 @@ export async function council(
         account,
         backing: balance.toString(),
         formattedBacking: formatBalance(api, balance),
-        voters: await accountsService.getAccounts(votesByCandidates[String(accountId)] || []),
+        voters: votesByCandidates[String(accountId)] || [],
       };
     }),
   );

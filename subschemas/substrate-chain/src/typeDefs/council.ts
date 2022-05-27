@@ -4,7 +4,7 @@ export default /* GraphQL */ `
     account: Account!
     backing: String!
     formattedBacking: String!
-    voters: [Account!]!
+    voters: [String!]!
   }
 
   type TermProgress {
