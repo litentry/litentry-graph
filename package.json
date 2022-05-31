@@ -11,16 +11,16 @@
     "graphql-server"
   ],
   "resolutions": {
-    "@polkadot/api": "^7.10.1",
-    "@polkadot/api-contract": "^7.10.1",
-    "@polkadot/rpc-provider": "^7.10.1",
-    "@polkadot/types": "^7.10.1",
-    "@polkadot/types-augment": "^7.10.1",
-    "@polkadot/types-known": "^7.10.1",
-    "@polkadot/types-support": "^7.10.1",
-    "@polkadot/util": "^8.4.1",
-    "@polkadot/util-crypto": "^8.4.1",
-    "@polkadot/wasm-crypto": "^4.5.1",
+    "@polkadot/api": "^8.6.2",
+    "@polkadot/api-contract": "^8.6.2",
+    "@polkadot/rpc-provider": "^8.6.2",
+    "@polkadot/types": "^8.6.2",
+    "@polkadot/types-augment": "^8.6.2",
+    "@polkadot/types-known": "^8.6.2",
+    "@polkadot/types-support": "^8.6.2",
+    "@polkadot/util": "^9.3.1",
+    "@polkadot/util-crypto": "^9.3.1",
+    "@polkadot/wasm-crypto": "^6.1.1",
     "@types/bn.js": "^5.1.0"
   }
 }
