@@ -34,6 +34,7 @@ export default /* GraphQL */ `
     leasePeriod: AuctionLeasePeriod
     endingPeriod: AuctionEndingPeriod
     raised: String!
+    formattedRaised: String!
     raisedPercent: Float!
     winningBid: AuctionBid
   }
