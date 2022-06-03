@@ -77,7 +77,8 @@ const getLatestAuction = (
       remaining: getBlockTime(api, endingIn.sub(currentPosition)).timeStringParts,
       remainingPercent,
     },
-    raised: formatBalance(api, raised),
+    raised: raised.toString(),
+    formattedRaised: formatBalance(api, raised),
     raisedPercent,
     winningBid: latestWinningBid
       ? {

@@ -55,6 +55,7 @@ export type AccountInfo = {
 export type Auction = {
   __typename?: 'Auction';
   endingPeriod?: Maybe<AuctionEndingPeriod>;
+  formattedRaised: Scalars['String'];
   leasePeriod?: Maybe<AuctionLeasePeriod>;
   raised: Scalars['String'];
   raisedPercent: Scalars['Float'];
@@ -1066,6 +1067,7 @@ export type AuctionResolvers<
   ParentType extends ResolversParentTypes['Auction'] = ResolversParentTypes['Auction'],
 > = {
   endingPeriod?: Resolver<Maybe<ResolversTypes['AuctionEndingPeriod']>, ParentType, ContextType>;
+  formattedRaised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   leasePeriod?: Resolver<Maybe<ResolversTypes['AuctionLeasePeriod']>, ParentType, ContextType>;
   raised?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   raisedPercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
