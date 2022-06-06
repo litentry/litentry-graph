@@ -35,12 +35,10 @@ export type AccountBalance = {
   feeFrozen: Scalars['String'];
   formattedFeeFrozen: Scalars['String'];
   formattedFree: Scalars['String'];
-  formattedFreeFrozen: Scalars['String'];
   formattedMiscFrozen: Scalars['String'];
   formattedReserved: Scalars['String'];
   formattedTotal: Scalars['String'];
   free: Scalars['String'];
-  freeFrozen: Scalars['String'];
   miscFrozen: Scalars['String'];
   reserved: Scalars['String'];
   total: Scalars['String'];
@@ -101,24 +99,10 @@ export type AuctionsSummary = {
 export type Balance = {
   __typename?: 'Balance';
   consumers: Scalars['Int'];
-  data: BalanceData;
+  data: AccountBalance;
   nonce: Scalars['Int'];
   providers: Scalars['Int'];
   sufficients: Scalars['Int'];
-};
-
-export type BalanceData = {
-  __typename?: 'BalanceData';
-  feeFrozen: Scalars['String'];
-  formattedFeeFrozen: Scalars['String'];
-  formattedFree: Scalars['String'];
-  formattedMiscFrozen: Scalars['String'];
-  formattedReserved: Scalars['String'];
-  formattedTotal: Scalars['String'];
-  free: Scalars['String'];
-  miscFrozen: Scalars['String'];
-  reserved: Scalars['String'];
-  total: Scalars['String'];
 };
 
 export type BountiesSummary = {
@@ -781,7 +765,6 @@ export type ResolversTypes = {
   AuctionsInfo: ResolverTypeWrapper<AuctionsInfo>;
   AuctionsSummary: ResolverTypeWrapper<AuctionsSummary>;
   Balance: ResolverTypeWrapper<Balance>;
-  BalanceData: ResolverTypeWrapper<BalanceData>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BountiesSummary: ResolverTypeWrapper<BountiesSummary>;
   Bounty: ResolverTypeWrapper<
@@ -923,7 +906,6 @@ export type ResolversParentTypes = {
   AuctionsInfo: AuctionsInfo;
   AuctionsSummary: AuctionsSummary;
   Balance: Balance;
-  BalanceData: BalanceData;
   Boolean: Scalars['Boolean'];
   BountiesSummary: BountiesSummary;
   Bounty: Omit<Bounty, 'bountyStatus' | 'proposer'> & {
@@ -1041,12 +1023,10 @@ export type AccountBalanceResolvers<
   feeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFeeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedFreeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedMiscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  freeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   miscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1131,27 +1111,10 @@ export type BalanceResolvers<
   ParentType extends ResolversParentTypes['Balance'] = ResolversParentTypes['Balance'],
 > = {
   consumers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  data?: Resolver<ResolversTypes['BalanceData'], ParentType, ContextType>;
+  data?: Resolver<ResolversTypes['AccountBalance'], ParentType, ContextType>;
   nonce?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   providers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sufficients?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BalanceDataResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['BalanceData'] = ResolversParentTypes['BalanceData'],
-> = {
-  feeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedFeeFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedFree?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedMiscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedReserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  formattedTotal?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  free?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  miscFrozen?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  reserved?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  total?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1854,7 +1817,6 @@ export type Resolvers<ContextType = any> = {
   AuctionsInfo?: AuctionsInfoResolvers<ContextType>;
   AuctionsSummary?: AuctionsSummaryResolvers<ContextType>;
   Balance?: BalanceResolvers<ContextType>;
-  BalanceData?: BalanceDataResolvers<ContextType>;
   BountiesSummary?: BountiesSummaryResolvers<ContextType>;
   Bounty?: BountyResolvers<ContextType>;
   BountyStatus?: BountyStatusResolvers<ContextType>;
