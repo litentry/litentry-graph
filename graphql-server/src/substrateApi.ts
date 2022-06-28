@@ -8,7 +8,11 @@ const kusamaWsProvider = new WsProvider('wss://kusama.api.onfinality.io/public-w
 const khalaWsProvider = new WsProvider('wss://khala.api.onfinality.io/public-ws');
 const litmusWsProvider = new WsProvider('wss://rpc.litmus-parachain.litentry.io');
 
-export async function initSubstrateApi() {
+const ONE_HOUR_INTERVAL = 60 * 60 * 1000;
+let apiInstanceCount = 1;
+let getApiInstance: (network?: SubstrateNetwork) => ApiPromise;
+
+async function createApis() {
   const polkadotApi = await ApiPromise.create({ provider: polkadotWsProvider });
   await polkadotApi.isReady;
 
@@ -34,4 +38,17 @@ export async function initSubstrateApi() {
         return polkadotApi;
     }
   };
+}
+
+export async function initSubstrateApi() {
+  console.log('::::::: initializing polkadot apis :::::::');
+  getApiInstance = await createApis();
+
+  setInterval(async () => {
+    getApiInstance = await createApis();
+    apiInstanceCount++;
+    console.log(`::::::: New polkadot api instances (${apiInstanceCount}). :::::::`);
+  }, ONE_HOUR_INTERVAL);
+
+  return getApiInstance;
 }
