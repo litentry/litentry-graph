@@ -538,6 +538,9 @@ export type QueryTipArgs = {
 };
 
 export type QueryTipsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TipsOrderByInput>;
   status?: InputMaybe<Array<TipStatus>>;
 };
 
@@ -630,6 +633,21 @@ export type Tipper = {
   balance: Scalars['String'];
   formattedBalance: Scalars['String'];
 };
+
+export enum TipsOrderByInput {
+  BlockNumberAsc = 'blockNumber_ASC',
+  BlockNumberDesc = 'blockNumber_DESC',
+  ClosesAsc = 'closes_ASC',
+  ClosesDesc = 'closes_DESC',
+  CreatedAtAsc = 'createdAt_ASC',
+  CreatedAtDesc = 'createdAt_DESC',
+  DepositAsc = 'deposit_ASC',
+  DepositDesc = 'deposit_DESC',
+  TipValueAsc = 'tipValue_ASC',
+  TipValueDesc = 'tipValue_DESC',
+  UpdatedAtAsc = 'updatedAt_ASC',
+  UpdatedAtDesc = 'updatedAt_DESC',
+}
 
 export type Treasury = {
   __typename?: 'Treasury';
@@ -874,6 +892,7 @@ export type ResolversTypes = {
   >;
   TipStatus: TipStatus;
   Tipper: ResolverTypeWrapper<Omit<Tipper, 'account'> & { account: ResolversTypes['Account'] }>;
+  TipsOrderByInput: TipsOrderByInput;
   Treasury: ResolverTypeWrapper<
     Omit<Treasury, 'approvals' | 'proposals'> & {
       approvals: Array<ResolversTypes['TreasuryProposal']>;
