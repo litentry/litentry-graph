@@ -25,7 +25,7 @@ export default /* GraphQL */ `
     totalMembers: Int!
     desiredRunnersUp: Int!
     totalRunnersUp: Int!
-    termProgress: TermProgress!
+    termProgress: TermProgress
   }
 
   type ProposalVotes {
