@@ -1,12 +1,13 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'khala';
+export type SubstrateNetwork = 'kusama' | 'polkadot' | 'litmus' | 'litentry-rococo' | 'khala';
 
 // TODO: get ws providers from .env
 const polkadotWsProvider = new WsProvider('wss://rpc.polkadot.io');
 const kusamaWsProvider = new WsProvider('wss://kusama.api.onfinality.io/public-ws');
 const khalaWsProvider = new WsProvider('wss://khala.api.onfinality.io/public-ws');
 const litmusWsProvider = new WsProvider('wss://rpc.litmus-parachain.litentry.io');
+const litentryRococoProvider = new WsProvider('wss://rpc.rococo-parachain-sg.litentry.io')
 
 const ONE_HOUR_INTERVAL = 60 * 60 * 1000;
 let apiInstanceCount = 1;
@@ -25,6 +26,9 @@ async function createApis() {
   const litmusApi = await ApiPromise.create({ provider: litmusWsProvider });
   await litmusApi.isReady;
 
+  const litentryRococoApi = await ApiPromise.create({provider: litentryRococoProvider});
+  await litentryRococoApi.isReady;
+
   return (network?: SubstrateNetwork) => {
     switch (network) {
       case 'kusama':
@@ -33,6 +37,8 @@ async function createApis() {
         return litmusApi;
       case 'khala':
         return khalaApi;
+      case 'litentry-rococo':
+        return litentryRococoApi;
 
       default:
         return polkadotApi;

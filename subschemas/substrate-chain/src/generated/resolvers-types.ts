@@ -185,7 +185,7 @@ export type Council = {
   members: Array<CouncilMember>;
   primeMember?: Maybe<CouncilMember>;
   runnersUp: Array<CouncilMember>;
-  termProgress: TermProgress;
+  termProgress?: Maybe<TermProgress>;
   totalCandidates: Scalars['Int'];
   totalMembers: Scalars['Int'];
   totalRunnersUp: Scalars['Int'];
@@ -1218,7 +1218,7 @@ export type CouncilResolvers<
   members?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   primeMember?: Resolver<Maybe<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
   runnersUp?: Resolver<Array<ResolversTypes['CouncilMember']>, ParentType, ContextType>;
-  termProgress?: Resolver<ResolversTypes['TermProgress'], ParentType, ContextType>;
+  termProgress?: Resolver<Maybe<ResolversTypes['TermProgress']>, ParentType, ContextType>;
   totalCandidates?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalMembers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalRunnersUp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

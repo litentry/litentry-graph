@@ -96,20 +96,23 @@ export async function council(
     }
   }
 
-  const { termLeft, percentage } = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
-  const { formattedTime: formattedTermLeft, timeStringParts: termLeftParts } = getBlockTime(api, termLeft);
-  const { formattedTime: formattedTermDuration, timeStringParts: termDurationParts } = getBlockTime(
-    api,
-    electionsInfo.termDuration,
-  );
-
-  const termProgress: TermProgress = {
-    termDuration: formattedTermDuration,
-    termDurationParts: termDurationParts,
-    termLeft: formattedTermLeft,
-    termLeftParts,
-    percentage,
-  };
+  let termProgress: TermProgress | null = null
+  if(electionsInfo.termDuration) {
+    const { termLeft, percentage } = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
+    const { formattedTime: formattedTermLeft, timeStringParts: termLeftParts } = getBlockTime(api, termLeft);
+    const { formattedTime: formattedTermDuration, timeStringParts: termDurationParts } = getBlockTime(
+      api,
+      electionsInfo.termDuration,
+    );
+  
+    termProgress = {
+      termDuration: formattedTermDuration,
+      termDurationParts: termDurationParts,
+      termLeft: formattedTermLeft,
+      termLeftParts,
+      percentage,
+    };
+  }
 
   return {
     members,
