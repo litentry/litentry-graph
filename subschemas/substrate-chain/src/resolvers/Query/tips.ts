@@ -1,5 +1,6 @@
 import { SubstrateTip, SubstrateNetwork, SubstrateTipStatus } from '../../generated/tips-types';
 import type { Tip, TipStatus } from '../../generated/resolvers-types';
+import { TipsOrderByInput } from '../../generated/resolvers-types';
 import type { Context } from '../../types';
 import { gql, request } from 'graphql-request';
 import { AccountsService } from '../../services/accountsService';
@@ -9,8 +10,19 @@ import { getChain } from '../../services/substrateChainService';
 const TIPS_ENDPOINT = 'https://squid.litentry.io/tips/graphql';
 
 const TIPS_QUERY = gql`
-  query getTips($status: [SubstrateTipStatus!]!, $network: SubstrateNetwork!) {
-    substrateTips(where: { status_in: $status, network_eq: $network }) {
+  query getTips(
+    $status: [SubstrateTipStatus!]!
+    $network: SubstrateNetwork!
+    $limit: Int!
+    $offset: Int!
+    $orderBy: [SubstrateTipOrderByInput!]!
+  ) {
+    substrateTips(
+      where: { status_in: $status, network_eq: $network }
+      limit: $limit
+      offset: $offset
+      orderBy: $orderBy
+    ) {
       id
       account
       blockNumber
@@ -33,9 +45,16 @@ const TIPS_QUERY = gql`
   }
 `;
 
+type TipsQueryParams = {
+  status?: TipStatus[] | null;
+  limit?: number | null;
+  offset?: number | null;
+  orderBy?: TipsOrderByInput | null;
+};
+
 export async function tips(
   _: Record<string, never>,
-  { status }: { status?: TipStatus[] | null },
+  { status, limit = 10, offset = 0, orderBy = TipsOrderByInput.CreatedAtDesc }: TipsQueryParams,
   { api }: Context,
 ): Promise<Tip[]> {
   const accountsService = new AccountsService(api);
@@ -54,6 +73,9 @@ export async function tips(
   const variables = {
     status: tipStatus,
     network: chain === 'polkadot' ? SubstrateNetwork.Polkadot : SubstrateNetwork.Kusama,
+    limit,
+    offset,
+    orderBy,
   };
 
   const { substrateTips } = await request<{ substrateTips: SubstrateTip[] }>(TIPS_ENDPOINT, TIPS_QUERY, variables);
