@@ -1,11 +1,6 @@
 import type { Context } from '../../types';
 import { gql, request } from 'graphql-request';
-import type {
-  DemocracySummary,
-  LaunchPeriod,
-  DemocracyReferendum,
-  DemocracyProposal,
-} from '../../generated/resolvers-types';
+import type { DemocracySummary, DemocracyReferendum, DemocracyProposal } from '../../generated/resolvers-types';
 import {
   DemocracyReferendumOrderByInput,
   DemocracyReferendumStatus,
@@ -18,15 +13,8 @@ import {
   SubstrateDemocracyReferendaStatus,
   SubstrateDemocracyProposalStatus,
 } from '../../generated/governance-types';
-import { getBlockTime } from '../../services/substrateChainService';
-import type { BlockNumber } from '@polkadot/types/interfaces';
-import type { u32 } from '@polkadot/types';
-import { BN_HUNDRED, BN_ONE } from '@polkadot/util';
 import { getChain } from '../../services/substrateChainService';
-import {
-  processDemocracyProposal,
-  processDemocracyReferendum,
-} from '../../services/democracyService';
+import { getLaunchPeriod, processDemocracyProposal, processDemocracyReferendum } from '../../services/democracyService';
 import { AccountsService } from '../../services/accountsService';
 import type { PartialAccountInfo } from './account';
 
@@ -50,23 +38,6 @@ export async function democracySummary(
     referendums: referendumTotal.toString(),
     activeReferendums: referendumIds.length,
     launchPeriod: getLaunchPeriod(api, api.consts.democracy.launchPeriod, bestNumber),
-  };
-}
-
-function getLaunchPeriod(api: Context['api'], launchPeriod: u32, bestNumber: BlockNumber): LaunchPeriod {
-  const progress = bestNumber.mod(launchPeriod).iadd(BN_ONE);
-  const timeLeft = launchPeriod.sub(progress);
-  const { timeStringParts, formattedTime } = getBlockTime(api, timeLeft);
-
-  const progressPercent = progress
-    .mul(BN_HUNDRED)
-    .div(launchPeriod ?? BN_ONE)
-    .toNumber();
-
-  return {
-    progressPercent,
-    timeLeft: formattedTime,
-    timeLeftParts: timeStringParts,
   };
 }
 

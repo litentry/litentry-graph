@@ -3,13 +3,33 @@ import type {
   SubstrateDemocracyProposal,
   SubstrateDemocracyReferendaVote,
 } from '../generated/governance-types';
-import type { DemocracyReferendum, DemocracyReferendumVote } from '../generated/resolvers-types';
+import type { LaunchPeriod, DemocracyReferendum, DemocracyReferendumVote } from '../generated/resolvers-types';
 import type { PartialDemocracyProposal } from '../resolvers/Query/democracy';
 import { DemocracyReferendumStatus, DemocracyProposalStatus } from '../generated/resolvers-types';
 import { AccountsService } from './accountsService';
 import { formatBalance } from './substrateChainService';
 import { Context } from '../types';
-import { bnToBn } from '@polkadot/util';
+import { bnToBn, BN_ONE, BN_HUNDRED } from '@polkadot/util';
+import type { BlockNumber } from '@polkadot/types/interfaces';
+import type { u32 } from '@polkadot/types';
+import { getBlockTime } from './substrateChainService';
+
+export function getLaunchPeriod(api: Context['api'], launchPeriod: u32, bestNumber: BlockNumber): LaunchPeriod {
+  const progress = bestNumber.mod(launchPeriod).iadd(BN_ONE);
+  const timeLeft = launchPeriod.sub(progress);
+  const { timeStringParts, formattedTime } = getBlockTime(api, timeLeft);
+
+  const progressPercent = progress
+    .mul(BN_HUNDRED)
+    .div(launchPeriod ?? BN_ONE)
+    .toNumber();
+
+  return {
+    progressPercent,
+    timeLeft: formattedTime,
+    timeLeftParts: timeStringParts,
+  };
+}
 
 function processReferendumVote(
   votes: SubstrateDemocracyReferendaVote[],
@@ -31,7 +51,7 @@ function getAyePercent(aye: string, nay: string) {
   const ayeBn = bnToBn(aye);
   const nayBn = bnToBn(nay);
   const total = ayeBn.add(nayBn);
-  return ayeBn.muln(10000).div(total).toNumber() / 100;
+  return ayeBn.mul(BN_HUNDRED).div(total).toNumber();
 }
 
 export function processDemocracyReferendum(
