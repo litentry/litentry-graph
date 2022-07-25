@@ -78,6 +78,17 @@ export default /* GraphQL */ `
     seconds: [AccountInfo!]!
   }
 
+  type DemocracyReferendumVote {
+    id: String!
+    aye: String!
+    formattedAye: String!
+    nay: String!
+    formattedNay: String!
+    voter: String!
+    blockNumber: String!
+    date: String!
+  }
+
   type DemocracyReferendum {
     id: String!
     title: String!
@@ -91,6 +102,7 @@ export default /* GraphQL */ `
     blockNumber: String!
     updatedAt: String!
     voteThreshold: String!
+    votes: [DemocracyReferendumVote!]!
   }
 
   type Query {

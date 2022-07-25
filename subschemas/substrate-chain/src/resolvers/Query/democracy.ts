@@ -150,6 +150,16 @@ const REFERENDUM_QUERY = gql`
       blockNumber
       updatedAt
       voteThreshold
+      votes {
+        aye
+        nay
+        account {
+          id
+        }
+        blockNumber
+        date
+        id
+      }
     }
   }
 `;
@@ -157,7 +167,7 @@ const REFERENDUM_QUERY = gql`
 export async function democracyReferendum(
   _: Record<string, never>,
   { id }: { id: string },
-  {api}: Context
+  { api }: Context,
 ): Promise<DemocracyReferendum> {
   const variables = {
     id,

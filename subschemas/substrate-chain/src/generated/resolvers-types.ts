@@ -313,6 +313,7 @@ export type DemocracyReferendum = {
   title: Scalars['String'];
   updatedAt: Scalars['String'];
   voteThreshold: Scalars['String'];
+  votes: Array<DemocracyReferendumVote>;
 };
 
 export enum DemocracyReferendumOrderByInput {
@@ -339,6 +340,18 @@ export enum DemocracyReferendumStatus {
   Passed = 'Passed',
   Started = 'Started',
 }
+
+export type DemocracyReferendumVote = {
+  __typename?: 'DemocracyReferendumVote';
+  aye: Scalars['String'];
+  blockNumber: Scalars['String'];
+  date: Scalars['String'];
+  formattedAye: Scalars['String'];
+  formattedNay: Scalars['String'];
+  id: Scalars['String'];
+  nay: Scalars['String'];
+  voter: Scalars['String'];
+};
 
 export type DemocracySummary = {
   __typename?: 'DemocracySummary';
@@ -898,6 +911,7 @@ export type ResolversTypes = {
   DemocracyReferendum: ResolverTypeWrapper<DemocracyReferendum>;
   DemocracyReferendumOrderByInput: DemocracyReferendumOrderByInput;
   DemocracyReferendumStatus: DemocracyReferendumStatus;
+  DemocracyReferendumVote: ResolverTypeWrapper<DemocracyReferendumVote>;
   DemocracySummary: ResolverTypeWrapper<DemocracySummary>;
   DeriveAccountRegistration: ResolverTypeWrapper<DeriveAccountRegistration>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
@@ -1027,6 +1041,7 @@ export type ResolversParentTypes = {
     seconds: Array<ResolversParentTypes['AccountInfo']>;
   };
   DemocracyReferendum: DemocracyReferendum;
+  DemocracyReferendumVote: DemocracyReferendumVote;
   DemocracySummary: DemocracySummary;
   DeriveAccountRegistration: DeriveAccountRegistration;
   Float: Scalars['Float'];
@@ -1427,6 +1442,22 @@ export type DemocracyReferendumResolvers<
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   voteThreshold?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  votes?: Resolver<Array<ResolversTypes['DemocracyReferendumVote']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DemocracyReferendumVoteResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['DemocracyReferendumVote'] = ResolversParentTypes['DemocracyReferendumVote'],
+> = {
+  aye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  voter?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1927,6 +1958,7 @@ export type Resolvers<ContextType = any> = {
   CrowdloanSummary?: CrowdloanSummaryResolvers<ContextType>;
   DemocracyProposal?: DemocracyProposalResolvers<ContextType>;
   DemocracyReferendum?: DemocracyReferendumResolvers<ContextType>;
+  DemocracyReferendumVote?: DemocracyReferendumVoteResolvers<ContextType>;
   DemocracySummary?: DemocracySummaryResolvers<ContextType>;
   DeriveAccountRegistration?: DeriveAccountRegistrationResolvers<ContextType>;
   IdentityJudgement?: IdentityJudgementResolvers<ContextType>;
