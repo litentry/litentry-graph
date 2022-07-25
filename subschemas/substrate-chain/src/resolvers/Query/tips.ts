@@ -1,4 +1,5 @@
-import { SubstrateTip, SubstrateNetwork, SubstrateTipStatus } from '../../generated/tips-types';
+import type { SubstrateTip } from '../../generated/tips-types';
+import { SubstrateNetwork, SubstrateTipStatus } from '../../generated/tips-types';
 import type { Tip, TipStatus } from '../../generated/resolvers-types';
 import { TipsOrderByInput } from '../../generated/resolvers-types';
 import type { Context } from '../../types';

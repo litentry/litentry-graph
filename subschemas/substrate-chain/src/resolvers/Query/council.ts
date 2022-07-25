@@ -96,15 +96,15 @@ export async function council(
     }
   }
 
-  let termProgress: TermProgress | null = null
-  if(electionsInfo.termDuration) {
+  let termProgress: TermProgress | null = null;
+  if (electionsInfo.termDuration) {
     const { termLeft, percentage } = getTermLeft(bnToBn(electionsInfo.termDuration || 0), bestNumber);
     const { formattedTime: formattedTermLeft, timeStringParts: termLeftParts } = getBlockTime(api, termLeft);
     const { formattedTime: formattedTermDuration, timeStringParts: termDurationParts } = getBlockTime(
       api,
       electionsInfo.termDuration,
     );
-  
+
     termProgress = {
       termDuration: formattedTermDuration,
       termDurationParts: termDurationParts,
