@@ -302,6 +302,7 @@ export enum DemocracyProposalStatus {
 export type DemocracyReferendum = {
   __typename?: 'DemocracyReferendum';
   aye: Scalars['String'];
+  ayePercent: Scalars['Float'];
   blockNumber: Scalars['String'];
   date: Scalars['String'];
   description: Scalars['String'];
@@ -1431,6 +1432,7 @@ export type DemocracyReferendumResolvers<
   ParentType extends ResolversParentTypes['DemocracyReferendum'] = ResolversParentTypes['DemocracyReferendum'],
 > = {
   aye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ayePercent?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

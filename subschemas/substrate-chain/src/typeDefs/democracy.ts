@@ -103,6 +103,7 @@ export default /* GraphQL */ `
     updatedAt: String!
     voteThreshold: String!
     votes: [DemocracyReferendumVote!]!
+    ayePercent: Float!
   }
 
   type Query {

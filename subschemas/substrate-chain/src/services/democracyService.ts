@@ -9,6 +9,7 @@ import { DemocracyReferendumStatus, DemocracyProposalStatus } from '../generated
 import { AccountsService } from './accountsService';
 import { formatBalance } from './substrateChainService';
 import { Context } from '../types';
+import { bnToBn } from '@polkadot/util';
 
 function processReferendumVote(
   votes: SubstrateDemocracyReferendaVote[],
@@ -24,6 +25,13 @@ function processReferendumVote(
     blockNumber: vote.blockNumber,
     date: vote.date,
   }));
+}
+
+function getAyePercent(aye: string, nay: string) {
+  const ayeBn = bnToBn(aye);
+  const nayBn = bnToBn(nay);
+  const total = ayeBn.add(nayBn);
+  return ayeBn.muln(10000).div(total).toNumber() / 100;
 }
 
 export function processDemocracyReferendum(
@@ -47,6 +55,7 @@ export function processDemocracyReferendum(
     voteThreshold: referendum.voteThreshold,
     updatedAt: referendum.updatedAt,
     votes: referendum.votes?.length ? processReferendumVote(referendum.votes, api) : [],
+    ayePercent: getAyePercent(referendum.aye, referendum.nay),
   };
 }
 
