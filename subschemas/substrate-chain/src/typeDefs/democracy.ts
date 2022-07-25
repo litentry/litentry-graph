@@ -66,6 +66,7 @@ export default /* GraphQL */ `
     proposer: Account!
     blockNumber: String!
     depositAmount: String!
+    formattedDepositAmount: String!
     title: String!
     description: String!
     proposalHash: String!
@@ -83,7 +84,9 @@ export default /* GraphQL */ `
     description: String!
     date: String!
     aye: String!
+    formattedAye: String!
     nay: String!
+    formattedNay: String!
     status: DemocracyReferendumStatus!
     blockNumber: String!
     updatedAt: String!

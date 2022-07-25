@@ -134,7 +134,7 @@ export async function democracyReferendums(
     substrateDemocracyReferendas: SubstrateDemocracyReferenda[];
   }>(GOVERNANCE_ENDPOINT, REFERENDUMS_QUERY, variables);
 
-  return substrateDemocracyReferendas.map((referendum) => processDemocracyReferendum(referendum));
+  return substrateDemocracyReferendas.map((referendum) => processDemocracyReferendum(referendum, api));
 }
 
 const REFERENDUM_QUERY = gql`
@@ -157,6 +157,7 @@ const REFERENDUM_QUERY = gql`
 export async function democracyReferendum(
   _: Record<string, never>,
   { id }: { id: string },
+  {api}: Context
 ): Promise<DemocracyReferendum> {
   const variables = {
     id,
@@ -165,7 +166,7 @@ export async function democracyReferendum(
   const { substrateDemocracyReferendaById } = await request<{
     substrateDemocracyReferendaById: SubstrateDemocracyReferenda;
   }>(GOVERNANCE_ENDPOINT, REFERENDUM_QUERY, variables);
-  return processDemocracyReferendum(substrateDemocracyReferendaById);
+  return processDemocracyReferendum(substrateDemocracyReferendaById, api);
 }
 
 const PROPOSALS_QUERY = gql`
@@ -246,7 +247,7 @@ export async function democracyProposals(
   }>(GOVERNANCE_ENDPOINT, PROPOSALS_QUERY, variables);
 
   return Promise.all(
-    substrateDemocracyProposals.map((proposal) => processDemocracyProposal(proposal, accountsService)),
+    substrateDemocracyProposals.map((proposal) => processDemocracyProposal(proposal, accountsService, api)),
   );
 }
 
@@ -284,7 +285,7 @@ export async function democracyProposal(
   const { substrateDemocracyProposalById } = await request<{
     substrateDemocracyProposalById: SubstrateDemocracyProposal;
   }>(GOVERNANCE_ENDPOINT, PROPOSAL_QUERY, variables);
-  return processDemocracyProposal(substrateDemocracyProposalById, accountsService);
+  return processDemocracyProposal(substrateDemocracyProposalById, accountsService, api);
 }
 
 // import type { DeriveProposal, DeriveReferendumExt } from '@polkadot/api-derive/types';

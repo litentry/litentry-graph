@@ -264,6 +264,7 @@ export type DemocracyProposal = {
   date: Scalars['String'];
   depositAmount: Scalars['String'];
   description: Scalars['String'];
+  formattedDepositAmount: Scalars['String'];
   id: Scalars['String'];
   proposalHash: Scalars['String'];
   proposalIndex: Scalars['Int'];
@@ -304,6 +305,8 @@ export type DemocracyReferendum = {
   blockNumber: Scalars['String'];
   date: Scalars['String'];
   description: Scalars['String'];
+  formattedAye: Scalars['String'];
+  formattedNay: Scalars['String'];
   id: Scalars['String'];
   nay: Scalars['String'];
   status: DemocracyReferendumStatus;
@@ -1395,6 +1398,7 @@ export type DemocracyProposalResolvers<
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   depositAmount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedDepositAmount?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposalHash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   proposalIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -1415,6 +1419,8 @@ export type DemocracyReferendumResolvers<
   blockNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedAye?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedNay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['DemocracyReferendumStatus'], ParentType, ContextType>;
