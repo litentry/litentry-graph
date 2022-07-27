@@ -271,7 +271,7 @@ export type DemocracyProposal = {
   proposer: Account;
   seconds: Array<AccountInfo>;
   status: DemocracyProposalStatus;
-  tabledAtBlock: Scalars['String'];
+  tabledAtBlock?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -1421,7 +1421,7 @@ export type DemocracyProposalResolvers<
   proposer?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   seconds?: Resolver<Array<ResolversTypes['AccountInfo']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['DemocracyProposalStatus'], ParentType, ContextType>;
-  tabledAtBlock?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tabledAtBlock?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

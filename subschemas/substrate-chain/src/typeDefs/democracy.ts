@@ -72,7 +72,7 @@ export default /* GraphQL */ `
     proposalHash: String!
     proposalIndex: Int!
     status: DemocracyProposalStatus!
-    tabledAtBlock: String!
+    tabledAtBlock: String
     date: String!
     updatedAt: String!
     seconds: [AccountInfo!]!
