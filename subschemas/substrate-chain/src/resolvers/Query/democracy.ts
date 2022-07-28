@@ -181,11 +181,6 @@ const PROPOSALS_QUERY = gql`
       tabledAtBlock
       date
       updatedAt
-      seconds {
-        account {
-          id
-        }
-      }
     }
   }
 `;
@@ -252,6 +247,11 @@ const PROPOSAL_QUERY = gql`
       tabledAtBlock
       date
       updatedAt
+      seconds {
+        account {
+          id
+        }
+      }
     }
   }
 `;

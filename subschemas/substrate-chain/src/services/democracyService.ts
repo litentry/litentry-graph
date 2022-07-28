@@ -101,6 +101,6 @@ export async function processDemocracyProposal(
     tabledAtBlock: proposal.tabledAtBlock,
     date: proposal.date,
     updatedAt: proposal.updatedAt,
-    seconds: proposal.seconds.map((second) => ({ address: second.account.id })),
+    seconds: proposal.seconds?.length ? proposal.seconds.map((second) => ({ address: second.account.id })) : [],
   };
 }
