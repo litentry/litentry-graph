@@ -120,9 +120,9 @@ export async function council(
     candidates,
     totalCandidates: candidates.length,
     primeMember,
-    desiredSeats: Number(electionsInfo.desiredSeats),
+    desiredSeats: electionsInfo.desiredSeats ? electionsInfo.desiredSeats.toNumber() : 0,
     totalMembers: members.length,
-    desiredRunnersUp: Number(electionsInfo.desiredRunnersUp),
+    desiredRunnersUp: electionsInfo.desiredRunnersUp ? electionsInfo.desiredRunnersUp.toNumber() : 0,
     totalRunnersUp: runnersUp.length,
     termProgress,
   };
