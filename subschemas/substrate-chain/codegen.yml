@@ -19,6 +19,12 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
+
+  src/generated/governance-types.ts:
+    schema: https://squid.litentry.io/governance/graphql
+    plugins:
+      - 'typescript'
+      - 'typescript-resolvers'
 hooks:
   afterAllFileWrite:
     - prettier --write

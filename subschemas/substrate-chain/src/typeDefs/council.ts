@@ -37,6 +37,20 @@ export default /* GraphQL */ `
     endTime: [String!]!
   }
 
+  type ProposalSubCall {
+    meta: String
+    method: String
+    section: String
+    args: [ProposalArg]
+  }
+
+  type ProposalArg {
+    name: String
+    type: String
+    value: String
+    subCalls: [ProposalSubCall]
+  }
+
   type MotionProposal {
     index: String
     meta: String!
