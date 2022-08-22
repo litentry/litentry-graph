@@ -1,4 +1,4 @@
 node_modules
 .idea
 .vscode
-data/schemas/remote-graphs.json
+data/schemas/remote-schemas.json
