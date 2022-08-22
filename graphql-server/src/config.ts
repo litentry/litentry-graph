@@ -9,7 +9,6 @@ if (!process.env.ETH_MAINNET_PROVIDER) {
 
 const config = {
   apiPort: process.env.API_PORT || 5000,
-  remoteSchemaConfig: remoteSchemas,
   ethMainnetProvider: process.env.ETH_MAINNET_PROVIDER as string,
   bscProvider: 'https://bsc-dataseed.binance.org/',
 };

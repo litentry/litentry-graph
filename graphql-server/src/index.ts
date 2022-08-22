@@ -13,21 +13,17 @@ import config from './config';
 import { capitalize } from './utils';
 import { initSubstrateApi, SubstrateNetwork } from './substrateApi';
 import Web3 from 'web3';
+import remoteSchemaRepository from './repository/remoteSchemaRepository';
 
 async function makeAggregatedSchema() {
-  const remoteSchemas = [];
-
-  for (let i = 0; i < config.remoteSchemaConfig.length; i++) {
-    const executor = makeRemoteExecutor(config.remoteSchemaConfig[i].url);
+  const remoteSchemas = await Promise.all(remoteSchemaRepository.getAll().map(async remoteSchema => {
+    const executor = makeRemoteExecutor(remoteSchema.url);
     const schema = await introspectSchema(executor);
-    remoteSchemas.push(
-      // without wrapSchema the schemas from The Graph's hosted service fail on null __typename
-      wrapSchema({
-        schema,
-        executor,
-      }),
-    );
-  }
+    return wrapSchema({
+      schema,
+      executor,
+    });
+  }));
 
   const wrappedSubstrateChainSchema = wrapSchema({
     schema: substrateChainSchema,
@@ -78,6 +74,8 @@ async function run() {
   const getSubstrateApi = await initSubstrateApi();
   const web3 = new Web3(config.ethMainnetProvider);
   const web3BSC = new Web3(config.bscProvider);
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
   app.use(
     '/graphql',
@@ -92,6 +90,37 @@ async function run() {
       };
     }),
   );
+
+  app.post(
+    '/remote-schema',
+    (req, res) => {
+      const { key } = req.query;
+      if (!key || key !== process.env.API_KEY) {
+        return res.status(403).send('Access denied');
+      }
+
+      try {
+        const { name, url } = req.body;
+
+        if (!name.match(/^[a-z-]{1,50}$/)) {
+          return res.status(400).send('Invalid name');
+        }
+
+        try {
+          if ((new URL(url)).host !== 'squid.subsquid.io') {
+            throw new Error('Invalid host');
+          }
+        } catch (e) {
+          return res.status(400).send('Invalid url');
+        }
+
+        remoteSchemaRepository.setSchema({name, url});
+        return res.status(201).send('Success');
+      } catch (e) {
+        return res.status(400).send('Bad request');
+      }
+    }
+  )
 
   const listener = app.listen(config.apiPort, () => {
     const { port } = listener.address() as AddressInfo;
