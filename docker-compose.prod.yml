@@ -9,6 +9,8 @@ services:
     build: .
     ports:
       - 5000
+    volumes:
+      - ./data/schemas:/data/schemas
     restart: unless-stopped
     environment:
       - 'STAGE=production'
