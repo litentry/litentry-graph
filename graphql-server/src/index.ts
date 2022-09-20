@@ -117,7 +117,7 @@ async function run() {
         remoteSchemaRepository.setSchema({name, url});
         return res.status(201).send('Success');
       } catch (e) {
-        return res.status(500).send(e);
+        return res.status(400).send('Bad request');
       }
     }
   )
